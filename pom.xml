@@ -1,0 +1,53 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>org.reco4j</groupId>
+  <artifactId>reco4j-core</artifactId>
+  <version>0.1.0</version>
+  <packaging>jar</packaging>
+
+  <name>reco4j-core</name>
+  <url>http://maven.apache.org</url>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.1</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>log4j</groupId>
+      <artifactId>log4j</artifactId>
+      <version>1.2.17</version>
+    </dependency>
+  </dependencies>
+  <description>Reco4j is an open source project aims at developing a recommendation framework based on graph data sources. We choose graph databases for several reasons. They are NoSQL databases, so "schemaless". This means that it is possible to extend the basic data structure with intermediate information, i.e. similarity value between item and so on. Moreover, since every information is expressed with properties, nodes and relations, the recommendation process can be customized to work on every graph.
+    Reco4j can be used on every graph where "user" and "item" is represented by node and the preferences are modelled as relationship between them.
+    Current implementation leverage on Neo4j as first graph database integrated in our framework. 
+  </description>
+  <licenses>
+    <license>
+      <name>GNU General Public License, Version 3</name>
+      <url>http://www.gnu.org/licenses/gpl-3.0-standalone.html</url>
+      <comments>The software ("Software") developed and owned by Network Engine for
+        Objects in Lund AB (referred to in this notice as "Neo Technology") is
+        licensed under the GNU GENERAL PUBLIC LICENSE Version 3 to all third
+        parties and that license is included below.
+
+        However, if you have executed an End User Software License and Services
+        Agreement or an OEM Software License and Support Services Agreement, or
+        another commercial license agreement with Neo Technology or one of its
+        affiliates (each, a "Commercial Agreement"), the terms of the license in
+        such Commercial Agreement will supersede the GNU GENERAL PUBLIC LICENSE
+        Version 3 and you may use the Software solely pursuant to the terms of
+        the relevant Commercial Agreement.
+      </comments>
+    </license>
+  </licenses>
+</project>
