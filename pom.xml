@@ -4,15 +4,40 @@
 
   <groupId>org.reco4j</groupId>
   <artifactId>reco4j-core</artifactId>
-  <version>0.1.0</version>
+  <version>0.1-SNAPSHOT</version>
   <packaging>jar</packaging>
 
   <name>reco4j-core</name>
-  <url>http://maven.apache.org</url>
+  <url>http://www.reco4j.org</url>
+  <inceptionYear>2013</inceptionYear>
+  
+  <parent>
+    <groupId>org.sonatype.oss</groupId>
+    <artifactId>oss-parent</artifactId>
+    <version>7</version>
+  </parent>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-  </properties>
+  </properties> 
+  <scm>
+    <connection>scm:git:git@github.com:reco4j/reco4j-core.git</connection>
+    <developerConnection>scm:git:git@github.com:reco4j/reco4j-core.git</developerConnection>
+    <url>git@github.com:reco4j/reco4j-core.git</url>
+  </scm>
+  <developers>
+    <developer>
+      <id>alenegro81</id>
+      <name>Alessandro Negro</name>
+      <email>alessandro.negro@reco4j.org</email>
+      <url>http://www.reco4j.org/contacts.jsp</url>
+      <roles>
+        <role>architect</role>
+        <role>developer</role>
+      </roles>
+      <timezone>+1</timezone>
+    </developer>
+  </developers>
 
   <dependencies>
     <dependency>
