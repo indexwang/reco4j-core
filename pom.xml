@@ -51,6 +51,11 @@
       <artifactId>log4j</artifactId>
       <version>1.2.17</version>
     </dependency>
+    <dependency>
+      <groupId>org.apache.mahout</groupId>
+      <artifactId>mahout-core</artifactId>
+      <version>0.7</version>
+    </dependency>
   </dependencies>
   <description>Reco4j is an open source project aims at developing a recommendation framework based on graph data sources. We choose graph databases for several reasons. They are NoSQL databases, so "schemaless". This means that it is possible to extend the basic data structure with intermediate information, i.e. similarity value between item and so on. Moreover, since every information is expressed with properties, nodes and relations, the recommendation process can be customized to work on every graph.
     Reco4j can be used on every graph where "user" and "item" is represented by node and the preferences are modelled as relationship between them.
