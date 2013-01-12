@@ -36,6 +36,7 @@ public interface INode
   public List<IEdge> getInEdge(IEdgeType edgeType);
   public List<IEdge> getOutEdge(IEdgeType edgeType);
   public List<INode> getCommonNodes(IEdgeType edgeType);
+  public void iterateOnCommonNodes(IEdgeType edgeType, IGraphCallable<INode> callback);
   public int getInEdgeNumber(IEdgeType edgeType);
   public Object getExtendedInfos();
   public void setExtendedInfos(Object infos);

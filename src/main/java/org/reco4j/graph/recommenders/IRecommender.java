@@ -26,7 +26,10 @@ import org.reco4j.graph.Rating;
 
 /**
  *
- * @author ale
+ * This interface is the interface for any recommender type. 
+ * Any recommender MUST subclass this instance and implements it method to be used. *
+ * 
+ * @author Alessandro Negro
  */
 public interface IRecommender
 {
@@ -40,10 +43,8 @@ public interface IRecommender
   //public void setProperties(Properties properties);
   /**
    * This method, starting from a learning dataset, build the recommender. 
-   * The implementation of this method is related to the particular alghorims used
-   * to recommend.    *
-   * @param learningDataSet: the IGraph that contains the data that have to be
-   * used for instruct the recommender
+   * The implementation of this method is related to the particular algorithms used to recommend.
+   * @param learningDataSet: the IGraph that contains the data that have to be used for instruct the recommender
    */
   public void buildRecommender(IGraph learningDataSet);
 
@@ -63,6 +64,9 @@ public interface IRecommender
 
   /**
    * This method load the recommender info from the database
+   * @param learningDataSet: the IGraph that contains the data that have to be
+   * used for instruct the recommender
+   
    */
   public void loadRecommender(IGraph learningDataSet);
 

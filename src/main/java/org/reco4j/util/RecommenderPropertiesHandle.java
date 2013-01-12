@@ -210,7 +210,6 @@ public class RecommenderPropertiesHandle implements IPropertiesHandle
   
   public boolean getRecalculateSimilarity()
   {
-    //Consentire il loading da properties file
     String rankValueName = getProperty(PROPERTY_NAME_RECALCULATE_SIMILARITY, null);
     if (rankValueName != null)
       return Boolean.valueOf(rankValueName).booleanValue();

@@ -40,6 +40,7 @@ public interface IGraph
   public List<INode> getNeighbours(List<IEdgeType> edgesType);
   public List<INode> getNodesByInEdge(IEdgeType edgesType);
   public List<INode> getNodesByType(String type);
+  public void getNodesByType(String type, IGraphCallable<INode> callback);
   public HashMap<String, INode> getNodesMapByType(String type, String identifier);
   public List<IEdge> getEdgesByType(IEdgeType edgesType);
   public void setProperties(Properties properties);

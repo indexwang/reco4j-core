@@ -18,15 +18,29 @@
  */
 package org.reco4j.graph.recommenders;
 
+import org.reco4j.graph.EdgeTypeFactory;
+import org.reco4j.graph.IEdgeType;
 import org.reco4j.graph.IGraph;
+import org.reco4j.session.RecommenderSessionManager;
+import org.reco4j.util.RecommenderPropertiesHandle;
 
 /**
- *
- * @author ale
+ * 
+ * This class is the class that implements some basic method of the recommender.
+ * 
+ * @author Alessandro Negro
  */
 public abstract class BasicRecommender implements IRecommender
 {
   protected IGraph learningDataSet;
+  protected IEdgeType edgeType;
+  
+  public BasicRecommender()
+  {
+    RecommenderSessionManager.getInstance().setRankValueProprertyName(
+      RecommenderPropertiesHandle.getInstance().getEdgeRankValueName());
+    edgeType = EdgeTypeFactory.getEdgeType(IEdgeType.EDGE_TYPE_RANK);
+  }
   
   public IGraph getLearningDataSet()
   {
