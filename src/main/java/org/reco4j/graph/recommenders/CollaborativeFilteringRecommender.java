@@ -82,10 +82,8 @@ public class CollaborativeFilteringRecommender extends BasicRecommender
         continue;
       double estimatedRating = estimateRating(user, item, edgeType,
                                               RecommenderPropertiesHandle.getInstance().getEdgeRankValueName());
-      Utility.orderedInsert(recommendations, estimatedRating, item);
+      Utility.orderedInsert(recommendations, estimatedRating, item, RecommenderPropertiesHandle.getInstance().getRecoNumber());
     }
-    recommendations = Utility.cutList(recommendations,
-                                      RecommenderPropertiesHandle.getInstance().getRecoNumber());
     return recommendations;
   }
 
