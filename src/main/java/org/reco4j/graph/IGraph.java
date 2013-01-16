@@ -26,7 +26,7 @@ import java.util.Properties;
  * This interface represents a Graph. Subclass of this instance can use different
  * mechanism to handle the graph data (for instance: neo4j, infiniteGraph, dbms).
  * Also the rank is represented as a link between the party and the object ranked
- * @author Alessandro Negro
+ ** @author Alessandro Negro <alessandro.negro at reco4j.org>
  */
 public interface IGraph
 {

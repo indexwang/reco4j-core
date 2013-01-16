@@ -20,7 +20,7 @@ package org.reco4j.util;
 
 /**
  *
- * @author Alessandro Negro <alessandro.negro at reco4j.org>
+ ** @author Alessandro Negro <alessandro.negro at reco4j.org>ssandro Negro <alessandro.negro at reco4j.org>
  */
 public class TimeReportUtility
 {

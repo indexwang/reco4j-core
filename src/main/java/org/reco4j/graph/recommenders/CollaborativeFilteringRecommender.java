@@ -21,7 +21,7 @@ package org.reco4j.graph.recommenders;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 import org.reco4j.graph.EdgeTypeFactory;
 import org.reco4j.graph.IEdge;
 import org.reco4j.graph.IEdgeType;
@@ -30,28 +30,26 @@ import org.reco4j.graph.INode;
 import org.reco4j.graph.Rating;
 import org.reco4j.graph.similarity.ISimilarity;
 import org.reco4j.graph.similarity.SimilarityFactory;
-import org.reco4j.session.RecommenderSessionManager;
 import org.reco4j.util.RecommenderPropertiesHandle;
 import org.reco4j.util.TimeReportUtility;
 import org.reco4j.util.Utility;
 
 /**
  *
- * @author ale
+ ** @author Alessandro Negro <alessandro.negro at reco4j.org>
  */
 public class CollaborativeFilteringRecommender extends BasicRecommender
 {
-  protected Logger logger = Logger.getLogger(CollaborativeFilteringRecommender.class);
+  protected static final Logger logger = Logger.getLogger(CollaborativeFilteringRecommender.class.getName());
   protected HashMap<String, HashMap<String, Rating>> knn;
   //protected ArrayList<IEdgeType> edges;  
-  
 
   @Override
   public void buildRecommender(IGraph learningDataSet)
   {
     TimeReportUtility timeReport = new TimeReportUtility("buildRecommender");
     timeReport.start();
-    setLearningDataSet(learningDataSet);    
+    setLearningDataSet(learningDataSet);
     knn = createKNN(RecommenderPropertiesHandle.getInstance().getDistanceAlgorithm());
     timeReport.stop();
   }
@@ -159,6 +157,19 @@ public class CollaborativeFilteringRecommender extends BasicRecommender
   {
     HashMap<String, HashMap<String, Rating>> knnMatrix = new HashMap<String, HashMap<String, Rating>>();
     ISimilarity simFunction = SimilarityFactory.getSimilarityClass(distanceAlgorithm);
+    //Anzicché cercare in qusto modo dovrei andare dritto sulle relazioni
+    /*Da sistemare, non usare la orderedInsert
+     * for (IEdge alreadyCalulatedEdge : learningDataSet.getEdgesByType(EdgeTypeFactory.getEdgeType(IEdgeType.EDGE_TYPE_SIMILARITY)))
+    {
+      logger.info("Edge: " + alreadyCalulatedEdge.getSource().getProperty(null));
+      ArrayList<Rating> recommendations = new ArrayList<Rating>();
+      double similarityValue = Double.parseDouble(alreadyCalulatedEdge.getProperty(simFunction.getClass().getName()));
+      if (similarityValue > 0)
+      {
+        Utility.orderedInsert(recommendations, similarityValue, alreadyCalulatedEdge.getSource(), RecommenderPropertiesHandle.getInstance().getKValue());
+        Utility.orderedInsert(recommendations, similarityValue, alreadyCalulatedEdge.getDestination(), RecommenderPropertiesHandle.getInstance().getKValue());
+      }
+    }*/
     for (INode item : learningDataSet.getNodesByType(RecommenderPropertiesHandle.getInstance().getItemType()))
     {
       ArrayList<Rating> recommendations = new ArrayList<Rating>();
@@ -182,6 +193,7 @@ public class CollaborativeFilteringRecommender extends BasicRecommender
     ISimilarity simFunction = SimilarityFactory.getSimilarityClass(distMethod);
     IEdgeType similarityEdgeType = EdgeTypeFactory.getEdgeType(IEdgeType.EDGE_TYPE_SIMILARITY);
     IEdge alreadyCalulatedEdge = null;
+    //Prima lo cerco nella hashmap, poi dentro il grafo (ma dovrebbe essere non necessario)
     if (!RecommenderPropertiesHandle.getInstance().getRecalculateSimilarity())
     {
       alreadyCalulatedEdge = item.getEdge(otherItem, similarityEdgeType);
@@ -192,9 +204,9 @@ public class CollaborativeFilteringRecommender extends BasicRecommender
         return value;
       }
     }
-    
-    double similarityValue = simFunction.getSimilarity(item, otherItem, edgeType, learningDataSet);
 
+    double similarityValue = simFunction.getSimilarity(item, otherItem, edgeType, learningDataSet);
+    //Introdurre una coda di valori da inserire
     if (!RecommenderPropertiesHandle.getInstance().getRecalculateSimilarity())
     {
       if (alreadyCalulatedEdge != null)

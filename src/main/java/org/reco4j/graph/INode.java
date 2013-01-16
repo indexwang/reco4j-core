@@ -22,7 +22,7 @@ import java.util.List;
 
 /**
  *
- * @author ale
+ ** @author Alessandro Negro <alessandro.negro at reco4j.org>
  */
 public interface INode
 {

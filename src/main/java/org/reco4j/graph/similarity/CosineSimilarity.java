@@ -29,7 +29,7 @@ import org.reco4j.util.Utility;
 
 /**
  *
- * @author ale
+ ** @author Alessandro Negro <alessandro.negro at reco4j.org>
  */
 public class CosineSimilarity implements ISimilarity
 {

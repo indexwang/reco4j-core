@@ -23,7 +23,7 @@ import org.reco4j.graph.similarity.SimilarityFactory;
 
 /**
  *
- * @author ale
+ ** @author Alessandro Negro <alessandro.negro at reco4j.org>
  */
 public class RecommenderPropertiesHandle implements IPropertiesHandle
 {

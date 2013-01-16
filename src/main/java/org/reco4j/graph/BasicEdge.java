@@ -20,7 +20,7 @@ package org.reco4j.graph;
 
 /**
  *
- * @author Alessandro Negro <alessandro.negro at reco4j.org>
+ ** @author Alessandro Negro <alessandro.negro at reco4j.org>
  */
 public abstract class BasicEdge implements IEdge
 {

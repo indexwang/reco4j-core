@@ -28,7 +28,7 @@ import org.reco4j.util.RecommenderPropertiesHandle;
  * 
  * This class is the class that implements some basic method of the recommender.
  * 
- * @author Alessandro Negro
+ ** @author Alessandro Negro <alessandro.negro at reco4j.org>
  */
 public abstract class BasicRecommender implements IRecommender
 {

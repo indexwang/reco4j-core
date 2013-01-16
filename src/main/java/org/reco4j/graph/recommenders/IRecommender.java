@@ -29,7 +29,7 @@ import org.reco4j.graph.Rating;
  * This interface is the interface for any recommender type. 
  * Any recommender MUST subclass this instance and implements it method to be used. *
  * 
- * @author Alessandro Negro
+ ** @author Alessandro Negro <alessandro.negro at reco4j.org>
  */
 public interface IRecommender
 {

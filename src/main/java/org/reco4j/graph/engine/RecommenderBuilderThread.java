@@ -1,5 +1,5 @@
 /*
- * RecommenderEngine.java
+ * RecommenderThread.java
  * 
  * Copyright (C) 2012 Alessandro Negro <alessandro.negro at reco4j.org>
  *
@@ -19,44 +19,35 @@
 package org.reco4j.graph.engine;
 
 import java.sql.Timestamp;
-import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.reco4j.graph.IGraph;
 import org.reco4j.graph.recommenders.IRecommender;
-import org.reco4j.graph.recommenders.RecommendersFactory;
-import org.reco4j.util.RecommenderPropertiesHandle;
 
 /**
  *
- * @author Alessandro Negro <alessandro.negro at reco4j.org>
+ ** @author Alessandro Negro <alessandro.negro at reco4j.org>
  */
-public class RecommenderEngine
+public class RecommenderBuilderThread extends Thread
 {
   private static final Logger logger = Logger.getLogger(RecommenderEngine.class.getName());
-  public static IRecommender buildRecommender(IGraph learningDataSet, Properties properties)
+  private IGraph learningDataSet;
+  private IRecommender recommender;
+
+  public RecommenderBuilderThread(IRecommender recommender, IGraph learningDataSet)
   {
-    IRecommender recommender = createRecommender(properties);
-    logger.log(Level.INFO, "Build recommendre start: {0}", new Timestamp(System.currentTimeMillis()));
-    recommender.buildRecommender(learningDataSet);
-    logger.log(Level.INFO, "Build recommendre end: {0}", new Timestamp(System.currentTimeMillis()));
-    return recommender;
+    this.learningDataSet = learningDataSet;
+    this.recommender = recommender;
   }
 
-  public static IRecommender loadRecommender(IGraph learningDataSet, Properties properties)
+  @Override
+  public void run()
   {
-    IRecommender recommender = createRecommender(properties);
     logger.log(Level.INFO, "Load recommender start: {0}", new Timestamp(System.currentTimeMillis()));
     recommender.loadRecommender(learningDataSet);
     logger.log(Level.INFO, "Load recommender end: {0}", new Timestamp(System.currentTimeMillis()));
-    return recommender;
-  }
-
-  public static IRecommender createRecommender(Properties properties)
-  {
-    RecommenderPropertiesHandle.getInstance().setProperties(properties);
-    int recommenderType = RecommenderPropertiesHandle.getInstance().getRecommenderType();
-    IRecommender recommender = RecommendersFactory.getRecommender(recommenderType);
-    return recommender;
+    logger.log(Level.INFO, "Build recommendre start: {0}", new Timestamp(System.currentTimeMillis()));
+    recommender.buildRecommender(learningDataSet);
+    logger.log(Level.INFO, "Build recommendre end: {0}", new Timestamp(System.currentTimeMillis()));
   }
 }

@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /**
  * This class and all its subclass are used to have a single point were find the configuration needed
- * @author ale
+ ** @author Alessandro Negro <alessandro.negro at reco4j.org>
  */
 public interface IPropertiesHandle
 {
