@@ -47,8 +47,8 @@ public class RecommenderEvaluator
       for (IEdge rank : ranks)
       {
         StringBuilder output = new StringBuilder();
-        output.append("item: " + rank.getSource().getProperty(RecommenderPropertiesHandle.getInstance().getItemIdentifierName()));
-        double estimatedRating = recommender.estimateRating(user, rank.getSource(), EdgeTypeFactory.getEdgeType(IEdgeType.EDGE_TYPE_RANK),
+        output.append("item: ").append(rank.getDestination().getProperty(RecommenderPropertiesHandle.getInstance().getItemIdentifierName()));
+        double estimatedRating = recommender.estimateRating(user, rank.getDestination(), EdgeTypeFactory.getEdgeType(IEdgeType.EDGE_TYPE_RANK),
                                                          RecommenderPropertiesHandle.getInstance().getEdgeRankValueName());
         if (estimatedRating > 0)
         {
@@ -57,8 +57,9 @@ public class RecommenderEvaluator
           double difference = realValue - estimatedRating;
           numerator = numerator + Math.abs(difference);
           output.append(" n: ").append(n).append(" numerator: ").append(numerator).append(" estimatedRating: ").append(estimatedRating).append(" realValue: ").append(realValue).append(" difference: ").append(difference);
-          System.out.println(output);
+          
 
+        System.out.println(output);
         }
         System.out.flush();
       }
