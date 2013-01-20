@@ -42,7 +42,12 @@ public class CollaborativeFilteringRecommender extends BasicRecommender
 {
   protected static final Logger logger = Logger.getLogger(CollaborativeFilteringRecommender.class.getName());
   protected HashMap<String, HashMap<String, Rating>> knn;
-  //protected ArrayList<IEdgeType> edges;  
+  //protected ArrayList<IEdgeType> edges;
+
+  public CollaborativeFilteringRecommender()
+  {
+    knn = new HashMap<String, HashMap<String, Rating>>();
+  }
 
   @Override
   public void buildRecommender(IGraph learningDataSet)
@@ -50,7 +55,7 @@ public class CollaborativeFilteringRecommender extends BasicRecommender
     TimeReportUtility timeReport = new TimeReportUtility("buildRecommender");
     timeReport.start();
     setLearningDataSet(learningDataSet);
-    knn = createKNN(RecommenderPropertiesHandle.getInstance().getDistanceAlgorithm());
+    createKNN(RecommenderPropertiesHandle.getInstance().getDistanceAlgorithm());
     timeReport.stop();
   }
 
@@ -58,7 +63,8 @@ public class CollaborativeFilteringRecommender extends BasicRecommender
   public void loadRecommender(IGraph learningDataSet)
   {
     setLearningDataSet(learningDataSet);
-    knn = loadKNN(RecommenderPropertiesHandle.getInstance().getDistanceAlgorithm());
+    loadKNN(RecommenderPropertiesHandle.getInstance().getDistanceAlgorithm());
+    printKNN(knn);
   }
 
   @Override
@@ -85,9 +91,8 @@ public class CollaborativeFilteringRecommender extends BasicRecommender
     return recommendations;
   }
 
-  private HashMap<String, HashMap<String, Rating>> createKNN(int distMethod)
+  private void createKNN(int distMethod)
   {
-    HashMap<String, HashMap<String, Rating>> knnMatrix = new HashMap<String, HashMap<String, Rating>>();
     TimeReportUtility timeReport = new TimeReportUtility("createKNN");
     timeReport.start();
 
@@ -96,31 +101,39 @@ public class CollaborativeFilteringRecommender extends BasicRecommender
       String itemId = item.getProperty(RecommenderPropertiesHandle.getInstance().getItemIdentifierName());
       if (itemId == null)
         throw new RuntimeException("Items don't have the 'id' property!");
-      HashMap<String, Rating> knnRow = foundNearestNeighbour(item, edgeType, distMethod);
-      knnMatrix.put(itemId, knnRow);
+      HashMap<String, Rating> knnRow = getKnnRow(itemId);
+      foundNearestNeighbour(item, edgeType, distMethod, knnRow);
     }
     timeReport.stop();
-    return knnMatrix;
   }
 
-  private HashMap<String, Rating> foundNearestNeighbour(INode item, IEdgeType edgeType, int distMethod)
+  private void foundNearestNeighbour(INode item, IEdgeType edgeType, int distMethod, HashMap<String, Rating> knnRow)
   {
-    System.out.println("foundNearestNeighbour: " + item.getProperty(RecommenderPropertiesHandle.getInstance().getItemIdentifierName()));
-    HashMap<String, Rating> knnRow = new HashMap<String, Rating>();
-    List<INode> nodesByInEdge = item.getCommonNodes(edgeType);
-    for (INode otherItem : nodesByInEdge)
+    logger.info("foundNearestNeighbour: " + item.getProperty(RecommenderPropertiesHandle.getInstance().getItemIdentifierName()));
+    HashMap<Long, INode> nodesByInEdge = item.getCommonNodes(edgeType);
+    String itemId = item.getProperty(RecommenderPropertiesHandle.getInstance().getItemIdentifierName());
+    for (INode otherItem : nodesByInEdge.values())
     {
-      String itemId = item.getProperty(RecommenderPropertiesHandle.getInstance().getItemIdentifierName());
       String otherItemId = otherItem.getProperty(RecommenderPropertiesHandle.getInstance().getItemIdentifierName());
+      if (knnRow.get(otherItemId) != null)
+        continue;
       if (itemId == null || itemId.isEmpty() || otherItemId == null || otherItemId.isEmpty())
         throw new RuntimeException("Items don't have the 'id' property!");
       if (itemId.equalsIgnoreCase(otherItemId))
         continue;
       double similarityValue = calculateSimilarity(item, otherItem, edgeType, distMethod);
+      //Take into consideration that the similarityValue is simmetric
       if (similarityValue > 0)
+      {
         knnRow.put(otherItemId, new Rating(otherItem, similarityValue));
+        HashMap<String, Rating> otherKnnRow = getKnnRow(otherItemId);
+        otherKnnRow.put(itemId, new Rating(item, similarityValue));
+      }
     }
-    return knnRow;
+    /*System.out.print(itemId + ":> ");
+    for (String key : knnRow.keySet())
+      System.out.print(key + "["+ knnRow.get(key).getRate() +"] ");
+    System.out.println();*/
   }
 
   @Override
@@ -153,39 +166,27 @@ public class CollaborativeFilteringRecommender extends BasicRecommender
     return uRate;
   }
 
-  private HashMap<String, HashMap<String, Rating>> loadKNN(int distanceAlgorithm)
+  private void loadKNN(int distanceAlgorithm)
   {
-    HashMap<String, HashMap<String, Rating>> knnMatrix = new HashMap<String, HashMap<String, Rating>>();
     ISimilarity simFunction = SimilarityFactory.getSimilarityClass(distanceAlgorithm);
-    //Anzicché cercare in qusto modo dovrei andare dritto sulle relazioni
-    /*Da sistemare, non usare la orderedInsert
-     * for (IEdge alreadyCalulatedEdge : learningDataSet.getEdgesByType(EdgeTypeFactory.getEdgeType(IEdgeType.EDGE_TYPE_SIMILARITY)))
+    IEdgeType edgeType1 = EdgeTypeFactory.getEdgeType(IEdgeType.EDGE_TYPE_SIMILARITY);
+    List<IEdge> edgesByType = learningDataSet.getEdgesByType(edgeType1);
+    for (IEdge alreadyCalulatedEdge : edgesByType)
     {
-      logger.info("Edge: " + alreadyCalulatedEdge.getSource().getProperty(null));
-      ArrayList<Rating> recommendations = new ArrayList<Rating>();
+      logger.info("alreadyCalulatedEdge"); //Valutare se la simmetria fa si che ci sia solo un arco tra due item
+      String sourceItemId = alreadyCalulatedEdge.getSource().getProperty(RecommenderPropertiesHandle.getInstance().getItemIdentifierName());
+      String destinationItemId = alreadyCalulatedEdge.getDestination().getProperty(RecommenderPropertiesHandle.getInstance().getItemIdentifierName());
+      HashMap<String, Rating> recommendationsSource = getKnnRow(sourceItemId);
+      HashMap<String, Rating> recommendationsDestination = getKnnRow(destinationItemId);
       double similarityValue = Double.parseDouble(alreadyCalulatedEdge.getProperty(simFunction.getClass().getName()));
       if (similarityValue > 0)
       {
-        Utility.orderedInsert(recommendations, similarityValue, alreadyCalulatedEdge.getSource(), RecommenderPropertiesHandle.getInstance().getKValue());
-        Utility.orderedInsert(recommendations, similarityValue, alreadyCalulatedEdge.getDestination(), RecommenderPropertiesHandle.getInstance().getKValue());
+        Rating rateSource = new Rating(alreadyCalulatedEdge.getSource(), similarityValue);
+        Rating rateDestination = new Rating(alreadyCalulatedEdge.getDestination(), similarityValue);
+        recommendationsSource.put(destinationItemId, rateDestination);
+        recommendationsDestination.put(sourceItemId, rateSource);
       }
-    }*/
-    for (INode item : learningDataSet.getNodesByType(RecommenderPropertiesHandle.getInstance().getItemType()))
-    {
-      ArrayList<Rating> recommendations = new ArrayList<Rating>();
-      IEdgeType similarityEdgeType = EdgeTypeFactory.getEdgeType(IEdgeType.EDGE_TYPE_SIMILARITY);
-      List<IEdge> edgeList = item.getOutEdge(similarityEdgeType);
-      for (IEdge alreadyCalulatedEdge : edgeList)
-      {
-        double similarityValue = Double.parseDouble(alreadyCalulatedEdge.getProperty(simFunction.getClass().getName()));
-        if (similarityValue > 0)
-          Utility.orderedInsert(recommendations, similarityValue, alreadyCalulatedEdge.getSource());
-      }
-      HashMap<String, Rating> knnRow = Utility.getKNNRow(recommendations, RecommenderPropertiesHandle.getInstance().getKValue());
-      knnMatrix.put(item.getProperty(RecommenderPropertiesHandle.getInstance().getItemIdentifierName()), knnRow);
     }
-    printKNN(knnMatrix);
-    return knnMatrix;
   }
 
   protected double calculateSimilarity(INode item, INode otherItem, IEdgeType edgeType, int distMethod)
@@ -193,7 +194,6 @@ public class CollaborativeFilteringRecommender extends BasicRecommender
     ISimilarity simFunction = SimilarityFactory.getSimilarityClass(distMethod);
     IEdgeType similarityEdgeType = EdgeTypeFactory.getEdgeType(IEdgeType.EDGE_TYPE_SIMILARITY);
     IEdge alreadyCalulatedEdge = null;
-    //Prima lo cerco nella hashmap, poi dentro il grafo (ma dovrebbe essere non necessario)
     if (!RecommenderPropertiesHandle.getInstance().getRecalculateSimilarity())
     {
       alreadyCalulatedEdge = item.getEdge(otherItem, similarityEdgeType);
@@ -206,7 +206,7 @@ public class CollaborativeFilteringRecommender extends BasicRecommender
     }
 
     double similarityValue = simFunction.getSimilarity(item, otherItem, edgeType, learningDataSet);
-    //Introdurre una coda di valori da inserire
+    //Introdurre una coda di valori da inserire per toglierla dal processo di calcolo
     if (!RecommenderPropertiesHandle.getInstance().getRecalculateSimilarity())
     {
       if (alreadyCalulatedEdge != null)
@@ -221,14 +221,16 @@ public class CollaborativeFilteringRecommender extends BasicRecommender
   {
     for (String rowItem : knnMatrix.keySet())
     {
-      System.out.print("Key: " + rowItem + " - ");
+      //System.out.print("Key: " + rowItem + " - ");
+      StringBuilder out = new StringBuilder("Key: ");
+      out.append(rowItem).append(" - ");
       HashMap<String, Rating> row = knnMatrix.get(rowItem);
       for (String item : row.keySet())
       {
         Rating rate = row.get(item);
-        System.out.print(" " + item + "(" + rate.getRate() + ") ");
+        out.append(" ").append(item).append("(").append(rate.getRate()).append(") ");
       }
-      System.out.println();
+      logger.info(out.toString());
     }
   }
 
@@ -243,6 +245,8 @@ public class CollaborativeFilteringRecommender extends BasicRecommender
     //  estimatedRating = user.getItemRating(item).getRate();
     String itemIdentifierName = RecommenderPropertiesHandle.getInstance().getItemIdentifierName();
     String id = item.getProperty(itemIdentifierName);
+    if (!knn.containsKey(id))
+      return 0.0;
     for (Rating rate : knn.get(id).values())
     {
       IEdge edge = user.getEdge(rate.getItem(), rankType);
@@ -256,5 +260,16 @@ public class CollaborativeFilteringRecommender extends BasicRecommender
     if (similaritySum > 0)
       estimatedRating = weightedRatingSum / similaritySum;
     return estimatedRating;
+  }
+
+  private HashMap<String, Rating> getKnnRow(String itemId)
+  {
+    HashMap<String, Rating> knnRow = knn.get(itemId);
+    if (knnRow == null)
+    {
+      knnRow = new HashMap<String, Rating>();
+      knn.put(itemId, knnRow);
+    }
+    return knnRow;
   }
 }

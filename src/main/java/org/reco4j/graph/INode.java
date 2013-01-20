@@ -18,6 +18,7 @@
  */
 package org.reco4j.graph;
 
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -35,7 +36,7 @@ public interface INode
   public IEdge getEdge(INode node, IEdgeType edgeType);
   public List<IEdge> getInEdge(IEdgeType edgeType);
   public List<IEdge> getOutEdge(IEdgeType edgeType);
-  public List<INode> getCommonNodes(IEdgeType edgeType);
+  public HashMap<Long, INode> getCommonNodes(IEdgeType edgeType);
   public void iterateOnCommonNodes(IEdgeType edgeType, IGraphCallable<INode> callback);
   public int getInEdgeNumber(IEdgeType edgeType);
   public Object getExtendedInfos();

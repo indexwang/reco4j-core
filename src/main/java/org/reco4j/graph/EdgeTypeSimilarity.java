@@ -36,7 +36,7 @@ public class EdgeTypeSimilarity implements IEdgeType
   @Override
   public String getEdgeName()
   {
-    return RecommenderPropertiesHandle.getInstance().getEdgeTestRankName();
+    return RecommenderPropertiesHandle.getInstance().getEdgeSimilarityName();
   }
   
 }

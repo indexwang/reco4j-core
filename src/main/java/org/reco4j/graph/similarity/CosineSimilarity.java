@@ -54,15 +54,15 @@ public class CosineSimilarity implements ISimilarity
 
     for (IEdge edge : xInEdge)
     {
-      Utility.insertUserOnce(totalUserMap, edge.getDestination());
-      Utility.insertUserOnce(totalXUserMap, edge.getDestination());
+      Utility.insertUserOnce(totalUserMap, edge.getSource());
+      Utility.insertUserOnce(totalXUserMap, edge.getSource());
     }
 
     List<IEdge> yInEdge = y.getInEdge(edgeType);
     for (IEdge edge : yInEdge)
     {
-      Utility.insertUserOnce(totalUserMap, edge.getDestination());
-      Utility.insertUserOnce(totalYUserMap, edge.getDestination());
+      Utility.insertUserOnce(totalUserMap, edge.getSource());
+      Utility.insertUserOnce(totalYUserMap, edge.getSource());
     }
 
     int userTotalNumber = totalUserMap.size();

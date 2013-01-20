@@ -43,11 +43,11 @@ public class RecommenderBuilderThread extends Thread
   @Override
   public void run()
   {
-    logger.log(Level.INFO, "Load recommender start: {0}", new Timestamp(System.currentTimeMillis()));
+    logger.log(Level.INFO, ">>>>>>>>>>>>>>>>>>>>: Load recommender start: {0}", new Timestamp(System.currentTimeMillis()));
     recommender.loadRecommender(learningDataSet);
-    logger.log(Level.INFO, "Load recommender end: {0}", new Timestamp(System.currentTimeMillis()));
-    logger.log(Level.INFO, "Build recommendre start: {0}", new Timestamp(System.currentTimeMillis()));
+    logger.log(Level.INFO, ">>>>>>>>>>>>>>>>>>>>:Load recommender end: {0}", new Timestamp(System.currentTimeMillis()));
+    logger.log(Level.INFO, ">>>>>>>>>>>>>>>>>>>>:Build recommendre start: {0}", new Timestamp(System.currentTimeMillis()));
     recommender.buildRecommender(learningDataSet);
-    logger.log(Level.INFO, "Build recommendre end: {0}", new Timestamp(System.currentTimeMillis()));
+    logger.log(Level.INFO, ">>>>>>>>>>>>>>>>>>>>:Build recommendre end: {0}", new Timestamp(System.currentTimeMillis()));
   }
 }
