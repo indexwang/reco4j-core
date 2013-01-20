@@ -44,7 +44,8 @@ public class RecommenderPropertiesHandle implements IPropertiesHandle
   public final static String PROPERTY_NAME_RECOMMENDER_TYPE = "recommenderType";
   public final static String PROPERTY_NAME_MAXFEATURES = "maxFeatures";
   public final static String PROPERTY_NAME_FEATURE_INIT_VALUE = "featureInitValue";
-  
+  public final static String PROPERTY_NAME_USER_TYPE = "userType";
+  public final static String PROPERTY_NAME_ITEM_TYPE = "itemType";
   //Default value for properties name on node or edges
   public final static String PROPERTY_NODE_IDENTIFIER = "id"; //Prendere anche da properties file
   public final static String PROPERTY_ITEM_IDENTIFIER = "itemId"; //Prendere anche da properties file
@@ -54,15 +55,15 @@ public class RecommenderPropertiesHandle implements IPropertiesHandle
   public final static String PROPERTY_EDGE_TEST_RANK_IDENTIFIER = "ratedTest";
   public final static String PROPERTY_EDGE_SIMILARITY_IDENTIFIER = "similarity";
   public final static String PROPERTY_EDGE_ESTIMATED_RATING_IDENTIFIER = "estimatedRating";
+  public final static String PROPERTY_USER_TYPE = "User";
+  public final static String PROPERTY_ITEM_TYPE = "Movie";
   public final static boolean PROPERTY_RECALCULATE_SIMILARITY = false;
   public final static int PROPERTY_RECOMMENDER_TYPE = 1;
   public final static int PROPERTY_MAXFEATURES = 64;
   public final static double PROPERTY_FEATURE_INIT_VALUE = 0.1;
-  
   //Default Value for Recommender
   protected static int PROPERTY_K_VALUE = 25;
   protected static int PROPERTY_RECO_NUMBER = 10;
-  
   private static RecommenderPropertiesHandle theInstance = new RecommenderPropertiesHandle();
 
   protected RecommenderPropertiesHandle()
@@ -102,25 +103,20 @@ public class RecommenderPropertiesHandle implements IPropertiesHandle
 
   public String getNodeIdentifierName()
   {
-    //Consentire il loading da properties file
     return PROPERTY_NODE_IDENTIFIER; //Default value
   }
-  
+
   public String getItemIdentifierName()
   {
-    //Consentire il loading da properties file
-    //Consentire il loading da properties file
     String rankValueName = getProperty(PROPERTY_NAME_NODE_ITEM_IDENTIFIER, null);
     if (rankValueName != null)
       return rankValueName;
     else
       return PROPERTY_ITEM_IDENTIFIER;
   }
-  
+
   public String getUserIdentifierName()
   {
-    //Consentire il loading da properties file
-    //Consentire il loading da properties file
     String rankValueName = getProperty(PROPERTY_NAME_NODE_USER_IDENTIFIER, null);
     if (rankValueName != null)
       return rankValueName;
@@ -130,46 +126,51 @@ public class RecommenderPropertiesHandle implements IPropertiesHandle
 
   public String getEdgeRankValueName()
   {
-    //Consentire il loading da properties file
     String rankValueName = getProperty(PROPERTY_NAME_RANK_VALUE, null);
     if (rankValueName != null)
       return rankValueName;
     else
       return PROPERTY_RANK_VALUE_NAME; //Default value
   }
-  
+
   public String getItemType()
   {
-    return new String("Movie");
+    String rankValueName = getProperty(PROPERTY_NAME_ITEM_TYPE, null);
+    if (rankValueName != null)
+      return rankValueName;
+    else
+      return PROPERTY_ITEM_TYPE; //Default value
   }
-  
+
   public String getUserType()
   {
-    return new String("User");
+    String rankValueName = getProperty(PROPERTY_NAME_USER_TYPE, null);
+    if (rankValueName != null)
+      return rankValueName;
+    else
+      return PROPERTY_USER_TYPE; //Default value
   }
+
   public String getEdgeRankName()
   {
-    //Consentire il loading da properties file
     String rankValueName = getProperty(PROPERTY_NAME_EDGE_RANK, null);
     if (rankValueName != null)
       return rankValueName;
     else
       return PROPERTY_EDGE_RANK_IDENTIFIER; //Default value
   }
-  
+
   public String getEdgeTestRankName()
   {
-    //Consentire il loading da properties file
     String rankValueName = getProperty(PROPERTY_NAME_EDGE_TEST_RANK, null);
     if (rankValueName != null)
       return rankValueName;
     else
       return PROPERTY_EDGE_TEST_RANK_IDENTIFIER; //Default value
   }
-  
+
   public String getEdgeEstimatedRatingName()
   {
-    //Consentire il loading da properties file
     String rankValueName = getProperty(PROPERTY_NAME_EDGE_ESTIMATED_RATING, null);
     if (rankValueName != null)
       return rankValueName;
@@ -198,16 +199,16 @@ public class RecommenderPropertiesHandle implements IPropertiesHandle
     else
       return SimilarityFactory.EUCLIDEAN_SIM; //Default value
   }
+
   public String getEdgeSimilarityName()
   {
-    //Consentire il loading da properties file
     String rankValueName = getProperty(PROPERTY_NAME_EDGE_SIMILARITY, null);
     if (rankValueName != null)
       return rankValueName;
     else
       return PROPERTY_EDGE_SIMILARITY_IDENTIFIER; //Default value
   }
-  
+
   public boolean getRecalculateSimilarity()
   {
     String rankValueName = getProperty(PROPERTY_NAME_RECALCULATE_SIMILARITY, null);
@@ -219,7 +220,6 @@ public class RecommenderPropertiesHandle implements IPropertiesHandle
 
   public int getRecommenderType()
   {
-    //Consentire il loading da properties file
     String recommenderTypeValue = getProperty(PROPERTY_NAME_RECOMMENDER_TYPE, null);
     if (recommenderTypeValue != null)
       return Integer.valueOf(recommenderTypeValue).intValue();
@@ -229,7 +229,6 @@ public class RecommenderPropertiesHandle implements IPropertiesHandle
 
   public int getMaxFeatures()
   {
-    //Consentire il loading da properties file
     String maxFeatureValue = getProperty(PROPERTY_NAME_MAXFEATURES, null);
     if (maxFeatureValue != null)
       return Integer.valueOf(maxFeatureValue).intValue();
@@ -239,7 +238,6 @@ public class RecommenderPropertiesHandle implements IPropertiesHandle
 
   public double getFeatureInitValue()
   {
-    //Consentire il loading da properties file
     String featureInitValue = getProperty(PROPERTY_NAME_FEATURE_INIT_VALUE, null);
     if (featureInitValue != null)
       return Double.parseDouble(featureInitValue);
