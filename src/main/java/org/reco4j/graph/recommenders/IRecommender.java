@@ -19,6 +19,7 @@
 package org.reco4j.graph.recommenders;
 
 import java.util.List;
+import org.reco4j.graph.IEdge;
 import org.reco4j.graph.IEdgeType;
 import org.reco4j.graph.IGraph;
 import org.reco4j.graph.INode;
@@ -55,6 +56,13 @@ public interface IRecommender
    * used for instruct the recommender
    */
   public void updateRecommender(IGraph learningDataSet);
+  /**
+   * This method, starting from a newEdge, update the recommender. 
+   * It consider the old recommender and update only the data that changed
+   * according to to concept of commonode
+   * @param newEdge: the newEdge added to the learningGraph
+   */
+  public void updateRecommender(IEdge newEdge);
 
   /**
    * This method store recommender info in a persistent storage (db).

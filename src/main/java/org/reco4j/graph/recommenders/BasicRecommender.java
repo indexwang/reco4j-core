@@ -18,9 +18,13 @@
  */
 package org.reco4j.graph.recommenders;
 
+import java.util.List;
 import org.reco4j.graph.EdgeTypeFactory;
+import org.reco4j.graph.IEdge;
 import org.reco4j.graph.IEdgeType;
 import org.reco4j.graph.IGraph;
+import org.reco4j.graph.INode;
+import org.reco4j.graph.Rating;
 import org.reco4j.session.RecommenderSessionManager;
 import org.reco4j.util.RecommenderPropertiesHandle;
 
@@ -64,7 +68,9 @@ public abstract class BasicRecommender implements IRecommender
     throw new UnsupportedOperationException("Not supported yet.");
   }
 
-  
-  
-    
+  @Override
+  public void updateRecommender(IEdge newEdge)
+  {
+    throw new UnsupportedOperationException("Not supported yet.");
+  }    
 }

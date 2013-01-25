@@ -21,6 +21,7 @@ package org.reco4j.graph.recommenders;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.reco4j.graph.EdgeTypeFactory;
 import org.reco4j.graph.IEdge;
@@ -109,31 +110,38 @@ public class CollaborativeFilteringRecommender extends BasicRecommender
 
   private void foundNearestNeighbour(INode item, IEdgeType edgeType, int distMethod, HashMap<String, Rating> knnRow)
   {
-    logger.info("foundNearestNeighbour: " + item.getProperty(RecommenderPropertiesHandle.getInstance().getItemIdentifierName()));
+    foundNearestNeighbour(item, edgeType, distMethod, knnRow, false);
+  }
+
+  private void foundNearestNeighbour(INode item, IEdgeType edgeType, int distMethod, HashMap<String, Rating> knnRow, boolean rewrite)
+  {
+    logger.log(Level.INFO, "foundNearestNeighbour: {0}", item.getProperty(RecommenderPropertiesHandle.getInstance().getItemIdentifierName()));
     HashMap<Long, INode> nodesByInEdge = item.getCommonNodes(edgeType);
     String itemId = item.getProperty(RecommenderPropertiesHandle.getInstance().getItemIdentifierName());
     for (INode otherItem : nodesByInEdge.values())
     {
       String otherItemId = otherItem.getProperty(RecommenderPropertiesHandle.getInstance().getItemIdentifierName());
-      if (knnRow.get(otherItemId) != null)
+      if (!rewrite && knnRow.get(otherItemId) != null)
         continue;
       if (itemId == null || itemId.isEmpty() || otherItemId == null || otherItemId.isEmpty())
         throw new RuntimeException("Items don't have the 'id' property!");
       if (itemId.equalsIgnoreCase(otherItemId))
         continue;
       double similarityValue = calculateSimilarity(item, otherItem, edgeType, distMethod);
-      //Take into consideration that the similarityValue is simmetric
       if (similarityValue > 0)
       {
         knnRow.put(otherItemId, new Rating(otherItem, similarityValue));
-        HashMap<String, Rating> otherKnnRow = getKnnRow(otherItemId);
-        otherKnnRow.put(itemId, new Rating(item, similarityValue));
+        if (!rewrite)
+        {
+          HashMap<String, Rating> otherKnnRow = getKnnRow(otherItemId);
+          otherKnnRow.put(itemId, new Rating(item, similarityValue));
+        }
       }
     }
     /*System.out.print(itemId + ":> ");
-    for (String key : knnRow.keySet())
-      System.out.print(key + "["+ knnRow.get(key).getRate() +"] ");
-    System.out.println();*/
+     for (String key : knnRow.keySet())
+     System.out.print(key + "["+ knnRow.get(key).getRate() +"] ");
+     System.out.println();*/
   }
 
   @Override
@@ -271,5 +279,22 @@ public class CollaborativeFilteringRecommender extends BasicRecommender
       knn.put(itemId, knnRow);
     }
     return knnRow;
+  }
+
+  @Override
+  public void updateRecommender(IEdge newEdge)
+  {
+    if (newEdge.getProperty(RecommenderPropertiesHandle.getInstance().getEdgeRankValueName()) == null)
+      return;
+    INode dest = newEdge.getDestination();
+    HashMap<Long, INode> commonNodes = dest.getCommonNodes(EdgeTypeFactory.getEdgeType(IEdgeType.EDGE_TYPE_RANK));
+    for (INode item : commonNodes.values())
+    {
+      String itemId = item.getProperty(RecommenderPropertiesHandle.getInstance().getItemIdentifierName());
+      if (itemId == null)
+        throw new RuntimeException("Items don't have the 'id' property!");
+      HashMap<String, Rating> knnRow = getKnnRow(itemId);
+      foundNearestNeighbour(item, edgeType, RecommenderPropertiesHandle.getInstance().getDistanceAlgorithm(), knnRow, true);
+    }
   }
 }
