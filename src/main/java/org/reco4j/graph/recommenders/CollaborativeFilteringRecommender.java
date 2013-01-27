@@ -41,14 +41,15 @@ import org.reco4j.util.Utility;
  */
 public class CollaborativeFilteringRecommender extends BasicRecommender
 {
-  protected static final Logger logger = Logger.getLogger(CollaborativeFilteringRecommender.class.getName());
-  protected HashMap<String, HashMap<String, Rating>> knn;
+  private static final Logger logger = Logger.getLogger(CollaborativeFilteringRecommender.class.getName());
+  private HashMap<String, HashMap<String, Rating>> knn;
   //protected ArrayList<IEdgeType> edges;
 
-  public CollaborativeFilteringRecommender()
-  {
-    knn = new HashMap<String, HashMap<String, Rating>>();
-  }
+    public CollaborativeFilteringRecommender()
+    {
+      super();
+      knn = new HashMap<String, HashMap<String, Rating>>();
+    }
 
   @Override
   public void buildRecommender(IGraph learningDataSet)
@@ -287,7 +288,7 @@ public class CollaborativeFilteringRecommender extends BasicRecommender
     if (newEdge.getProperty(RecommenderPropertiesHandle.getInstance().getEdgeRankValueName()) == null)
       return;
     INode dest = newEdge.getDestination();
-    HashMap<Long, INode> commonNodes = dest.getCommonNodes(EdgeTypeFactory.getEdgeType(IEdgeType.EDGE_TYPE_RANK));
+    HashMap<Long, INode> commonNodes = dest.getCommonNodes(edgeType);
     for (INode item : commonNodes.values())
     {
       String itemId = item.getProperty(RecommenderPropertiesHandle.getInstance().getItemIdentifierName());
