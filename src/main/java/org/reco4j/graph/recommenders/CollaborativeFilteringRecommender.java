@@ -182,12 +182,14 @@ public class CollaborativeFilteringRecommender extends BasicRecommender
     List<IEdge> edgesByType = learningDataSet.getEdgesByType(edgeType1);
     for (IEdge alreadyCalulatedEdge : edgesByType)
     {
-      logger.info("alreadyCalulatedEdge"); //Valutare se la simmetria fa si che ci sia solo un arco tra due item
       String sourceItemId = alreadyCalulatedEdge.getSource().getProperty(RecommenderPropertiesHandle.getInstance().getItemIdentifierName());
       String destinationItemId = alreadyCalulatedEdge.getDestination().getProperty(RecommenderPropertiesHandle.getInstance().getItemIdentifierName());
       HashMap<String, Rating> recommendationsSource = getKnnRow(sourceItemId);
       HashMap<String, Rating> recommendationsDestination = getKnnRow(destinationItemId);
-      double similarityValue = Double.parseDouble(alreadyCalulatedEdge.getProperty(simFunction.getClass().getName()));
+      String similarityValueStr = alreadyCalulatedEdge.getPermissiveProperty(simFunction.getClass().getName());
+      if (similarityValueStr == null)
+        continue;
+      double similarityValue = Double.parseDouble(similarityValueStr);
       if (similarityValue > 0)
       {
         Rating rateSource = new Rating(alreadyCalulatedEdge.getSource(), similarityValue);
@@ -196,6 +198,7 @@ public class CollaborativeFilteringRecommender extends BasicRecommender
         recommendationsDestination.put(sourceItemId, rateSource);
       }
     }
+    printKNN(knn);
   }
 
   protected double calculateSimilarity(INode item, INode otherItem, IEdgeType edgeType, int distMethod)

@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.mahout.cf.taste.impl.common.FastByIDMap;
+import org.apache.mahout.cf.taste.impl.common.LongPrimitiveIterator;
 import org.reco4j.graph.EdgeTypeFactory;
 import org.reco4j.graph.IEdge;
 import org.reco4j.graph.IEdgeType;
@@ -66,7 +67,7 @@ public class FastCollaborativeFilteringRecommender extends CollaborativeFilterin
   public void loadRecommender(IGraph learningDataSet)
   {
     setLearningDataSet(learningDataSet);
-    knn = loadKNN(RecommenderPropertiesHandle.getInstance().getDistanceAlgorithm());
+    loadKNN(RecommenderPropertiesHandle.getInstance().getDistanceAlgorithm());
   }
 
   @Override
@@ -185,27 +186,30 @@ public class FastCollaborativeFilteringRecommender extends CollaborativeFilterin
     return uRate;
   }
 
-  private FastByIDMap<FastByIDMap<Rating>> loadKNN(int distanceAlgorithm)
+  private void loadKNN(int distanceAlgorithm)
   {
-    FastByIDMap<FastByIDMap<Rating>> knnMatrix = new FastByIDMap<FastByIDMap<Rating>>();
     ISimilarity simFunction = SimilarityFactory.getSimilarityClass(distanceAlgorithm);
-    for (INode item : learningDataSet.getNodesByType(RecommenderPropertiesHandle.getInstance().getItemType()))
+    IEdgeType edgeType1 = EdgeTypeFactory.getEdgeType(IEdgeType.EDGE_TYPE_SIMILARITY);
+    List<IEdge> edgesByType = learningDataSet.getEdgesByType(edgeType1);
+    for (IEdge alreadyCalulatedEdge : edgesByType)
     {
-      ArrayList<Rating> recommendations = new ArrayList<Rating>();
-      IEdgeType similarityEdgeType = EdgeTypeFactory.getEdgeType(IEdgeType.EDGE_TYPE_SIMILARITY);
-      List<IEdge> edgeList = item.getOutEdge(similarityEdgeType);
-      for (IEdge alreadyCalulatedEdge : edgeList)
+      String sourceItemId = alreadyCalulatedEdge.getSource().getProperty(RecommenderPropertiesHandle.getInstance().getItemIdentifierName());
+      String destinationItemId = alreadyCalulatedEdge.getDestination().getProperty(RecommenderPropertiesHandle.getInstance().getItemIdentifierName());
+      FastByIDMap<Rating> recommendationsSource = getKnnRow(Long.parseLong(sourceItemId));
+      FastByIDMap<Rating> recommendationsDestination = getKnnRow(Long.parseLong(destinationItemId));
+      String similarityValueStr = alreadyCalulatedEdge.getPermissiveProperty(simFunction.getClass().getName());
+      if (similarityValueStr == null)
+        continue;
+      double similarityValue = Double.parseDouble(similarityValueStr);
+      if (similarityValue > 0)
       {
-        double similarityValue = Double.parseDouble(alreadyCalulatedEdge.getProperty(simFunction.getClass().getName()));
-        if (similarityValue > 0)
-          Utility.orderedInsert(recommendations, similarityValue, alreadyCalulatedEdge.getSource());
+        Rating rateSource = new Rating(alreadyCalulatedEdge.getSource(), similarityValue);
+        Rating rateDestination = new Rating(alreadyCalulatedEdge.getDestination(), similarityValue);
+        recommendationsSource.put(Long.parseLong(destinationItemId), rateDestination);
+        recommendationsDestination.put(Long.parseLong(sourceItemId), rateSource);
       }
-      FastByIDMap<Rating> knnRow = Utility.getFastKNNRow(recommendations, RecommenderPropertiesHandle.getInstance().getKValue());
-      String itemId = item.getProperty(RecommenderPropertiesHandle.getInstance().getItemIdentifierName());
-      knnMatrix.put(Long.parseLong(itemId), knnRow);
     }
-    printKNN(knnMatrix);
-    return knnMatrix;
+    printKNN(knn);
   }
 
   private void printKNN(HashMap<String, HashMap<String, Rating>> knnMatrix)
@@ -225,14 +229,16 @@ public class FastCollaborativeFilteringRecommender extends CollaborativeFilterin
 
   private void printKNN(FastByIDMap<FastByIDMap<Rating>> knnMatrix)
   {
-    while (knnMatrix.keySetIterator().hasNext())
+    final LongPrimitiveIterator rowKeySetIterator = knnMatrix.keySetIterator();
+    while (rowKeySetIterator.hasNext())
     {
-      Long rowItem = knnMatrix.keySetIterator().nextLong();
+      Long rowItem = rowKeySetIterator.nextLong();
       System.out.print("Key: " + rowItem + " - ");
       FastByIDMap<Rating> row = knnMatrix.get(rowItem);
-      while (row.keySetIterator().hasNext())
+      final LongPrimitiveIterator columnKeySetIterator = row.keySetIterator();
+      while (columnKeySetIterator.hasNext())
       {
-        Long item = row.keySetIterator().next();
+        Long item = columnKeySetIterator.next();
         Rating rate = row.get(item);
         System.out.print(" " + item + "(" + rate.getRate() + ") ");
       }
@@ -249,9 +255,10 @@ public class FastCollaborativeFilteringRecommender extends CollaborativeFilterin
     String itemIdentifierName = RecommenderPropertiesHandle.getInstance().getItemIdentifierName();
     String id = item.getProperty(itemIdentifierName);
     FastByIDMap<Rating> rowItem = knn.get(Long.parseLong(id));
-    while (rowItem.keySetIterator().hasNext())
+    final LongPrimitiveIterator rowKeySetIterator = rowItem.keySetIterator();
+    while (rowKeySetIterator.hasNext())
     {
-      Rating rate = rowItem.get(rowItem.keySetIterator().next());
+      Rating rate = rowItem.get(rowKeySetIterator.next());
       IEdge edge = user.getEdge(rate.getItem(), rankType);
       if (edge == null)
         continue;
