@@ -4,7 +4,7 @@
 
   <groupId>org.reco4j</groupId>
   <artifactId>reco4j-core</artifactId>
-  <version>0.2.0-SNAPSHOT</version>
+  <version>0.2.0</version>
   <packaging>jar</packaging>
 
   <name>reco4j-core</name>
