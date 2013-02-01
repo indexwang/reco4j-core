@@ -1,5 +1,5 @@
 /*
- * EdgeTypeEstimatedRating.java
+ * TimeReportUtility.java
  * 
  * Copyright (C) 2012 Alessandro Negro <alessandro.negro at reco4j.org>
  *
@@ -16,27 +16,31 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.reco4j.graph;
-
-import org.reco4j.util.RecommenderPropertiesHandle;
+package org.reco4j.util;
 
 /**
  *
- ** @author Alessandro Negro <alessandro.negro at reco4j.org>
+ ** @author Alessandro Negro <alessandro.negro at reco4j.org>ssandro Negro <alessandro.negro at reco4j.org>
  */
-public class EdgeTypeEstimatedRating implements IEdgeType
+public class TimeReportUtility
 {
-
-  @Override
-  public int getType()
+  private long startTime;
+  private long endTimeTime;
+  private String name;
+  
+  public TimeReportUtility(String name)
   {
-    return IEdgeType.EDGE_TYPE_ESTIMATED_RATING;
-  }
-
-  @Override
-  public String getEdgeName()
-  {
-    return RecommenderPropertiesHandle.getInstance().getEdgeEstimatedRatingName();
+    this.name = name;    
   }
   
+  public void start()
+  {
+    startTime = System.currentTimeMillis();
+  }
+  public void stop()
+  {
+    endTimeTime = System.currentTimeMillis();
+    long diff = endTimeTime - startTime;
+    System.out.println("Timer " + name + ": " + diff);
+  }
 }

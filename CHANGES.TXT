@@ -1,0 +1,39 @@
+For Release Notes, see http://www.reco4j.org/release-notes.jsp
+
+0.2.0 (2013-02-01)
+
+• reco4j-core
+  - Implemented a new Recommender FastCollaborativeFilter a first approach to reduce the memory footprint and improve the performance it is experimental for now (bug #6)
+  - Performance improvement
+  - Fixed bug #5
+  - Minor bug fix
+  
+• reco4j-neo4j
+  - Implemented a Reco4jRecommender plugin for Neo4j server that allow to access to reco4j functionalities from neo4j rest APIImplemented a mechanism for updating a recommender when a new rating is inserted into the graph (bug #8)
+  - Implemented a neo4j TransactionEventHandler to intercept new relation between node and recalculating recommender (bug #10)
+  - Implemented a new graph traversal engine replacing Gremlin/Groovy with pure java neo4j kernel call (bug #7)
+  - Migrated to a new version of neo4j (compilation depends from 1.9m3 but we tested it also on a 1.9m4)
+  - Reduced the number of dependencies
+
+• reco4j-neo4j-gremlin
+  - New project with the old graph traversal engine and with the class for creating a graph database from Movielens data set
+
+0.1.0 (2013-01-01) Initial Version
+
+• reco4j-core
+  - Basic Recommendation Engine
+  - Recommender based on Collaborative filtering 
+    a. Cosin similarity
+    b. Jaccard similarity
+    c. Euclidean similarity
+    d. Normalized Euclidean similarity
+  - Recommender based on Matrix Factorization
+  - Basic Node/Edge structure
+  - Store of the similarities in the edge between item
+
+• reco4j-neo4j
+  - Neo4J database base access funzionalities
+  - Movie lens data imported based on Gremlin/Groovy
+  - Graph traversal based on Gremlin
+
+

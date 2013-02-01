@@ -13,7 +13,7 @@ package org.reco4j.graph.similarity;
 //
 ///**
 // *
-// * @author ale
+// ** @author Alessandro Negro <alessandro.negro at reco4j.org>
 // */
 //public class BinaryJaccardSimilarity implements ISimilarity
 //{

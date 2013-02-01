@@ -28,7 +28,7 @@ import org.reco4j.session.RecommenderSessionManager;
 
 /**
  *
- * @author ale
+ ** @author Alessandro Negro <alessandro.negro at reco4j.org>
  */
 public class EuclideanSimilarity implements ISimilarity
 {

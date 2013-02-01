@@ -24,7 +24,7 @@ import org.reco4j.graph.INode;
 
 /**
  *
- * @author ale
+ ** @author Alessandro Negro <alessandro.negro at reco4j.org>
  */
 public interface ISimilarity
 {

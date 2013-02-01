@@ -1,5 +1,5 @@
 /*
- * EdgeTypeEstimatedRating.java
+ * IGraphCallable.java
  * 
  * Copyright (C) 2012 Alessandro Negro <alessandro.negro at reco4j.org>
  *
@@ -18,25 +18,11 @@
  */
 package org.reco4j.graph;
 
-import org.reco4j.util.RecommenderPropertiesHandle;
-
 /**
  *
  ** @author Alessandro Negro <alessandro.negro at reco4j.org>
  */
-public class EdgeTypeEstimatedRating implements IEdgeType
+public interface IGraphCallable<V>
 {
-
-  @Override
-  public int getType()
-  {
-    return IEdgeType.EDGE_TYPE_ESTIMATED_RATING;
-  }
-
-  @Override
-  public String getEdgeName()
-  {
-    return RecommenderPropertiesHandle.getInstance().getEdgeEstimatedRatingName();
-  }
-  
+  void call(V obj);
 }

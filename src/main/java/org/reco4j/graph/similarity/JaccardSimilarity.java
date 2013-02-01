@@ -27,7 +27,7 @@ import org.reco4j.graph.INode;
 
 /**
  *
- * @author ale
+ ** @author Alessandro Negro <alessandro.negro at reco4j.org>
  */
 public class JaccardSimilarity implements ISimilarity
 {
@@ -49,12 +49,15 @@ public class JaccardSimilarity implements ISimilarity
     xInEdge = x.getInEdge(edgeType);
     //TODO: Improve using the graph capabilities
     for (IEdge edge : xInEdge)
-    {
-      if (edge.getDestination().isConnected(y, edgeType))
+      if (edge.getSource().isConnected(y, edgeType))
         commonUsers++;
-    }
     
-    int totalUsers = xInEdge.size() + y.getInEdgeNumber(edgeType) - commonUsers;
+//    System.out.println("x: " + x.getProperty("movieId"));
+//    System.out.println("y: " + y.getProperty("movieId"));
+    int xInEdgeSize = xInEdge.size();
+    int yInEdgeNumber = y.getInEdgeNumber(edgeType);
+    
+    int totalUsers = xInEdgeSize + yInEdgeNumber - commonUsers;
     double sim = 0.0;
     if (commonUsers > 0)
       sim = (double) commonUsers / (double) totalUsers;

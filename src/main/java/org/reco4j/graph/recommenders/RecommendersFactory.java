@@ -20,12 +20,13 @@ package org.reco4j.graph.recommenders;
 
 /**
  *
- * @author ale
+ ** @author Alessandro Negro <alessandro.negro at reco4j.org>
  */
 public class RecommendersFactory
 {
   public final static int RECOMMENDER_TYPE_COLLABORATIVE = 1;
   public final static int RECOMMENDER_TYPE_MATRIXFACTORIZATION = 2;
+  public final static int RECOMMENDER_TYPE_FASTCOLLABORATIVE = 3;
   
   public static IRecommender getRecommender(int recommenderType)
   {
@@ -33,10 +34,13 @@ public class RecommendersFactory
     {
       case RECOMMENDER_TYPE_COLLABORATIVE:
         return new CollaborativeFilteringRecommender();
+      case RECOMMENDER_TYPE_FASTCOLLABORATIVE:
+        return new FastCollaborativeFilteringRecommender();
       case RECOMMENDER_TYPE_MATRIXFACTORIZATION:
         return new MFRecommender();      
       default:
         throw new UnsupportedOperationException("Unsupported recommender type: " + recommenderType);
+      //Aggiungere meccanismo di loading mediante ServiceLoader
     }    
   }
 }

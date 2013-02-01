@@ -22,7 +22,7 @@ import org.reco4j.util.RecommenderPropertiesHandle;
 
 /**
  *
- * @author ale
+ ** @author Alessandro Negro <alessandro.negro at reco4j.org>
  */
 public class EdgeTypeSimilarity implements IEdgeType
 {
@@ -36,7 +36,7 @@ public class EdgeTypeSimilarity implements IEdgeType
   @Override
   public String getEdgeName()
   {
-    return RecommenderPropertiesHandle.getInstance().getEdgeTestRankName();
+    return RecommenderPropertiesHandle.getInstance().getEdgeSimilarityName();
   }
   
 }

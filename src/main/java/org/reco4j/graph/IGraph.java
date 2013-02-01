@@ -26,7 +26,7 @@ import java.util.Properties;
  * This interface represents a Graph. Subclass of this instance can use different
  * mechanism to handle the graph data (for instance: neo4j, infiniteGraph, dbms).
  * Also the rank is represented as a link between the party and the object ranked
- * @author Alessandro Negro
+ ** @author Alessandro Negro <alessandro.negro at reco4j.org>
  */
 public interface IGraph
 {
@@ -40,6 +40,7 @@ public interface IGraph
   public List<INode> getNeighbours(List<IEdgeType> edgesType);
   public List<INode> getNodesByInEdge(IEdgeType edgesType);
   public List<INode> getNodesByType(String type);
+  public void getNodesByType(String type, IGraphCallable<INode> callback);
   public HashMap<String, INode> getNodesMapByType(String type, String identifier);
   public List<IEdge> getEdgesByType(IEdgeType edgesType);
   public void setProperties(Properties properties);

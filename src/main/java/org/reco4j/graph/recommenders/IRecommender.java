@@ -19,6 +19,7 @@
 package org.reco4j.graph.recommenders;
 
 import java.util.List;
+import org.reco4j.graph.IEdge;
 import org.reco4j.graph.IEdgeType;
 import org.reco4j.graph.IGraph;
 import org.reco4j.graph.INode;
@@ -26,7 +27,10 @@ import org.reco4j.graph.Rating;
 
 /**
  *
- * @author ale
+ * This interface is the interface for any recommender type. 
+ * Any recommender MUST subclass this instance and implements it method to be used. *
+ * 
+ ** @author Alessandro Negro <alessandro.negro at reco4j.org>
  */
 public interface IRecommender
 {
@@ -40,10 +44,8 @@ public interface IRecommender
   //public void setProperties(Properties properties);
   /**
    * This method, starting from a learning dataset, build the recommender. 
-   * The implementation of this method is related to the particular alghorims used
-   * to recommend.    *
-   * @param learningDataSet: the IGraph that contains the data that have to be
-   * used for instruct the recommender
+   * The implementation of this method is related to the particular algorithms used to recommend.
+   * @param learningDataSet: the IGraph that contains the data that have to be used for instruct the recommender
    */
   public void buildRecommender(IGraph learningDataSet);
 
@@ -54,6 +56,13 @@ public interface IRecommender
    * used for instruct the recommender
    */
   public void updateRecommender(IGraph learningDataSet);
+  /**
+   * This method, starting from a newEdge, update the recommender. 
+   * It consider the old recommender and update only the data that changed
+   * according to to concept of commonode
+   * @param newEdge: the newEdge added to the learningGraph
+   */
+  public void updateRecommender(IEdge newEdge);
 
   /**
    * This method store recommender info in a persistent storage (db).
@@ -63,6 +72,9 @@ public interface IRecommender
 
   /**
    * This method load the recommender info from the database
+   * @param learningDataSet: the IGraph that contains the data that have to be
+   * used for instruct the recommender
+   
    */
   public void loadRecommender(IGraph learningDataSet);
 

@@ -24,7 +24,7 @@ import java.util.Properties;
 
 /**
  *
- * @author ale
+ ** @author Alessandro Negro <alessandro.negro at reco4j.org>
  */
 public class GenericGraph implements IGraph
 {
@@ -79,6 +79,12 @@ public class GenericGraph implements IGraph
 
   @Override
   public HashMap<String, INode> getNodesMapByType(String type, String identifier)
+  {
+    throw new UnsupportedOperationException("Not supported yet.");
+  }
+
+  @Override
+  public void getNodesByType(String type, IGraphCallable<INode> callback)
   {
     throw new UnsupportedOperationException("Not supported yet.");
   }

@@ -22,7 +22,7 @@ import org.reco4j.graph.IGraph;
 
 /**
  *
- * @author ale
+ ** @author Alessandro Negro <alessandro.negro at reco4j.org>
  */
 public class RecommenderSessionManager
 {

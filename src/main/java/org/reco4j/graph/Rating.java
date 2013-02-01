@@ -22,7 +22,7 @@ import java.sql.Timestamp;
 
 /**
  *
- * @author ale
+ ** @author Alessandro Negro <alessandro.negro at reco4j.org>
  */
 public class Rating
 {
