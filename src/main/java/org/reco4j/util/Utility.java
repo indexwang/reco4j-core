@@ -99,7 +99,7 @@ public class Utility
     {
       index++;
       if (index > size)
-        break;
+        return;
       else
         continue;
     }
