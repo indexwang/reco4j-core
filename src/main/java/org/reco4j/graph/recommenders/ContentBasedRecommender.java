@@ -50,7 +50,7 @@ public class ContentBasedRecommender extends BasicRecommender
   }
 
   @Override
-  public double estimateRating(INode user, INode source, IEdgeType edgeType, String edgeRankValueName)
+  public double estimateRating(INode user, INode source)
   {
     throw new UnsupportedOperationException("Not supported yet.");
   }

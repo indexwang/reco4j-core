@@ -18,6 +18,9 @@
  */
 package org.reco4j.graph;
 
+import java.util.ArrayList;
+import org.reco4j.util.RecommenderPropertiesHandle;
+
 /**
  *
  ** @author Alessandro Negro <alessandro.negro at reco4j.org>
@@ -35,5 +38,45 @@ public abstract class BasicNode implements INode
   public void setExtendedInfos(Object infos)
   {
     this.infos = infos;
+  }
+  
+  @Override
+  public ArrayList<Rating> getRatingsFromUser()
+  {
+    final ArrayList<Rating> ratingList = new ArrayList<Rating>();
+    final INode thisNode = this;
+    this.iterateOnEdge(EdgeTypeFactory.getEdgeType(IEdgeType.EDGE_TYPE_RANK), new IGraphCallable<IEdge>()
+    {
+      @Override
+      public void call(IEdge rating)
+      {
+        INode item = rating.getDestination();
+        String value = rating.getProperty(RecommenderPropertiesHandle.getInstance().getEdgeRankValueName());
+        double rate = Double.parseDouble(value);
+        Rating pref = new Rating(thisNode, item, rate, null);
+        ratingList.add(pref);
+      }
+    });
+    return ratingList;
+  }
+  
+  @Override
+  public ArrayList<Rating> getRatingsForItem()
+  {
+    final ArrayList<Rating> ratingList = new ArrayList<Rating>();
+    final INode thisNode = this;
+    this.iterateOnEdge(EdgeTypeFactory.getEdgeType(IEdgeType.EDGE_TYPE_RANK), new IGraphCallable<IEdge>()
+    {
+      @Override
+      public void call(IEdge rating)
+      {
+        INode node = rating.getSource();
+        String value = rating.getProperty(RecommenderPropertiesHandle.getInstance().getEdgeRankValueName());
+        double rate = Double.parseDouble(value);
+        Rating pref = new Rating(node, thisNode, rate, null);
+        ratingList.add(pref);
+      }
+    });
+    return ratingList;
   }
 }

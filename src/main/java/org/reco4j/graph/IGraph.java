@@ -45,4 +45,7 @@ public interface IGraph
   public List<IEdge> getEdgesByType(IEdgeType edgesType);
   public void setProperties(Properties properties);
   public void loadGraph();  
+  public INode getUserNodeById(long id);
+  public INode getItemNodeById(long id);
+  public int getNodesNumberByType(String type);
 }

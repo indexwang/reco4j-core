@@ -88,5 +88,23 @@ public class GenericGraph implements IGraph
   {
     throw new UnsupportedOperationException("Not supported yet.");
   }
+
+  @Override
+  public INode getUserNodeById(long id)
+  {
+    throw new UnsupportedOperationException("Not supported yet.");
+  }
+
+  @Override
+  public INode getItemNodeById(long id)
+  {
+    throw new UnsupportedOperationException("Not supported yet.");
+  }
+
+  @Override
+  public int getNodesNumberByType(String type)
+  {
+    throw new UnsupportedOperationException("Not supported yet.");
+  }
   
 }

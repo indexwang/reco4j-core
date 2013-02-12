@@ -48,8 +48,7 @@ public class RecommenderEvaluator
       {
         StringBuilder output = new StringBuilder();
         output.append("item: ").append(rank.getDestination().getProperty(RecommenderPropertiesHandle.getInstance().getItemIdentifierName()));
-        double estimatedRating = recommender.estimateRating(user, rank.getDestination(), EdgeTypeFactory.getEdgeType(IEdgeType.EDGE_TYPE_RANK),
-                                                         RecommenderPropertiesHandle.getInstance().getEdgeRankValueName());
+        double estimatedRating = recommender.estimateRating(user, rank.getDestination());
         if (estimatedRating > 0)
         {
           n++;

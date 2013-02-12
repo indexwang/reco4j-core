@@ -90,7 +90,7 @@ public class FastCollaborativeFilteringRecommender extends CollaborativeFilterin
       {
         if (item.isConnected(user, edgeType))
           return;
-        double estimatedRating = estimateRating(user, item, edgeType, RecommenderPropertiesHandle.getInstance().getEdgeRankValueName());
+        double estimatedRating = estimateRating(user, item);
         Utility.orderedInsert(recommendations, estimatedRating, item);
       }
     });
@@ -154,27 +154,6 @@ public class FastCollaborativeFilteringRecommender extends CollaborativeFilterin
         }
       }
     });
-  }
-
-  @Override
-  public double estimateRating(INode user, INode item, IEdgeType rankType, String propertyName)
-  {
-    /*ISimilarity simFunction = SimilarityFactory.getSimilarityClass(RecommenderPropertiesHandle.getInstance().getDistanceAlgorithm());
-     IEdgeType estimatedRatingEdgeType = EdgeTypeFactory.getEdgeType(IEdgeType.EDGE_TYPE_ESTIMATED_RATING);
-     IEdge alreadyCalulatedEdge = user.getEdge(item, estimatedRatingEdgeType);
-     String edgeEstimationPropertyName = CollaborativeFilteringRecommender.class.getName() + "-" + simFunction.getClass().getName();
-    
-     if (alreadyCalulatedEdge != null
-     && alreadyCalulatedEdge.getPermissiveProperty(edgeEstimationPropertyName) != null)
-     {
-     //System.out.println("Esiste già... ... riciclo!");
-     BigDecimal value = new BigDecimal(alreadyCalulatedEdge.getProperty(edgeEstimationPropertyName));
-     return value;
-     }*/
-    double estimatedRating = calculateEstimatedRating(item, user, rankType, propertyName);
-
-    //learningDataSet.addEdge(user, item, estimatedRatingEdgeType, edgeEstimationPropertyName, estimatedRating.toString());
-    return estimatedRating;
   }
 
   private double getUserRate(IEdge edge, String propertyName, IEdgeType rankType) throws RuntimeException

@@ -27,6 +27,7 @@ public class RecommendersFactory
   public final static int RECOMMENDER_TYPE_COLLABORATIVE = 1;
   public final static int RECOMMENDER_TYPE_MATRIXFACTORIZATION = 2;
   public final static int RECOMMENDER_TYPE_FASTCOLLABORATIVE = 3;
+  public final static int RECOMMENDER_TYPE_MAHOUT = 4;
   
   public static IRecommender getRecommender(int recommenderType)
   {
@@ -38,6 +39,8 @@ public class RecommendersFactory
         return new FastCollaborativeFilteringRecommender();
       case RECOMMENDER_TYPE_MATRIXFACTORIZATION:
         return new MFRecommender();      
+      case RECOMMENDER_TYPE_MAHOUT:
+        return new MahoutRecommender();      
       default:
         throw new UnsupportedOperationException("Unsupported recommender type: " + recommenderType);
       //Aggiungere meccanismo di loading mediante ServiceLoader
