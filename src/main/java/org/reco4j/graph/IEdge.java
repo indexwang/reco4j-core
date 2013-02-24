@@ -24,17 +24,12 @@ package org.reco4j.graph;
  */
 public interface IEdge
 {
+  public long getId();
   public void setProperty(String name, String value);
-
   public String getProperty(String name);
-
   public String getPermissiveProperty(String name);
-
   public INode getSource();
-
   public INode getDestination();
-
   public Object getExtendedInfos();
-
   public void setExtendedInfos(Object infos);
 }

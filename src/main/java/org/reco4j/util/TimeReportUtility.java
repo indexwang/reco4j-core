@@ -26,11 +26,19 @@ public class TimeReportUtility
 {
   private long startTime;
   private long endTimeTime;
+  private long totalTime;
+  private long count;
+  private long min;
+  private long max;
   private String name;
   
   public TimeReportUtility(String name)
   {
     this.name = name;    
+    totalTime = 0;
+    min = Long.MAX_VALUE;
+    max = Long.MIN_VALUE;
+    count = 0;
   }
   
   public void start()
@@ -41,6 +49,26 @@ public class TimeReportUtility
   {
     endTimeTime = System.currentTimeMillis();
     long diff = endTimeTime - startTime;
-    System.out.println("Timer " + name + ": " + diff);
+    totalTime += diff;
+    count++;
+    if (diff < min)
+      min = diff;
+    if (diff > max)
+      max = diff;
+    //System.out.println("Timer " + name + ": " + diff);
+    startTime = System.currentTimeMillis();
+  }
+  public void printStatistics()
+  {
+    long med = totalTime/count;
+    StringBuilder output = new StringBuilder("Timer");
+    output.append(" ").append(name).append(" -");
+    output.append(" totalTime: ").append(totalTime);
+    output.append(" count: ").append(count);
+    output.append(" min: ").append(min);
+    output.append(" max: ").append(max);
+    output.append(" med: ").append(med);
+    System.out.println(output.toString());
+    
   }
 }

@@ -28,6 +28,7 @@ import java.util.List;
  */
 public interface INode
 {
+  public long getId();
   public void setProperty(String name, String value);
   public String getProperty(String name);
   public Boolean isConnected(INode node, IEdgeType edgeType);
