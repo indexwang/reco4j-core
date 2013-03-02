@@ -19,12 +19,14 @@
 package org.reco4j.graph;
 
 import java.sql.Timestamp;
+import org.apache.mahout.cf.taste.model.Preference;
+import org.reco4j.util.RecommenderPropertiesHandle;
 
 /**
  *
  ** @author Alessandro Negro <alessandro.negro at reco4j.org>
  */
-public class Rating
+public class Rating implements Preference
 {
   protected INode item = null;
   protected INode user = null;  
@@ -82,5 +84,31 @@ public class Rating
   public void setRatingDate(Timestamp ratingDate)
   {
     this.ratingDate = ratingDate;
+  }
+
+  @Override
+  public long getUserID()
+  {
+    String id = user.getProperty(RecommenderPropertiesHandle.getInstance().getUserIdentifierName());
+    return Long.valueOf(id);
+  }
+
+  @Override
+  public long getItemID()
+  {
+    String id = item.getProperty(RecommenderPropertiesHandle.getInstance().getItemIdentifierName());
+    return Long.valueOf(id);
+  }
+
+  @Override
+  public float getValue()
+  {
+    return (float)rate;
+  }
+
+  @Override
+  public void setValue(float value)
+  {
+    rate = (double)value;
   }
 }

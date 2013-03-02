@@ -18,8 +18,10 @@
  */
 package org.reco4j.graph;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import org.apache.mahout.cf.taste.impl.common.FastIDSet;
 
 /**
  *
@@ -27,6 +29,7 @@ import java.util.List;
  */
 public interface INode
 {
+  public long getId();
   public void setProperty(String name, String value);
   public String getProperty(String name);
   public Boolean isConnected(INode node, IEdgeType edgeType);
@@ -36,9 +39,13 @@ public interface INode
   public IEdge getEdge(INode node, IEdgeType edgeType);
   public List<IEdge> getInEdge(IEdgeType edgeType);
   public List<IEdge> getOutEdge(IEdgeType edgeType);
-  public HashMap<Long, INode> getCommonNodes(IEdgeType edgeType);
+  public void iterateOnEdge(IEdgeType edgeType, IGraphCallable<IEdge> callback);
+  public HashMap<String, INode> getCommonNodes(IEdgeType edgeType, String identifier);
+  public FastIDSet getCommonNodeIds(IEdgeType edgeType);
   public void iterateOnCommonNodes(IEdgeType edgeType, IGraphCallable<INode> callback);
   public int getInEdgeNumber(IEdgeType edgeType);
   public Object getExtendedInfos();
   public void setExtendedInfos(Object infos);
+  public ArrayList<Rating> getRatingsFromUser();
+  public ArrayList<Rating> getRatingsForItem();
 }

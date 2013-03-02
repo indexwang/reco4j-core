@@ -99,12 +99,14 @@ public class Utility
     {
       index++;
       if (index > size)
-        break;
+        return;
       else
         continue;
     }
     Rating rate = new Rating(item, estimatedRating);
     recommendations.add(index, rate);
+    if (recommendations.size() > size)
+      recommendations.remove(size);
   }
 
   public static void insertUserOnce(HashMap<String, INode> totalUserMap, INode user)

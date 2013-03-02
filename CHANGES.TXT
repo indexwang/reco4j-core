@@ -9,7 +9,8 @@ For Release Notes, see http://www.reco4j.org/release-notes.jsp
   - Minor bug fix
   
 • reco4j-neo4j
-  - Implemented a Reco4jRecommender plugin for Neo4j server that allow to access to reco4j functionalities from neo4j rest APIImplemented a mechanism for updating a recommender when a new rating is inserted into the graph (bug #8)
+  - Implemented a Reco4jRecommender plugin for Neo4j server that allow to access to reco4j functionalities from neo4j rest API
+  - Implemented a mechanism for updating a recommender when a new rating is inserted into the graph (bug #8)
   - Implemented a neo4j TransactionEventHandler to intercept new relation between node and recalculating recommender (bug #10)
   - Implemented a new graph traversal engine replacing Gremlin/Groovy with pure java neo4j kernel call (bug #7)
   - Migrated to a new version of neo4j (compilation depends from 1.9m3 but we tested it also on a 1.9m4)

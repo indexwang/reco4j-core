@@ -84,5 +84,5 @@ public interface IRecommender
    */
   public List<Rating> recommend(INode node);
 
-  public double estimateRating(INode user, INode source, IEdgeType edgeType, String edgeRankValueName);
+  public double estimateRating(INode user, INode source);
 }

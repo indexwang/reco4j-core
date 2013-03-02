@@ -29,42 +29,50 @@ public class RecommenderPropertiesHandle implements IPropertiesHandle
 {
   protected Properties properties;
   //Properties name on the properties file
-  public final static String PROTERTY_NAME_K_VALUE = "KValue";
-  public final static String PROTERTY_NAME_RECOMMENDED_ITEMS = "RecoNumber";
-  public final static String PROPERTY_NAME_NODE_IDENTIFIER = "NodeIdentifier";
-  public final static String PROPERTY_NAME_NODE_USER_IDENTIFIER = "userIdentifier";
-  public final static String PROPERTY_NAME_NODE_ITEM_IDENTIFIER = "itemIdentifier";
-  public final static String PROPERTY_NAME_RANK_VALUE = "RankValueIdentifier";
-  public final static String PROPERTY_NAME_DISTANCE_ALGORITHM = "DistanceAlgorithm";
-  public final static String PROPERTY_NAME_EDGE_RANK = "rankEdgeIdentifier";
-  public final static String PROPERTY_NAME_EDGE_TEST_RANK = "testRankEdgeIdentifier";
-  public final static String PROPERTY_NAME_EDGE_SIMILARITY = "similarityEdgeIdentifier";
-  public final static String PROPERTY_NAME_EDGE_ESTIMATED_RATING = "estimatedRatingIdentifier";
-  public final static String PROPERTY_NAME_RECALCULATE_SIMILARITY = "recalculateSimilarity";
-  public final static String PROPERTY_NAME_RECOMMENDER_TYPE = "recommenderType";
-  public final static String PROPERTY_NAME_MAXFEATURES = "maxFeatures";
-  public final static String PROPERTY_NAME_FEATURE_INIT_VALUE = "featureInitValue";
-  public final static String PROPERTY_NAME_USER_TYPE = "userType";
-  public final static String PROPERTY_NAME_ITEM_TYPE = "itemType";
+  protected final static String PROTERTY_NAME_K_VALUE = "KValue";
+  protected final static String PROTERTY_NAME_RECOMMENDED_ITEMS = "RecoNumber";
+  protected final static String PROPERTY_NAME_NODE_IDENTIFIER = "NodeIdentifier";
+  protected final static String PROPERTY_NAME_NODE_USER_IDENTIFIER = "userIdentifier";
+  protected final static String PROPERTY_NAME_NODE_ITEM_IDENTIFIER = "itemIdentifier";
+  protected final static String PROPERTY_NAME_RANK_VALUE = "RankValueIdentifier";
+  protected final static String PROPERTY_NAME_DISTANCE_ALGORITHM = "DistanceAlgorithm";
+  protected final static String PROPERTY_NAME_EDGE_RANK = "rankEdgeIdentifier";
+  protected final static String PROPERTY_NAME_EDGE_TEST_RANK = "testRankEdgeIdentifier";
+  protected final static String PROPERTY_NAME_EDGE_SIMILARITY = "similarityEdgeIdentifier";
+  protected final static String PROPERTY_NAME_EDGE_ESTIMATED_RATING = "estimatedRatingIdentifier";
+  protected final static String PROPERTY_NAME_RECALCULATE_SIMILARITY = "recalculateSimilarity";
+  protected final static String PROPERTY_NAME_RECOMMENDER_TYPE = "recommenderType";
+  protected final static String PROPERTY_NAME_MAXFEATURES = "maxFeatures";
+  protected final static String PROPERTY_NAME_FEATURE_INIT_VALUE = "featureInitValue";
+  protected final static String PROPERTY_NAME_USER_TYPE = "userType";
+  protected final static String PROPERTY_NAME_ITEM_TYPE = "itemType";
+  protected static final String PROPERTY_NAME_MAX_PREFERENCE_VALUE = "maxPreference";
+  protected static final String PROPERTY_NAME_MIN_PREFERENCE_VALUE = "minPreference";
+  protected static final String PROPERTY_NAME_NODE_TYPE = "nodeType";
+
   //Default value for properties name on node or edges
-  public final static String PROPERTY_NODE_IDENTIFIER = "id"; //Prendere anche da properties file
-  public final static String PROPERTY_ITEM_IDENTIFIER = "itemId"; //Prendere anche da properties file
-  public final static String PROPERTY_USER_IDENTIFIER = "userId"; //Prendere anche da properties file
-  public final static String PROPERTY_RANK_VALUE_NAME = "RankValue"; //Prendere anche da properties file
-  public final static String PROPERTY_EDGE_RANK_IDENTIFIER = "rated";
-  public final static String PROPERTY_EDGE_TEST_RANK_IDENTIFIER = "ratedTest";
-  public final static String PROPERTY_EDGE_SIMILARITY_IDENTIFIER = "similarity";
-  public final static String PROPERTY_EDGE_ESTIMATED_RATING_IDENTIFIER = "estimatedRating";
-  public final static String PROPERTY_USER_TYPE = "User";
-  public final static String PROPERTY_ITEM_TYPE = "Movie";
-  public final static boolean PROPERTY_RECALCULATE_SIMILARITY = false;
-  public final static int PROPERTY_RECOMMENDER_TYPE = 1;
-  public final static int PROPERTY_MAXFEATURES = 64;
-  public final static double PROPERTY_FEATURE_INIT_VALUE = 0.1;
+  protected final static String PROPERTY_NODE_IDENTIFIER = "id"; //Prendere anche da properties file
+  protected final static String PROPERTY_ITEM_IDENTIFIER = "itemId"; //Prendere anche da properties file
+  protected final static String PROPERTY_USER_IDENTIFIER = "userId"; //Prendere anche da properties file
+  protected final static String PROPERTY_RANK_VALUE_NAME = "RankValue"; //Prendere anche da properties file
+  protected final static String PROPERTY_EDGE_RANK_IDENTIFIER = "rated";
+  protected final static String PROPERTY_EDGE_TEST_RANK_IDENTIFIER = "ratedTest";
+  protected final static String PROPERTY_EDGE_SIMILARITY_IDENTIFIER = "similarity";
+  protected final static String PROPERTY_EDGE_ESTIMATED_RATING_IDENTIFIER = "estimatedRating";
+  protected final static String PROPERTY_USER_TYPE = "User";
+  protected final static String PROPERTY_ITEM_TYPE = "Movie";
+  protected final static String PROPERTY_NODE_TYPE = "type";
+  protected final static boolean PROPERTY_RECALCULATE_SIMILARITY = false;
+  protected final static int PROPERTY_RECOMMENDER_TYPE = 1;
+  protected final static int PROPERTY_MAXFEATURES = 64;
+  protected final static double PROPERTY_FEATURE_INIT_VALUE = 0.1;
+  protected final static double PROPERTY_MAX_PREFERENCE_VALUE = 5.0;
+  protected final static double PROPERTY_MIN_PREFERENCE_VALUE = 1.0;
   //Default Value for Recommender
   protected static int PROPERTY_K_VALUE = 25;
   protected static int PROPERTY_RECO_NUMBER = 10;
   private static RecommenderPropertiesHandle theInstance = new RecommenderPropertiesHandle();
+  
 
   protected RecommenderPropertiesHandle()
   {
@@ -243,5 +251,32 @@ public class RecommenderPropertiesHandle implements IPropertiesHandle
       return Double.parseDouble(featureInitValue);
     else
       return PROPERTY_FEATURE_INIT_VALUE; //Default value
+  }
+
+  public double getMaxPreferenceValue()
+  {
+    String maxPreferenceValue = getProperty(PROPERTY_NAME_MAX_PREFERENCE_VALUE, null);
+    if (maxPreferenceValue != null)
+      return Double.parseDouble(maxPreferenceValue);
+    else
+      return PROPERTY_MAX_PREFERENCE_VALUE; //Default value
+  }
+
+  public double getMinPreferenceValue()
+  {
+    String minPreferenceValue = getProperty(PROPERTY_NAME_MIN_PREFERENCE_VALUE, null);
+    if (minPreferenceValue != null)
+      return Double.parseDouble(minPreferenceValue);
+    else
+      return PROPERTY_MIN_PREFERENCE_VALUE; //Default value
+  }
+
+  public String getNodeTypeName()
+  {
+    String nodeType = getProperty(PROPERTY_NAME_NODE_TYPE, null);
+    if (nodeType != null)
+      return nodeType;
+    else
+      return PROPERTY_NODE_TYPE; //Default value
   }
 }

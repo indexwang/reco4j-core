@@ -72,7 +72,7 @@ public class MFRecommender extends BasicRecommender
   }
 
   @Override
-  public double estimateRating(INode user, INode source, IEdgeType edgeType, String edgeRankValueName)
+  public double estimateRating(INode user, INode source)
   {
     double sum = 1;
     for (int f = 0; f < maxFeatures; f++)

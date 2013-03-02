@@ -41,15 +41,16 @@ import org.reco4j.util.Utility;
  */
 public class CollaborativeFilteringRecommender extends BasicRecommender
 {
+
   private static final Logger logger = Logger.getLogger(CollaborativeFilteringRecommender.class.getName());
   private HashMap<String, HashMap<String, Rating>> knn;
   //protected ArrayList<IEdgeType> edges;
 
-    public CollaborativeFilteringRecommender()
-    {
-      super();
-      knn = new HashMap<String, HashMap<String, Rating>>();
-    }
+  public CollaborativeFilteringRecommender()
+  {
+    super();
+    knn = new HashMap<String, HashMap<String, Rating>>();
+  }
 
   @Override
   public void buildRecommender(IGraph learningDataSet)
@@ -86,8 +87,7 @@ public class CollaborativeFilteringRecommender extends BasicRecommender
     {
       if (item.isConnected(user, edgeType))
         continue;
-      double estimatedRating = estimateRating(user, item, edgeType,
-                                              RecommenderPropertiesHandle.getInstance().getEdgeRankValueName());
+      double estimatedRating = estimateRating(user, item);
       Utility.orderedInsert(recommendations, estimatedRating, item, RecommenderPropertiesHandle.getInstance().getRecoNumber());
     }
     return recommendations;
@@ -105,6 +105,7 @@ public class CollaborativeFilteringRecommender extends BasicRecommender
         throw new RuntimeException("Items don't have the 'id' property!");
       HashMap<String, Rating> knnRow = getKnnRow(itemId);
       foundNearestNeighbour(item, edgeType, distMethod, knnRow);
+      printKnnRow(itemId);
     }
     timeReport.stop();
   }
@@ -116,8 +117,8 @@ public class CollaborativeFilteringRecommender extends BasicRecommender
 
   private void foundNearestNeighbour(INode item, IEdgeType edgeType, int distMethod, HashMap<String, Rating> knnRow, boolean rewrite)
   {
-    logger.log(Level.INFO, "foundNearestNeighbour: {0}", item.getProperty(RecommenderPropertiesHandle.getInstance().getItemIdentifierName()));
-    HashMap<Long, INode> nodesByInEdge = item.getCommonNodes(edgeType);
+    HashMap<String, INode> nodesByInEdge = item.getCommonNodes(edgeType, RecommenderPropertiesHandle.getInstance().getItemIdentifierName());
+    logger.log(Level.INFO, "foundNearestNeighbour: {0}, CommonNodes Size: " + nodesByInEdge.size(), item.getProperty(RecommenderPropertiesHandle.getInstance().getItemIdentifierName()));
     String itemId = item.getProperty(RecommenderPropertiesHandle.getInstance().getItemIdentifierName());
     for (INode otherItem : nodesByInEdge.values())
     {
@@ -146,7 +147,7 @@ public class CollaborativeFilteringRecommender extends BasicRecommender
   }
 
   @Override
-  public double estimateRating(INode user, INode item, IEdgeType rankType, String propertyName)
+  public double estimateRating(INode user, INode item)
   {
     /*ISimilarity simFunction = SimilarityFactory.getSimilarityClass(RecommenderPropertiesHandle.getInstance().getDistanceAlgorithm());
      IEdgeType estimatedRatingEdgeType = EdgeTypeFactory.getEdgeType(IEdgeType.EDGE_TYPE_ESTIMATED_RATING);
@@ -160,7 +161,7 @@ public class CollaborativeFilteringRecommender extends BasicRecommender
      BigDecimal value = new BigDecimal(alreadyCalulatedEdge.getProperty(edgeEstimationPropertyName));
      return value;
      }*/
-    double estimatedRating = calculateEstimatedRating(item, user, rankType, propertyName);
+    double estimatedRating = calculateEstimatedRating(item, user, edgeType, RecommenderPropertiesHandle.getInstance().getEdgeRankValueName());
 
     //learningDataSet.addEdge(user, item, estimatedRatingEdgeType, edgeEstimationPropertyName, estimatedRating.toString());
     return estimatedRating;
@@ -210,7 +211,7 @@ public class CollaborativeFilteringRecommender extends BasicRecommender
     {
       alreadyCalulatedEdge = item.getEdge(otherItem, similarityEdgeType);
       if (alreadyCalulatedEdge != null
-          && alreadyCalulatedEdge.getPermissiveProperty(simFunction.getClass().getName()) != null)
+              && alreadyCalulatedEdge.getPermissiveProperty(simFunction.getClass().getName()) != null)
       {
         double value = Double.parseDouble(alreadyCalulatedEdge.getProperty(simFunction.getClass().getName()));
         return value;
@@ -246,7 +247,7 @@ public class CollaborativeFilteringRecommender extends BasicRecommender
     }
   }
 
-  private double calculateEstimatedRating(INode item, INode user, IEdgeType rankType, String propertyName) throws RuntimeException
+  protected double calculateEstimatedRating(INode item, INode user, IEdgeType rankType, String propertyName) throws RuntimeException
   {
 
     double estimatedRating = 0.0;
@@ -291,7 +292,7 @@ public class CollaborativeFilteringRecommender extends BasicRecommender
     if (newEdge.getProperty(RecommenderPropertiesHandle.getInstance().getEdgeRankValueName()) == null)
       return;
     INode dest = newEdge.getDestination();
-    HashMap<Long, INode> commonNodes = dest.getCommonNodes(edgeType);
+    HashMap<String, INode> commonNodes = dest.getCommonNodes(edgeType, RecommenderPropertiesHandle.getInstance().getItemIdentifierName());
     for (INode item : commonNodes.values())
     {
       String itemId = item.getProperty(RecommenderPropertiesHandle.getInstance().getItemIdentifierName());
@@ -300,5 +301,16 @@ public class CollaborativeFilteringRecommender extends BasicRecommender
       HashMap<String, Rating> knnRow = getKnnRow(itemId);
       foundNearestNeighbour(item, edgeType, RecommenderPropertiesHandle.getInstance().getDistanceAlgorithm(), knnRow, true);
     }
+  }
+
+  private void printKnnRow(String itemId)
+  {
+    HashMap<String, Rating> row = getKnnRow(itemId);
+    for (String item : row.keySet())
+    {
+      Rating rate = row.get(item);
+      logger.log(Level.INFO," {0}({1}) ", new Object[]{rate.getItem().getProperty(RecommenderPropertiesHandle.getInstance().getItemIdentifierName()), rate.getRate()});
+    }
+    
   }
 }
