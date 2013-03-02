@@ -21,6 +21,7 @@ package org.reco4j.graph;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import org.apache.mahout.cf.taste.impl.common.FastIDSet;
 
 /**
  *
@@ -40,6 +41,7 @@ public interface INode
   public List<IEdge> getOutEdge(IEdgeType edgeType);
   public void iterateOnEdge(IEdgeType edgeType, IGraphCallable<IEdge> callback);
   public HashMap<String, INode> getCommonNodes(IEdgeType edgeType, String identifier);
+  public FastIDSet getCommonNodeIds(IEdgeType edgeType);
   public void iterateOnCommonNodes(IEdgeType edgeType, IGraphCallable<INode> callback);
   public int getInEdgeNumber(IEdgeType edgeType);
   public Object getExtendedInfos();

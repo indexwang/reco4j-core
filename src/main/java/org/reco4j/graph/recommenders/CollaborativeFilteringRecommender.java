@@ -245,7 +245,7 @@ public class CollaborativeFilteringRecommender extends BasicRecommender
     }
   }
 
-  private double calculateEstimatedRating(INode item, INode user, IEdgeType rankType, String propertyName) throws RuntimeException
+  protected double calculateEstimatedRating(INode item, INode user, IEdgeType rankType, String propertyName) throws RuntimeException
   {
 
     double estimatedRating = 0.0;

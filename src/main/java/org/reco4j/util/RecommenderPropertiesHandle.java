@@ -48,6 +48,7 @@ public class RecommenderPropertiesHandle implements IPropertiesHandle
   protected final static String PROPERTY_NAME_ITEM_TYPE = "itemType";
   protected static final String PROPERTY_NAME_MAX_PREFERENCE_VALUE = "maxPreference";
   protected static final String PROPERTY_NAME_MIN_PREFERENCE_VALUE = "minPreference";
+  protected static final String PROPERTY_NAME_NODE_TYPE = "nodeType";
 
   //Default value for properties name on node or edges
   protected final static String PROPERTY_NODE_IDENTIFIER = "id"; //Prendere anche da properties file
@@ -60,6 +61,7 @@ public class RecommenderPropertiesHandle implements IPropertiesHandle
   protected final static String PROPERTY_EDGE_ESTIMATED_RATING_IDENTIFIER = "estimatedRating";
   protected final static String PROPERTY_USER_TYPE = "User";
   protected final static String PROPERTY_ITEM_TYPE = "Movie";
+  protected final static String PROPERTY_NODE_TYPE = "type";
   protected final static boolean PROPERTY_RECALCULATE_SIMILARITY = false;
   protected final static int PROPERTY_RECOMMENDER_TYPE = 1;
   protected final static int PROPERTY_MAXFEATURES = 64;
@@ -267,5 +269,14 @@ public class RecommenderPropertiesHandle implements IPropertiesHandle
       return Double.parseDouble(minPreferenceValue);
     else
       return PROPERTY_MIN_PREFERENCE_VALUE; //Default value
+  }
+
+  public String getNodeTypeName()
+  {
+    String nodeType = getProperty(PROPERTY_NAME_NODE_TYPE, null);
+    if (nodeType != null)
+      return nodeType;
+    else
+      return PROPERTY_NODE_TYPE; //Default value
   }
 }

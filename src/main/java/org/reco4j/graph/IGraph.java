@@ -21,6 +21,7 @@ package org.reco4j.graph;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Properties;
+import org.apache.mahout.cf.taste.impl.common.FastIDSet;
 
 /**
  * This interface represents a Graph. Subclass of this instance can use different
@@ -47,5 +48,8 @@ public interface IGraph
   public void loadGraph();  
   public INode getUserNodeById(long id);
   public INode getItemNodeById(long id);
+  public INode getNodeById(long id);
   public int getNodesNumberByType(String type);
+  public FastIDSet getEdgesIdByType(IEdgeType edgeType);
+  public FastIDSet getNodesIdByType(String type);
 }
