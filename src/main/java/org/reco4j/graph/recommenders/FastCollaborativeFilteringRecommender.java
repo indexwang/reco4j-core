@@ -124,9 +124,9 @@ public class FastCollaborativeFilteringRecommender extends CollaborativeFilterin
     for (long otherItemId : nodes)
     {
       if (!rewrite && knnRow.get(otherItemId) != null)
-        return;
+        continue;
       if (itemId == otherItemId)
-        return;
+        continue;
       INode otherItem = learningDataSet.getItemNodeById(otherItemId);
       double similarityValue = calculateSimilarity(item, otherItem, edgeType, distMethod);
       if (similarityValue > 0)
