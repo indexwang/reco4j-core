@@ -21,6 +21,7 @@ package org.reco4j.graph;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Properties;
+import java.util.concurrent.ConcurrentHashMap;
 import org.apache.mahout.cf.taste.impl.common.FastIDSet;
 
 /**
@@ -79,12 +80,6 @@ public class GenericGraph implements IGraph
   }
 
   @Override
-  public HashMap<String, INode> getNodesMapByType(String type, String identifier)
-  {
-    throw new UnsupportedOperationException("Not supported yet.");
-  }
-
-  @Override
   public void getNodesByType(String type, IGraphCallable<INode> callback)
   {
     throw new UnsupportedOperationException("Not supported yet.");
@@ -122,6 +117,12 @@ public class GenericGraph implements IGraph
 
   @Override
   public FastIDSet getNodesIdByType(String type)
+  {
+    throw new UnsupportedOperationException("Not supported yet.");
+  }
+
+  @Override
+  public ConcurrentHashMap<Long, INode> getNodesMapByType(String type)
   {
     throw new UnsupportedOperationException("Not supported yet.");
   }
