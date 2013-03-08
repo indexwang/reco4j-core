@@ -30,6 +30,7 @@ import org.apache.mahout.cf.taste.impl.common.FastIDSet;
 public interface INode
 {
   public long getId();
+  public void setId(long id);
   public void setProperty(String name, String value);
   public String getProperty(String name);
   public Boolean isConnected(INode node, IEdgeType edgeType);
@@ -38,6 +39,7 @@ public interface INode
   public Boolean isConnectedOut(INode node, List<IEdgeType> edgeTypes);
   public IEdge getEdge(INode node, IEdgeType edgeType);
   public List<IEdge> getInEdge(IEdgeType edgeType);
+  public FastIDSet getInEdgeIds(IEdgeType edgeType);
   public List<IEdge> getOutEdge(IEdgeType edgeType);
   public void iterateOnEdge(IEdgeType edgeType, IGraphCallable<IEdge> callback);
   public HashMap<String, INode> getCommonNodes(IEdgeType edgeType, String identifier);

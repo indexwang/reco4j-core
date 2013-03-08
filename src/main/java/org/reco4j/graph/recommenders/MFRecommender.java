@@ -1,4 +1,4 @@
-/*
+ /*
  * MFRecommender.java
  * 
  * Copyright (C) 2012 Alessandro Negro <alessandro.negro at reco4j.org>
@@ -43,7 +43,6 @@ public class MFRecommender extends BasicRecommender
   private static final double MIN_IMPROVEMENT = 0.0001;        // Minimum improvement required to continue current feature
   private ConcurrentHashMap<Integer, ConcurrentHashMap<String, Double>> itemFeatures;
   private ConcurrentHashMap<Integer, ConcurrentHashMap<String, Double>> userFeatures;
-  private IGraph learningDataSet;
   private HashMap<String, INode> itemList;
   private HashMap<String, INode> userList;
   private List<IEdge> ratingList;

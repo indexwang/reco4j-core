@@ -103,7 +103,7 @@ public class FastCollaborativeFilteringRecommender extends CollaborativeFilterin
       timeReport.start();
       FastByIDMap<Rating> knnRow = getKnnRow(id);
       foundNearestNeighbour(id, edgeType, distMethod, knnRow);
-      printKnnRow(id);
+      //printKnnRow(id);
       timeReport.stop();
     }
     timeReport.printStatistics();
