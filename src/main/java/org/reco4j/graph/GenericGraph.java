@@ -115,5 +115,17 @@ public class GenericGraph implements IGraph
   {
     throw new UnsupportedOperationException("Not supported yet.");
   }
+
+  @Override
+  public INode addNode(Map<String, String> properties)
+  {
+    throw new UnsupportedOperationException("Not supported yet.");
+  }
+
+  @Override
+  public void setNodeProperty(INode node, String propertyName, String value)
+  {
+    throw new UnsupportedOperationException("Not supported yet.");
+  }
   
 }
