@@ -19,15 +19,9 @@
 package org.reco4j.graph.recommenders;
 
 import java.sql.Timestamp;
-import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
-import org.reco4j.graph.EdgeTypeFactory;
-import org.reco4j.graph.IEdge;
-import org.reco4j.graph.IEdgeType;
-import org.reco4j.graph.IGraph;
-import org.reco4j.graph.INode;
-import org.reco4j.graph.Rating;
+import org.reco4j.graph.*;
 import org.reco4j.util.RecommenderPropertiesHandle;
 
 /**

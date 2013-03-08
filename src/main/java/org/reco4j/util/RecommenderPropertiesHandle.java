@@ -64,7 +64,7 @@ public class RecommenderPropertiesHandle implements IPropertiesHandle
   protected final static String PROPERTY_NODE_TYPE = "type";
   protected final static boolean PROPERTY_RECALCULATE_SIMILARITY = false;
   protected final static int PROPERTY_RECOMMENDER_TYPE = 1;
-  protected final static int PROPERTY_MAXFEATURES = 64;
+  protected final static int PROPERTY_MAXFEATURES = 20;
   protected final static double PROPERTY_FEATURE_INIT_VALUE = 0.1;
   protected final static double PROPERTY_MAX_PREFERENCE_VALUE = 5.0;
   protected final static double PROPERTY_MIN_PREFERENCE_VALUE = 1.0;
