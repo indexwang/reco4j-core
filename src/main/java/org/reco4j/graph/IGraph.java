@@ -18,10 +18,10 @@
  */
 package org.reco4j.graph;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.ConcurrentHashMap;
 import org.apache.mahout.cf.taste.impl.common.FastIDSet;
 
 /**
@@ -43,8 +43,7 @@ public interface IGraph
   public List<INode> getNodesByInEdge(IEdgeType edgesType);
   public List<INode> getNodesByType(String type);
   public void getNodesByType(String type, IGraphCallable<INode> callback);
-  public HashMap<String, INode> getNodesMapByType(String type, String identifier);
-  
+  public ConcurrentHashMap<Long, INode> getNodesMapByType(String type);
   public List<IEdge> getEdgesByType(IEdgeType edgesType);
   
   public INode getUserNodeById(long id);

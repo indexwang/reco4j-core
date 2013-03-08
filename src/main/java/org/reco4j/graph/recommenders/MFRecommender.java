@@ -19,15 +19,9 @@
 package org.reco4j.graph.recommenders;
 
 import java.sql.Timestamp;
-import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
-import org.reco4j.graph.EdgeTypeFactory;
-import org.reco4j.graph.IEdge;
-import org.reco4j.graph.IEdgeType;
-import org.reco4j.graph.IGraph;
-import org.reco4j.graph.INode;
-import org.reco4j.graph.Rating;
+import org.reco4j.graph.*;
 import org.reco4j.util.RecommenderPropertiesHandle;
 
 /**
@@ -41,10 +35,10 @@ public class MFRecommender extends BasicRecommender
   private static final double K = 0.015;         // Regularization parameter used to minimize over-fitting
   private static final double LRATE = 0.001;         // Learning rate parameter
   private static final double MIN_IMPROVEMENT = 0.0001;        // Minimum improvement required to continue current feature
-  private ConcurrentHashMap<Integer, ConcurrentHashMap<String, Double>> itemFeatures;
-  private ConcurrentHashMap<Integer, ConcurrentHashMap<String, Double>> userFeatures;
-  private HashMap<String, INode> itemList;
-  private HashMap<String, INode> userList;
+  private ConcurrentHashMap<Integer, ConcurrentHashMap<Long, Double>> itemFeatures;
+  private ConcurrentHashMap<Integer, ConcurrentHashMap<Long, Double>> userFeatures;
+  private ConcurrentHashMap<Long, INode> itemList;
+  private ConcurrentHashMap<Long, INode> userList;
   private List<IEdge> ratingList;
   private int maxFeatures;
   private int ratingCount;
@@ -71,13 +65,13 @@ public class MFRecommender extends BasicRecommender
   }
 
   @Override
-  public double estimateRating(INode user, INode source)
+  public double estimateRating(INode user, INode item)
   {
     double sum = 1;
     for (int f = 0; f < maxFeatures; f++)
     {
-      sum += itemFeatures.get(f).get(source.getProperty(RecommenderPropertiesHandle.getInstance().getItemIdentifierName()))
-        * userFeatures.get(f).get(user.getProperty(RecommenderPropertiesHandle.getInstance().getUserIdentifierName()));
+      sum += itemFeatures.get(f).get(item.getId())
+        * userFeatures.get(f).get(user.getId());
       if (sum > 5)
         sum = 5.0;
       if (sum < 1)
@@ -88,26 +82,24 @@ public class MFRecommender extends BasicRecommender
 
   private void init()
   {
-    itemFeatures = new ConcurrentHashMap<Integer, ConcurrentHashMap<String, Double>>();
-    userFeatures = new ConcurrentHashMap<Integer, ConcurrentHashMap<String, Double>>();
+    itemFeatures = new ConcurrentHashMap<Integer, ConcurrentHashMap<Long, Double>>();
+    userFeatures = new ConcurrentHashMap<Integer, ConcurrentHashMap<Long, Double>>();
     itemList = learningDataSet.getNodesMapByType(
-      RecommenderPropertiesHandle.getInstance().getItemType(),
-      RecommenderPropertiesHandle.getInstance().getItemIdentifierName());
+      RecommenderPropertiesHandle.getInstance().getItemType());
     userList = learningDataSet.getNodesMapByType(
-      RecommenderPropertiesHandle.getInstance().getUserType(),
-      RecommenderPropertiesHandle.getInstance().getUserIdentifierName());
+      RecommenderPropertiesHandle.getInstance().getUserType());
     ratingList = learningDataSet.getEdgesByType(EdgeTypeFactory.getEdgeType(IEdgeType.EDGE_TYPE_RANK));
     ratingCount = ratingList.size();
 
     maxFeatures = RecommenderPropertiesHandle.getInstance().getMaxFeatures();
     double featureInitValue = RecommenderPropertiesHandle.getInstance().getFeatureInitValue();
+    
     for (int i = 0; i < maxFeatures; i++)
     {
-      ConcurrentHashMap<String, Double> qi = new ConcurrentHashMap<String, Double>();
+      ConcurrentHashMap<Long, Double> qi = new ConcurrentHashMap<Long, Double>();
       for (INode item : itemList.values())
       {
-        String id = item.getProperty(RecommenderPropertiesHandle.getInstance().getItemIdentifierName());
-        qi.put(id, featureInitValue);
+        qi.put(item.getId(), featureInitValue);
         if (item.getExtendedInfos() == null)
         {
           ExtendedNodeInfos info = new ExtendedNodeInfos();
@@ -119,11 +111,10 @@ public class MFRecommender extends BasicRecommender
         }
       }
       itemFeatures.put(i, qi);
-      ConcurrentHashMap<String, Double> pu = new ConcurrentHashMap<String, Double>();
+      ConcurrentHashMap<Long, Double> pu = new ConcurrentHashMap<Long, Double>();
       for (INode user : userList.values())
       {
-        String id = user.getProperty(RecommenderPropertiesHandle.getInstance().getUserIdentifierName());
-        pu.put(id, featureInitValue);
+        pu.put(user.getId(), featureInitValue);
         if (user.getExtendedInfos() == null)
         {
           ExtendedNodeInfos info = new ExtendedNodeInfos();
@@ -151,15 +142,13 @@ public class MFRecommender extends BasicRecommender
       ExtendedEdgeInfos exEdgeInfos = new ExtendedEdgeInfos();
       rating.setExtendedInfos(exEdgeInfos);
 
-      String itemId = rating.getSource().getProperty(RecommenderPropertiesHandle.getInstance().getItemIdentifierName());
-      INode item = itemList.get(itemId);
+      INode item = itemList.get(rating.getDestination().getId());
 
       ExtendedNodeInfos itemExtInfos = (ExtendedNodeInfos) item.getExtendedInfos();
       itemExtInfos.setRatingCount(itemExtInfos.getRatingCount() + 1);
       itemExtInfos.setRatingSum(itemExtInfos.getRatingSum() + realValue);
 
-      String userId = rating.getDestination().getProperty(RecommenderPropertiesHandle.getInstance().getUserIdentifierName());
-      INode user = userList.get(userId);
+      INode user = userList.get(rating.getSource().getId());
 
       ExtendedNodeInfos userExtInfos = (ExtendedNodeInfos) user.getExtendedInfos();
       userExtInfos.setRatingCount(userExtInfos.getRatingCount() + 1);
@@ -188,15 +177,17 @@ public class MFRecommender extends BasicRecommender
       System.out.println("Calculating feature: " + f + " start: " + new Timestamp(System.currentTimeMillis()));
       for (int e = 0; (e < MIN_EPOCHS) || (rmse <= rmse_last - MIN_IMPROVEMENT); e++)
       {
-        System.out.println(" e: " + e + " RMSE: " + rmse + " RMSE_LAST: " + rmse_last + " " + new Timestamp(System.currentTimeMillis()));
+        //System.out.println(" e: " + e + " RMSE: " + rmse + " RMSE_LAST: " + rmse_last + " " + new Timestamp(System.currentTimeMillis()));
         cnt++;
         double sq = 0;
         rmse_last = rmse;
 
+        ConcurrentHashMap<Long, Double> itemFeature = itemFeatures.get(f);
+        ConcurrentHashMap<Long, Double> userFeature = userFeatures.get(f);
         for (IEdge rating : ratingList)
         {
-          INode item = rating.getSource();
-          INode user = rating.getDestination();
+          INode item = rating.getDestination();
+          INode user = rating.getSource();
 
           // Predict rating and calc error
           double p = predictRating(item, user, f, rating, true);
@@ -209,29 +200,29 @@ public class MFRecommender extends BasicRecommender
           //System.out.println("P: " + p.doubleValue() + " R: " + ratingValue.doubleValue() + " err: " + err + " sq: " + sq);
 
           // Cache off old feature values
-          double mf = itemFeatures.get(f).get(item.getProperty(RecommenderPropertiesHandle.getInstance().getItemIdentifierName())).doubleValue();
-          double cf = userFeatures.get(f).get(user.getProperty(RecommenderPropertiesHandle.getInstance().getUserIdentifierName())).doubleValue();
+          double mf = itemFeature.get(item.getId()).doubleValue();
+          double cf = userFeature.get(user.getId()).doubleValue();
           
           
           
           double newCf = cf + (LRATE * (err * mf - K * cf)); //0.001 * ((0.099) - 0.0015))
-          userFeatures.get(f).put(user.getProperty(RecommenderPropertiesHandle.getInstance().getUserIdentifierName()), newCf);
+          userFeature.put(user.getId(), newCf);
           double newMf = mf + (LRATE * (err * cf - K * mf));
-          itemFeatures.get(f).put(item.getProperty(RecommenderPropertiesHandle.getInstance().getItemIdentifierName()), newMf);
+          itemFeature.put(item.getId(), newMf);
         }
         rmse = Math.sqrt(sq/(double)ratingList.size());
       }
       System.out.println("RMSE: " + rmse);
       for (IEdge rating : ratingList)
-        ((ExtendedEdgeInfos) rating.getExtendedInfos()).setCache(predictRating(rating.getSource(), rating.getDestination(), f, rating, false));
+        ((ExtendedEdgeInfos) rating.getExtendedInfos()).setCache(predictRating(rating.getDestination(), rating.getSource(), f, rating, false));
     }
   }
 
   private double predictRating(INode movie, INode user, int f, IEdge rating, boolean bTrailing)
   {
     double sum = ((ExtendedEdgeInfos) rating.getExtendedInfos()).getCache() > 0.0 ? ((ExtendedEdgeInfos) rating.getExtendedInfos()).getCache() : 1;
-    sum = sum + (itemFeatures.get(f).get(movie.getProperty(RecommenderPropertiesHandle.getInstance().getItemIdentifierName()))
-       * (userFeatures.get(f).get(user.getProperty(RecommenderPropertiesHandle.getInstance().getUserIdentifierName()))));
+    sum = sum + (itemFeatures.get(f).get(movie.getId())
+       * (userFeatures.get(f).get(user.getId())));
     if (sum > 5)
       sum = 5;
     if (sum < 1 )

@@ -65,7 +65,7 @@ public abstract class BasicRecommender implements IRecommender
   @Override
   public void loadRecommender(IGraph learningDataSet)
   {
-    throw new UnsupportedOperationException("Not supported yet.");
+    //do nothing
   }
 
   @Override
