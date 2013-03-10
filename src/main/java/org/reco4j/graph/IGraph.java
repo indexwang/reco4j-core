@@ -18,9 +18,10 @@
  */
 package org.reco4j.graph;
 
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.ConcurrentHashMap;
 import org.apache.mahout.cf.taste.impl.common.FastIDSet;
 
 /**
@@ -31,25 +32,26 @@ import org.apache.mahout.cf.taste.impl.common.FastIDSet;
  */
 public interface IGraph
 {
-  /**
-   * This method return a list of node's neighbour connected by an edge of the specified edge types
-   * @param edgesType the list of edge of types
-   * @return A list of Neighbour
-   */
+  public void setProperties(Properties properties);
+  
+  public INode addNode(Map<String, String> properties);
+  public void setNodeProperty(INode node, String propertyName, String value);
+  
   public void addEdge(INode x, INode y, IEdgeType similarityEdgeType, String propertyName, String value);
   public void setEdgeProperty(IEdge edge, String propertyName, String value);
-  public List<INode> getNeighbours(List<IEdgeType> edgesType);
+  
   public List<INode> getNodesByInEdge(IEdgeType edgesType);
   public List<INode> getNodesByType(String type);
   public void getNodesByType(String type, IGraphCallable<INode> callback);
-  public HashMap<String, INode> getNodesMapByType(String type, String identifier);
+  public ConcurrentHashMap<Long, INode> getNodesMapByType(String type);
   public List<IEdge> getEdgesByType(IEdgeType edgesType);
-  public void setProperties(Properties properties);
-  public void loadGraph();  
+  
   public INode getUserNodeById(long id);
   public INode getItemNodeById(long id);
   public INode getNodeById(long id);
+  
   public int getNodesNumberByType(String type);
+  
   public FastIDSet getEdgesIdByType(IEdgeType edgeType);
   public FastIDSet getNodesIdByType(String type);
 }

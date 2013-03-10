@@ -96,18 +96,20 @@ public class CollaborativeFilteringRecommender extends BasicRecommender
   private void createKNN(int distMethod)
   {
     TimeReportUtility timeReport = new TimeReportUtility("createKNN");
-    timeReport.start();
+    
 
     for (INode item : learningDataSet.getNodesByType(RecommenderPropertiesHandle.getInstance().getItemType()))
     {
+      timeReport.start();
       String itemId = item.getProperty(RecommenderPropertiesHandle.getInstance().getItemIdentifierName());
       if (itemId == null)
         throw new RuntimeException("Items don't have the 'id' property!");
       HashMap<String, Rating> knnRow = getKnnRow(itemId);
       foundNearestNeighbour(item, edgeType, distMethod, knnRow);
-      printKnnRow(itemId);
+      //printKnnRow(itemId);
+      timeReport.stop();
     }
-    timeReport.stop();
+    timeReport.printStatistics();
   }
 
   private void foundNearestNeighbour(INode item, IEdgeType edgeType, int distMethod, HashMap<String, Rating> knnRow)

@@ -98,11 +98,9 @@ public class MahoutRecommender extends BasicRecommender
   @Override
   public double estimateRating(INode user, INode source)
   { 
-    String userIdentifier = user.getProperty(RecommenderPropertiesHandle.getInstance().getUserIdentifierName());
-    String itemIdentifier = source.getProperty(RecommenderPropertiesHandle.getInstance().getItemIdentifierName());
     try
     {
-      float estimatePreference = mahoutRecommender.estimatePreference(Long.parseLong(userIdentifier), Long.parseLong(itemIdentifier));
+      float estimatePreference = mahoutRecommender.estimatePreference(user.getId(), source.getId());
       return (double)estimatePreference;
     }
     catch (TasteException ex)

@@ -89,15 +89,13 @@ public class Rating implements Preference
   @Override
   public long getUserID()
   {
-    String id = user.getProperty(RecommenderPropertiesHandle.getInstance().getUserIdentifierName());
-    return Long.valueOf(id);
+    return user.getId();
   }
 
   @Override
   public long getItemID()
   {
-    String id = item.getProperty(RecommenderPropertiesHandle.getInstance().getItemIdentifierName());
-    return Long.valueOf(id);
+    return item.getId();
   }
 
   @Override

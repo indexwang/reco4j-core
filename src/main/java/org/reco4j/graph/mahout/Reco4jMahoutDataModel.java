@@ -20,7 +20,6 @@ package org.reco4j.graph.mahout;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import org.apache.mahout.cf.taste.common.Refreshable;
 import org.apache.mahout.cf.taste.common.TasteException;
@@ -61,7 +60,8 @@ public class Reco4jMahoutDataModel implements DataModel
     if (userIds != null)
       return userIds;
     String userType = RecommenderPropertiesHandle.getInstance().getUserType();
-    userIds = getNodesByType(userType, RecommenderPropertiesHandle.getInstance().getUserIdentifierName());
+    userIds = learningDataset.getNodesIdByType(userType).iterator();
+    //userIds = getNodesByType(userType, RecommenderPropertiesHandle.getInstance().getUserIdentifierName());
     return userIds;
   }
 
@@ -71,14 +71,15 @@ public class Reco4jMahoutDataModel implements DataModel
     if (itemIds != null)
       return itemIds;
     String itemType = RecommenderPropertiesHandle.getInstance().getItemType();
-    itemIds = getNodesByType(itemType, RecommenderPropertiesHandle.getInstance().getItemIdentifierName());
+    itemIds = learningDataset.getNodesIdByType(itemType).iterator();
+    //itemIds = getNodesByType(itemType, RecommenderPropertiesHandle.getInstance().getItemIdentifierName());
     return itemIds;
   }
 
   @Override
   public PreferenceArray getPreferencesFromUser(long userID) throws TasteException
   {
-    final INode user = learningDataset.getUserNodeById(userID);
+    final INode user = learningDataset.getNodeById(userID);
     ArrayList<Rating> ratingList = user.getRatingsFromUser();
     return new GenericUserPreferenceArray(ratingList);
   }
@@ -105,7 +106,7 @@ public class Reco4jMahoutDataModel implements DataModel
   @Override
   public PreferenceArray getPreferencesForItem(long itemID) throws TasteException
   {
-    final INode user = learningDataset.getItemNodeById(itemID);
+    final INode user = learningDataset.getNodeById(itemID);
     ArrayList<Rating> ratingList = user.getRatingsForItem();
     return new GenericItemPreferenceArray(ratingList);
   }
@@ -113,8 +114,8 @@ public class Reco4jMahoutDataModel implements DataModel
   @Override
   public Float getPreferenceValue(long userID, long itemID) throws TasteException
   {
-    INode user = learningDataset.getUserNodeById(userID);
-    INode item = learningDataset.getItemNodeById(itemID);
+    INode user = learningDataset.getNodeById(userID);
+    INode item = learningDataset.getNodeById(itemID);
     if (user ==null || item == null)
       return null;
     IEdge edge = user.getEdge(item, edgeType);

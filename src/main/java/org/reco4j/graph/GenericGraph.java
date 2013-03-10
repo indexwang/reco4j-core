@@ -20,7 +20,9 @@ package org.reco4j.graph;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.ConcurrentHashMap;
 import org.apache.mahout.cf.taste.impl.common.FastIDSet;
 
 /**
@@ -32,18 +34,6 @@ public class GenericGraph implements IGraph
 
   @Override
   public void setProperties(Properties properties)
-  {
-    throw new UnsupportedOperationException("Not supported yet.");
-  }
-
-  @Override
-  public void loadGraph()
-  {
-    throw new UnsupportedOperationException("Not supported yet.");
-  }
-
-  @Override
-  public List<INode> getNeighbours(List<IEdgeType> edgesType)
   {
     throw new UnsupportedOperationException("Not supported yet.");
   }
@@ -74,12 +64,6 @@ public class GenericGraph implements IGraph
 
   @Override
   public List<IEdge> getEdgesByType(IEdgeType edgesType)
-  {
-    throw new UnsupportedOperationException("Not supported yet.");
-  }
-
-  @Override
-  public HashMap<String, INode> getNodesMapByType(String type, String identifier)
   {
     throw new UnsupportedOperationException("Not supported yet.");
   }
@@ -122,6 +106,24 @@ public class GenericGraph implements IGraph
 
   @Override
   public FastIDSet getNodesIdByType(String type)
+  {
+    throw new UnsupportedOperationException("Not supported yet.");
+  }
+
+  @Override
+  public ConcurrentHashMap<Long, INode> getNodesMapByType(String type)
+  {
+    throw new UnsupportedOperationException("Not supported yet.");
+  }
+
+  @Override
+  public INode addNode(Map<String, String> properties)
+  {
+    throw new UnsupportedOperationException("Not supported yet.");
+  }
+
+  @Override
+  public void setNodeProperty(INode node, String propertyName, String value)
   {
     throw new UnsupportedOperationException("Not supported yet.");
   }

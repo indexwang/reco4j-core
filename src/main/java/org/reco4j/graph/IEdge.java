@@ -25,6 +25,7 @@ package org.reco4j.graph;
 public interface IEdge
 {
   public long getId();
+  public void setId(long id);
   public void setProperty(String name, String value);
   public String getProperty(String name);
   public String getPermissiveProperty(String name);
