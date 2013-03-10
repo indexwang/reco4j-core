@@ -1,5 +1,21 @@
 For Release Notes, see http://www.reco4j.org/release-notes.jsp
 
+0.3.0 (2013-03-10)
+
+• reco4j-core
+  - Improved the quality/performance of FastCollaborativeFilter
+  - Cleaned up the IGraph interface removing unused method and adding new more usefull method
+  - Addedd support for graph manipulation like addNode, addNodeProperties, addEdge, addEdgeRelationship into IGRaph interface
+  - Improved the memory usage, migrating, where possible, from complex object map to long ids (into recommender, similiarity, and so on)
+  - Implemented a new recommender MahoutRecommender, a first approach to provide recommendation using mahout as base engine, it will be improved in next release
+  - Improved the quality of the MatrixFactorization Recommender, now it perform faster and with the best quality of all the recommenders
+  
+• reco4j-neo4j
+  - Improved more GraphTraversal method to leverage on nodeId instead of node custom identifier to improve the performance
+  - Optimized the memory usage of Neo4JNode and Neo4JEdge using weakreference to allow neo4j cache to free up the unused nodes
+  - Adapted the Neo4JGraph to the new IGraph interface
+
+
 0.2.0 (2013-02-01)
 
 • reco4j-core

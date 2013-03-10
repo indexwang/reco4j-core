@@ -19,10 +19,12 @@
 package org.reco4j.graph.recommenders;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import org.reco4j.graph.*;
 import org.reco4j.util.RecommenderPropertiesHandle;
+import org.reco4j.util.Utility;
 
 /**
  *
@@ -59,9 +61,18 @@ public class MFRecommender extends BasicRecommender
   }
 
   @Override
-  public List<Rating> recommend(INode node)
+  public List<Rating> recommend(INode user)
   {
-    throw new UnsupportedOperationException("Not supported yet.");
+    ArrayList<Rating> recommendations = new ArrayList<Rating>();
+
+    for (INode item : learningDataSet.getNodesByType(RecommenderPropertiesHandle.getInstance().getItemType()))
+    {
+      if (item.isConnected(user, edgeType))
+        continue;
+      double estimatedRating = estimateRating(user, item);
+      Utility.orderedInsert(recommendations, estimatedRating, item, RecommenderPropertiesHandle.getInstance().getRecoNumber());
+    }
+    return recommendations;
   }
 
   @Override
