@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import org.reco4j.graph.*;
 import org.reco4j.util.RecommenderPropertiesHandle;
+import org.reco4j.util.TimeReportUtility;
 import org.reco4j.util.Utility;
 
 /**
@@ -49,9 +50,13 @@ public class MFRecommender extends BasicRecommender
   public void buildRecommender(IGraph learningDataSet)
   {
     this.learningDataSet = learningDataSet;
+    TimeReportUtility timeReport = new TimeReportUtility("buildRecommender");
+    timeReport.start();
     init();
     calcMetrics();
     calcFeatures();
+    timeReport.stop();
+    timeReport.printStatistics();
   }
 
   @Override
@@ -185,7 +190,7 @@ public class MFRecommender extends BasicRecommender
     System.out.println("maxFeatures: " + maxFeatures);
     for (int f = 0; f < maxFeatures; f++)
     {
-      System.out.println("Calculating feature: " + f + " start: " + new Timestamp(System.currentTimeMillis()));
+      //System.out.println("Calculating feature: " + f + " start: " + new Timestamp(System.currentTimeMillis()));
       for (int e = 0; (e < MIN_EPOCHS) || (rmse <= rmse_last - MIN_IMPROVEMENT); e++)
       {
         //System.out.println(" e: " + e + " RMSE: " + rmse + " RMSE_LAST: " + rmse_last + " " + new Timestamp(System.currentTimeMillis()));
@@ -223,7 +228,7 @@ public class MFRecommender extends BasicRecommender
         }
         rmse = Math.sqrt(sq/(double)ratingList.size());
       }
-      System.out.println("RMSE: " + rmse);
+      //System.out.println("RMSE: " + rmse);
       for (IEdge rating : ratingList)
         ((ExtendedEdgeInfos) rating.getExtendedInfos()).setCache(predictRating(rating.getDestination(), rating.getSource(), f, rating, false));
     }
