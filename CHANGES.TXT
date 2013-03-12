@@ -11,7 +11,7 @@ For Release Notes, see http://www.reco4j.org/release-notes.jsp
   - Improved the quality of the MatrixFactorization Recommender, now it perform faster and with the best quality of all the recommenders
   
 • reco4j-neo4j
-  - Improved more GraphTraversal method to leverage on nodeId instead of node custom identifier to improve the performance
+  - Improved more GraphTraversal method to leverage on node Id instead of node custom identifier to improve the performance
   - Optimized the memory usage of Neo4JNode and Neo4JEdge using weakreference to allow neo4j cache to free up the unused nodes
   - Adapted the Neo4JGraph to the new IGraph interface
 

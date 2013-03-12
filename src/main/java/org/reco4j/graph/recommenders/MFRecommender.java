@@ -54,7 +54,8 @@ public class MFRecommender extends BasicRecommender
     timeReport.start();
     init();
     calcMetrics();
-    calcFeatures();
+    //calcFeatures();
+    calcFeaturesByUser();
     timeReport.stop();
     timeReport.printStatistics();
   }
@@ -231,6 +232,65 @@ public class MFRecommender extends BasicRecommender
       //System.out.println("RMSE: " + rmse);
       for (IEdge rating : ratingList)
         ((ExtendedEdgeInfos) rating.getExtendedInfos()).setCache(predictRating(rating.getDestination(), rating.getSource(), f, rating, false));
+    }
+  }
+  
+  private void calcFeaturesByUser()
+  {
+    int cnt = 0;
+
+    double rmse_last = 2.0;
+    double rmse = 2.0;
+    System.out.println("maxFeatures: " + maxFeatures);
+    for (INode user : userList.values())
+    {
+      System.out.println("User: " + user.getProperty(RecommenderPropertiesHandle.getInstance().getUserIdentifierName()));
+      for (int f = 0; f < maxFeatures; f++)
+      {
+        System.out.println("Calculating feature: " + f + " start: " + new Timestamp(System.currentTimeMillis()));
+        for (int e = 0; (e < MIN_EPOCHS) || (rmse <= rmse_last - MIN_IMPROVEMENT); e++)
+        {
+          //System.out.println(" e: " + e + " RMSE: " + rmse + " RMSE_LAST: " + rmse_last + " " + new Timestamp(System.currentTimeMillis()));
+          cnt++;
+          double sq = 0;
+          rmse_last = rmse;
+
+          ConcurrentHashMap<Long, Double> itemFeature = itemFeatures.get(f);
+          ConcurrentHashMap<Long, Double> userFeature = userFeatures.get(f);
+          for (IEdge rating : ratingList)
+          {
+            INode item = rating.getDestination();
+            if (rating.getSource().getId() != user.getId())
+              continue;
+            
+            
+            // Predict rating and calc error
+            double p = predictRating(item, user, f, rating, true);
+            double ratingValue = Double.parseDouble(rating.getProperty(RecommenderPropertiesHandle.getInstance().getEdgeRankValueName()));
+
+
+            double err;
+            err = ratingValue - p;
+            sq += err * err;
+            //System.out.println("P: " + p.doubleValue() + " R: " + ratingValue.doubleValue() + " err: " + err + " sq: " + sq);
+
+            // Cache off old feature values
+            double mf = itemFeature.get(item.getId()).doubleValue();
+            double cf = userFeature.get(user.getId()).doubleValue();
+
+
+
+            double newCf = cf + (LRATE * (err * mf - K * cf)); //0.001 * ((0.099) - 0.0015))
+            userFeature.put(user.getId(), newCf);
+            double newMf = mf + (LRATE * (err * cf - K * mf));
+            itemFeature.put(item.getId(), newMf);
+          }
+          rmse = Math.sqrt(sq / (double) ratingList.size());
+        }
+        System.out.println("RMSE: " + rmse);
+        for (IEdge rating : ratingList)
+          ((ExtendedEdgeInfos) rating.getExtendedInfos()).setCache(predictRating(rating.getDestination(), rating.getSource(), f, rating, false));
+      }
     }
   }
 
