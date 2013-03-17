@@ -26,7 +26,7 @@ public class EdgeTypeTestRank extends BasicEdgeType implements IEdgeType
 {
   public EdgeTypeTestRank(IGraphConfig config)
   {
-    setEdgeName(config.getEdgeRankName());
+    setEdgeName(config.getEdgeTestRankName());
   }
   
   @Override

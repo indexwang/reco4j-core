@@ -26,7 +26,7 @@ public class EdgeTypeEstimatedRating extends BasicEdgeType implements IEdgeType
 {
   public EdgeTypeEstimatedRating(IGraphConfig config)
   {
-    setEdgeName(config.getEdgeRankName());
+    setEdgeName(config.getEdgeEstimatedRatingName());
   }
 
   @Override

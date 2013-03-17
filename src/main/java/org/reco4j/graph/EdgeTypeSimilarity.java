@@ -26,7 +26,7 @@ public class EdgeTypeSimilarity extends BasicEdgeType implements IEdgeType
 {
   public EdgeTypeSimilarity(IGraphConfig config)
   {
-    setEdgeName(config.getEdgeRankName());
+    setEdgeName(config.getEdgeSimilarityName());
   }
 
   @Override
