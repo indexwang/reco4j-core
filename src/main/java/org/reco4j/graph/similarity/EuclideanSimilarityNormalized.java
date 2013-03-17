@@ -16,7 +16,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.reco4j.graph.similarity;
 
 import java.util.List;
@@ -24,40 +23,34 @@ import org.reco4j.graph.IEdge;
 import org.reco4j.graph.IEdgeType;
 import org.reco4j.graph.IGraph;
 import org.reco4j.graph.INode;
-import org.reco4j.session.RecommenderSessionManager;
 
 /**
  *
  ** @author Alessandro Negro <alessandro.negro at reco4j.org>
  */
-public class EuclideanSimilarityNormalized implements ISimilarity
+public class EuclideanSimilarityNormalized
+  extends BasicSimilarity<IEuclideanSimilarityConfig>
 {
-  private static EuclideanSimilarityNormalized theInstance = new EuclideanSimilarityNormalized();
-  
-  private EuclideanSimilarityNormalized()
-  {    
-  }
-  
-  public static EuclideanSimilarityNormalized getInstance()
+  public EuclideanSimilarityNormalized(IEuclideanSimilarityConfig config)
   {
-    return theInstance;
+    super(config);
   }
-  
+
   @Override
   public double getSimilarity(INode x, INode y, IEdgeType edgeType, IGraph dataSet)
   {
     int commonItems = 0;
     double sim = 0.0;
     List<IEdge> inEdges = x.getInEdge(edgeType);
-    
+
     for (IEdge edge : inEdges)
     {
       IEdge otherRating = edge.getDestination().getEdge(y, edgeType);
       if (otherRating != null)
       {
         commonItems++;
-        
-        String propertyName = RecommenderSessionManager.getInstance().getRankValueProprertyName();
+
+        String propertyName = getConfig().getEdgeRankValueName();
         double edgeRating = Double.parseDouble(edge.getProperty(propertyName));
         double otherEdgeRating = Double.parseDouble(otherRating.getProperty(propertyName));
         sim += Math.pow(edgeRating - otherEdgeRating, 2);
@@ -66,12 +59,12 @@ public class EuclideanSimilarityNormalized implements ISimilarity
 
     if (commonItems > 0)
     {
-      sim = Math.sqrt(sim/(double)commonItems);
+      sim = Math.sqrt(sim / (double) commonItems);
       sim = 1.0 - Math.tanh(sim);
-      
+
       int maxCommonItems = Math.min(x.getInEdgeNumber(edgeType), y.getInEdgeNumber(edgeType));
 
-      sim = sim * ((double)commonItems/(double)maxCommonItems);
+      sim = sim * ((double) commonItems / (double) maxCommonItems);
     }
     return sim;
   }

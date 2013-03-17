@@ -48,6 +48,6 @@ public interface INode
   public int getInEdgeNumber(IEdgeType edgeType);
   public Object getExtendedInfos();
   public void setExtendedInfos(Object infos);
-  public ArrayList<Rating> getRatingsFromUser();
-  public ArrayList<Rating> getRatingsForItem();
+  public ArrayList<Rating> getRatingsFromUser(IGraphConfig config);
+  public ArrayList<Rating> getRatingsForItem(IGraphConfig config);
 }

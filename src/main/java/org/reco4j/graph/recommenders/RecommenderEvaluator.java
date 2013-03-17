@@ -25,7 +25,7 @@ import org.reco4j.graph.IEdgeType;
 import org.reco4j.graph.IGraph;
 import org.reco4j.graph.INode;
 import org.reco4j.graph.Rating;
-import org.reco4j.util.RecommenderPropertiesHandle;
+import org.reco4j.util.IRecommenderConfig;
 
 /**
  *
@@ -35,60 +35,63 @@ public class RecommenderEvaluator
 {
   public static void evaluateRecommender(IGraph testDataSet, IRecommender recommender)
   {
+    IRecommenderConfig config = recommender.getConfig();
     int n = 0;
     double numerator = 0.0;
-    List<INode> users = testDataSet.getNodesByType(RecommenderPropertiesHandle.getInstance().getUserType());
+    List<INode> users = testDataSet.getNodesByType(config.getUserType());
     for (INode user : users)
     {
-      System.out.println("User: " + user.getProperty(RecommenderPropertiesHandle.getInstance().getUserIdentifierName()));
-      List<IEdge> ranks = user.getOutEdge(EdgeTypeFactory.getEdgeType(IEdgeType.EDGE_TYPE_TEST_RANK));
+      System.out.println("User: " + user.getProperty(config.getUserIdentifierName()));
+      List<IEdge> ranks = user.getOutEdge(EdgeTypeFactory.getEdgeType(IEdgeType.EDGE_TYPE_TEST_RANK, config.getGraphConfig()));
       if (ranks.isEmpty())
         continue;
       for (IEdge rank : ranks)
       {
         StringBuilder output = new StringBuilder();
-        output.append("item: ").append(rank.getDestination().getProperty(RecommenderPropertiesHandle.getInstance().getItemIdentifierName()));
+        output.append("item: ").append(rank.getDestination().getProperty(config.getItemIdentifierName()));
         double estimatedRating = recommender.estimateRating(user, rank.getDestination());
         if (estimatedRating > 0)
         {
           n++;
-          double realValue = Double.parseDouble(rank.getProperty(RecommenderPropertiesHandle.getInstance().getEdgeRankValueName()));
+          double realValue = Double.parseDouble(rank.getProperty(config.getEdgeRankValueName()));
           double difference = realValue - estimatedRating;
           numerator = numerator + Math.abs(difference);
           output.append(" n: ").append(n).append(" numerator: ").append(numerator).append(" estimatedRating: ").append(estimatedRating).append(" realValue: ").append(realValue).append(" difference: ").append(difference);
-          
 
-        System.out.println(output);
+
+          System.out.println(output);
         }
         System.out.flush();
       }
 
     }
-    double mae = numerator / (double)(n);
+    double mae = numerator / (double) (n);
     System.out.println("MAE: " + mae);
   }
 
   public static void oldevaluateRecommender(IGraph testDataSet, IRecommender reco)
   {
+    IRecommenderConfig config = reco.getConfig();
+
     int hitRecommed = 0;
     int userNumber = 0;
-    List<INode> users = testDataSet.getNodesByType(RecommenderPropertiesHandle.getInstance().getUserType());
+    List<INode> users = testDataSet.getNodesByType(config.getUserType());
     for (INode user : users)
     {
-      List<IEdge> ranks = user.getOutEdge(EdgeTypeFactory.getEdgeType(IEdgeType.EDGE_TYPE_TEST_RANK));
+      List<IEdge> ranks = user.getOutEdge(EdgeTypeFactory.getEdgeType(IEdgeType.EDGE_TYPE_TEST_RANK, config.getGraphConfig()));
       if (ranks.isEmpty())
         continue;
       userNumber++;
       List<Rating> recommendtations = reco.recommend(user);
       System.out.println("Recommendation for User with code: "
-                         + user.getProperty(RecommenderPropertiesHandle.getInstance().getUserIdentifierName()));
+                         + user.getProperty(config.getUserIdentifierName()));
       int hit = 0;
       for (Rating rate : recommendtations)
       {
         for (IEdge edge : ranks)
         {
-          String recommendedId = rate.getItem().getProperty(RecommenderPropertiesHandle.getInstance().getItemIdentifierName());
-          String testRankId = edge.getSource().getProperty(RecommenderPropertiesHandle.getInstance().getItemIdentifierName());
+          String recommendedId = rate.getItem().getProperty(config.getItemIdentifierName());
+          String testRankId = edge.getSource().getProperty(config.getItemIdentifierName());
           if (recommendedId.equalsIgnoreCase(testRankId));
           hit++;
 
@@ -97,7 +100,7 @@ public class RecommenderEvaluator
 
       }
       System.out.println("Hit Number for user "
-                         + user.getProperty(RecommenderPropertiesHandle.getInstance().getUserIdentifierName())
+                         + user.getProperty(config.getUserIdentifierName())
                          + " = " + hit);
       if (hit > 0)
         hitRecommed++;

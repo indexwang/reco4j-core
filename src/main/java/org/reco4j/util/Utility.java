@@ -19,9 +19,7 @@
 package org.reco4j.util;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
-import org.apache.mahout.cf.taste.impl.common.FastByIDMap;
 import org.reco4j.graph.INode;
 import org.reco4j.graph.Rating;
 
@@ -46,36 +44,36 @@ public class Utility
     return recommendationsRes;
   }
 
-  public static HashMap<String, Rating> getKNNRow(ArrayList<Rating> recommendations, int kvalue)
-  {
-    HashMap<String, Rating> knnRow = new HashMap<String, Rating>();
-
-    int step = 0;
-    for (Rating rate : recommendations)
-    {
-      if (step > kvalue)
-        break;
-      step++;
-      knnRow.put(rate.getItem().getProperty(RecommenderPropertiesHandle.getInstance().getItemIdentifierName()), rate);
-    }
-    return knnRow;
-  }
-  
-  public static FastByIDMap<Rating> getFastKNNRow(ArrayList<Rating> recommendations, int kvalue)
-  {
-    FastByIDMap<Rating> knnRow = new FastByIDMap<Rating>();
-
-    int step = 0;
-    for (Rating rate : recommendations)
-    {
-      if (step > kvalue)
-        break;
-      step++;
-      String itemId = rate.getItem().getProperty(RecommenderPropertiesHandle.getInstance().getItemIdentifierName());
-      knnRow.put(Long.parseLong(itemId), rate);
-    }
-    return knnRow;
-  }
+//  public static HashMap<String, Rating> getKNNRow(ArrayList<Rating> recommendations, String itemIdentifierName, int kvalue)
+//  {
+//    HashMap<String, Rating> knnRow = new HashMap<String, Rating>();
+//
+//    int step = 0;
+//    for (Rating rate : recommendations)
+//    {
+//      if (step > kvalue)
+//        break;
+//      step++;
+//      knnRow.put(rate.getItem().getProperty(itemIdentifierName), rate);
+//    }
+//    return knnRow;
+//  }
+//  
+//  public static FastByIDMap<Rating> getFastKNNRow(ArrayList<Rating> recommendations, String itemIdentifierName, int kvalue)
+//  {
+//    FastByIDMap<Rating> knnRow = new FastByIDMap<Rating>();
+//
+//    int step = 0;
+//    for (Rating rate : recommendations)
+//    {
+//      if (step > kvalue)
+//        break;
+//      step++;
+//      String itemId = rate.getItem().getProperty(itemIdentifierName);
+//      knnRow.put(Long.parseLong(itemId), rate);
+//    }
+//    return knnRow;
+//  }
 
   public static void orderedInsert(ArrayList<Rating> recommendations, double estimatedRating, INode item)
   {
@@ -107,12 +105,5 @@ public class Utility
     recommendations.add(index, rate);
     if (recommendations.size() > size)
       recommendations.remove(size);
-  }
-
-  public static void insertUserOnce(HashMap<String, INode> totalUserMap, INode user)
-  {
-    String userId = user.getProperty(RecommenderPropertiesHandle.getInstance().getUserIdentifierName());
-    if (totalUserMap.get(userId) == null)
-      totalUserMap.put(userId, user);
   }
 }

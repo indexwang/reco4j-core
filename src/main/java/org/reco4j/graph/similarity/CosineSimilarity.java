@@ -24,24 +24,17 @@ import org.reco4j.graph.IEdge;
 import org.reco4j.graph.IEdgeType;
 import org.reco4j.graph.IGraph;
 import org.reco4j.graph.INode;
-import org.reco4j.util.RecommenderPropertiesHandle;
-import org.reco4j.util.Utility;
 
 /**
  *
  ** @author Alessandro Negro <alessandro.negro at reco4j.org>
  */
-public class CosineSimilarity implements ISimilarity
+public class CosineSimilarity 
+  extends BasicSimilarity<ICosineSimilarityConfig>
 {
-  private static CosineSimilarity theInstance = new CosineSimilarity();
-
-  private CosineSimilarity()
+  public CosineSimilarity(ICosineSimilarityConfig config)
   {
-  }
-
-  public static CosineSimilarity getInstance()
-  {
-    return theInstance;
+    super(config);
   }
 
   @Override
@@ -54,15 +47,15 @@ public class CosineSimilarity implements ISimilarity
 
     for (IEdge edge : xInEdge)
     {
-      Utility.insertUserOnce(totalUserMap, edge.getSource());
-      Utility.insertUserOnce(totalXUserMap, edge.getSource());
+      insertUserOnce(totalUserMap, edge.getSource());
+      insertUserOnce(totalXUserMap, edge.getSource());
     }
 
     List<IEdge> yInEdge = y.getInEdge(edgeType);
     for (IEdge edge : yInEdge)
     {
-      Utility.insertUserOnce(totalUserMap, edge.getSource());
-      Utility.insertUserOnce(totalYUserMap, edge.getSource());
+      insertUserOnce(totalUserMap, edge.getSource());
+      insertUserOnce(totalYUserMap, edge.getSource());
     }
 
     int userTotalNumber = totalUserMap.size();
@@ -72,12 +65,12 @@ public class CosineSimilarity implements ISimilarity
     int pos = 0;
     for (INode user : totalUserMap.values())
     {
-      if (totalXUserMap.containsKey(user.getProperty(RecommenderPropertiesHandle.getInstance().getUserIdentifierName())))
+      if (totalXUserMap.containsKey(user.getProperty(getConfig().getUserIdentifierName())))
         xVector[pos] = 1;
       else
         xVector[pos] = 0;
 
-      if (totalYUserMap.containsKey(user.getProperty(RecommenderPropertiesHandle.getInstance().getUserIdentifierName())))
+      if (totalYUserMap.containsKey(user.getProperty(getConfig().getUserIdentifierName())))
         yVector[pos] = 1;
       else
         yVector[pos] = 0;
@@ -115,5 +108,12 @@ public class CosineSimilarity implements ISimilarity
       sum += xVector[i] * xVector[i];
     }
     return Math.sqrt(sum);
+  }
+
+  private void insertUserOnce(HashMap<String, INode> totalUserMap, INode user)
+  {
+    String userId = user.getProperty(getConfig().getUserIdentifierName());
+    if (totalUserMap.get(userId) == null)
+      totalUserMap.put(userId, user);
   }
 }

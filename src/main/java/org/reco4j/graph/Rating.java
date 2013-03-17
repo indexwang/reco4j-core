@@ -20,7 +20,6 @@ package org.reco4j.graph;
 
 import java.sql.Timestamp;
 import org.apache.mahout.cf.taste.model.Preference;
-import org.reco4j.util.RecommenderPropertiesHandle;
 
 /**
  *

@@ -24,23 +24,17 @@ import org.reco4j.graph.IEdge;
 import org.reco4j.graph.IEdgeType;
 import org.reco4j.graph.IGraph;
 import org.reco4j.graph.INode;
-import org.reco4j.session.RecommenderSessionManager;
 
 /**
  *
  ** @author Alessandro Negro <alessandro.negro at reco4j.org>
  */
-public class EuclideanSimilarity implements ISimilarity
+public class EuclideanSimilarity 
+  extends BasicSimilarity<IEuclideanSimilarityConfig>
 {
-  private static EuclideanSimilarity theInstance = new EuclideanSimilarity();
-  private EuclideanSimilarity()
+  public EuclideanSimilarity(IEuclideanSimilarityConfig config)
   {
-    
-  }
-  
-  public static EuclideanSimilarity getInstance()
-  {
-    return theInstance;
+    super(config);
   }
   
   @Override
@@ -57,7 +51,7 @@ public class EuclideanSimilarity implements ISimilarity
       if (otherRating != null)
       {
         commonItems++;
-        String propertyName = RecommenderSessionManager.getInstance().getRankValueProprertyName();
+        String propertyName = getConfig().getEdgeRankValueName();
         double edgeRating = Double.parseDouble(edge.getProperty(propertyName));
         double otherEdgeRating = Double.parseDouble(otherRating.getProperty(propertyName));
         sim += Math.pow(edgeRating - otherEdgeRating, 2);

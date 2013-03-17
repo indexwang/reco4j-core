@@ -29,18 +29,14 @@ import org.reco4j.graph.INode;
  *
  ** @author Alessandro Negro <alessandro.negro at reco4j.org>
  */
-public class JaccardSimilarity implements ISimilarity
+public class JaccardSimilarity 
+  extends BasicSimilarity<ISimilarityConfig>
 {
-  private static JaccardSimilarity theInstance = new JaccardSimilarity();
-  private JaccardSimilarity()
+  public JaccardSimilarity(ISimilarityConfig config)
   {
-    
+    super(config);
   }
   
-  public static JaccardSimilarity getInstance()
-  {
-    return theInstance;
-  }
   @Override
   public double getSimilarity(INode x, INode y, IEdgeType edgeType, IGraph dataSet)
   {

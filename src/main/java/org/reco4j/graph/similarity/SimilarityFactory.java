@@ -19,42 +19,42 @@
 
 package org.reco4j.graph.similarity;
 
+import static org.reco4j.graph.similarity.ISimilarityConfig.*;
+
 /**
  *
  ** @author Alessandro Negro <alessandro.negro at reco4j.org>
  */
 public class SimilarityFactory
 {
-  
-  public final static int EUCLIDEAN_SIM = 0;
-  public final static int EUCLIDEAN_NORM_SIM = 1;
-  public final static int JACCARD_SIM = 2;
-  public final static int COSINE_SIM = 3;
-  public final static int BINARY_JACCARD_SIM = 4;
-
-  public static ISimilarity getSimilarityClass(int simMethod)
+  public static ISimilarity getSimilarityClass(ISimilarityConfig config)
   {
-    ISimilarity sim = null;
-    switch (simMethod)
+    ISimilarity sim;
+    
+    int similarityType = config.getSimilarityType();
+    
+    // Safe casts due to similarityType
+    switch (similarityType)
     {
-      case EUCLIDEAN_SIM:
-        sim = EuclideanSimilarity.getInstance();
+      case SIMILARITY_TYPE_EUCLIDEAN:
+        sim = new EuclideanSimilarity((IEuclideanSimilarityConfig) config);
         break;
-      case EUCLIDEAN_NORM_SIM:
-        sim = EuclideanSimilarityNormalized.getInstance();
+      case SIMILARITY_TYPE_EUCLIDEAN_NORMALIZED:
+        sim = new EuclideanSimilarityNormalized((IEuclideanSimilarityConfig) config);
         break;
-      case JACCARD_SIM:
-        sim = JaccardSimilarity.getInstance();
+      case SIMILARITY_TYPE_JACCARD:
+        sim = new JaccardSimilarity(config);
         break;
-      case COSINE_SIM:
-        sim = CosineSimilarity.getInstance();
+      case SIMILARITY_TYPE_COSINE:
+        sim = new CosineSimilarity((ICosineSimilarityConfig) config);
         break;
-      case BINARY_JACCARD_SIM:
-        //sim = new BinaryJaccardSimilarity();
-        break;
+//      case SIMILARITY_TYPE_BINARY_JACCARD:
+//        //sim = new BinaryJaccardSimilarity();
+//        break;
+      default:
+        throw new RuntimeException("Bad similarity type: " + similarityType);
     }
 
     return sim;
   }
-
 }

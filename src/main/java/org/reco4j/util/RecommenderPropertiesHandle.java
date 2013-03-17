@@ -19,13 +19,24 @@
 package org.reco4j.util;
 
 import java.util.Properties;
-import org.reco4j.graph.similarity.SimilarityFactory;
+import org.reco4j.graph.IGraphConfig;
+import org.reco4j.graph.recommenders.ICollaborativeFilteringRecommenderConfig;
+import org.reco4j.graph.recommenders.IMFRecommenderConfig;
+import org.reco4j.graph.recommenders.IMahoutRecommenderConfig;
+import org.reco4j.graph.similarity.ICosineSimilarityConfig;
+import org.reco4j.graph.similarity.IEuclideanSimilarityConfig;
+import org.reco4j.graph.similarity.ISimilarityConfig;
 
 /**
  *
  ** @author Alessandro Negro <alessandro.negro at reco4j.org>
  */
-public class RecommenderPropertiesHandle implements IPropertiesHandle
+public class RecommenderPropertiesHandle
+  implements
+  IPropertiesHandle,
+  IRecommenderConfig, ICollaborativeFilteringRecommenderConfig, IMFRecommenderConfig, IMahoutRecommenderConfig,
+  ISimilarityConfig, ICosineSimilarityConfig, IEuclideanSimilarityConfig,
+  IGraphConfig
 {
   protected Properties properties;
   //Properties name on the properties file
@@ -49,7 +60,6 @@ public class RecommenderPropertiesHandle implements IPropertiesHandle
   protected static final String PROPERTY_NAME_MAX_PREFERENCE_VALUE = "maxPreference";
   protected static final String PROPERTY_NAME_MIN_PREFERENCE_VALUE = "minPreference";
   protected static final String PROPERTY_NAME_NODE_TYPE = "nodeType";
-
   //Default value for properties name on node or edges
   protected final static String PROPERTY_NODE_IDENTIFIER = "id"; //Prendere anche da properties file
   protected final static String PROPERTY_ITEM_IDENTIFIER = "itemId"; //Prendere anche da properties file
@@ -72,7 +82,6 @@ public class RecommenderPropertiesHandle implements IPropertiesHandle
   protected static int PROPERTY_K_VALUE = 25;
   protected static int PROPERTY_RECO_NUMBER = 10;
   private static RecommenderPropertiesHandle theInstance = new RecommenderPropertiesHandle();
-  
 
   protected RecommenderPropertiesHandle()
   {
@@ -89,6 +98,7 @@ public class RecommenderPropertiesHandle implements IPropertiesHandle
     this.properties = properties;
   }
 
+  @Override
   public int getKValue()
   {
     int k_value = Integer.parseInt(getProperty(PROTERTY_NAME_K_VALUE, "-1"));
@@ -99,6 +109,7 @@ public class RecommenderPropertiesHandle implements IPropertiesHandle
       return PROPERTY_K_VALUE; //Default value
   }
 
+  @Override
   public int getRecoNumber()
   {
     int reco_number_v = Integer.parseInt(getProperty(PROTERTY_NAME_RECOMMENDED_ITEMS, "-1"));
@@ -114,6 +125,7 @@ public class RecommenderPropertiesHandle implements IPropertiesHandle
     return PROPERTY_NODE_IDENTIFIER; //Default value
   }
 
+  @Override
   public String getItemIdentifierName()
   {
     String rankValueName = getProperty(PROPERTY_NAME_NODE_ITEM_IDENTIFIER, null);
@@ -123,6 +135,7 @@ public class RecommenderPropertiesHandle implements IPropertiesHandle
       return PROPERTY_ITEM_IDENTIFIER;
   }
 
+  @Override
   public String getUserIdentifierName()
   {
     String rankValueName = getProperty(PROPERTY_NAME_NODE_USER_IDENTIFIER, null);
@@ -132,6 +145,7 @@ public class RecommenderPropertiesHandle implements IPropertiesHandle
       return PROPERTY_USER_IDENTIFIER;
   }
 
+  @Override
   public String getEdgeRankValueName()
   {
     String rankValueName = getProperty(PROPERTY_NAME_RANK_VALUE, null);
@@ -141,6 +155,7 @@ public class RecommenderPropertiesHandle implements IPropertiesHandle
       return PROPERTY_RANK_VALUE_NAME; //Default value
   }
 
+  @Override
   public String getItemType()
   {
     String rankValueName = getProperty(PROPERTY_NAME_ITEM_TYPE, null);
@@ -150,6 +165,7 @@ public class RecommenderPropertiesHandle implements IPropertiesHandle
       return PROPERTY_ITEM_TYPE; //Default value
   }
 
+  @Override
   public String getUserType()
   {
     String rankValueName = getProperty(PROPERTY_NAME_USER_TYPE, null);
@@ -159,6 +175,7 @@ public class RecommenderPropertiesHandle implements IPropertiesHandle
       return PROPERTY_USER_TYPE; //Default value
   }
 
+  @Override
   public String getEdgeRankName()
   {
     String rankValueName = getProperty(PROPERTY_NAME_EDGE_RANK, null);
@@ -168,6 +185,7 @@ public class RecommenderPropertiesHandle implements IPropertiesHandle
       return PROPERTY_EDGE_RANK_IDENTIFIER; //Default value
   }
 
+  @Override
   public String getEdgeTestRankName()
   {
     String rankValueName = getProperty(PROPERTY_NAME_EDGE_TEST_RANK, null);
@@ -177,6 +195,7 @@ public class RecommenderPropertiesHandle implements IPropertiesHandle
       return PROPERTY_EDGE_TEST_RANK_IDENTIFIER; //Default value
   }
 
+  @Override
   public String getEdgeEstimatedRatingName()
   {
     String rankValueName = getProperty(PROPERTY_NAME_EDGE_ESTIMATED_RATING, null);
@@ -198,16 +217,30 @@ public class RecommenderPropertiesHandle implements IPropertiesHandle
     }
   }
 
-  public int getDistanceAlgorithm()
+  @Override
+  public int getSimilarityType()
   {
     int distanceAlg = Integer.parseInt(getProperty(PROPERTY_NAME_DISTANCE_ALGORITHM, "-1"));
 
     if (distanceAlg > 0)
       return distanceAlg;
     else
-      return SimilarityFactory.EUCLIDEAN_SIM; //Default value
+      return ISimilarityConfig.SIMILARITY_TYPE_EUCLIDEAN; //Default value
   }
 
+  @Override
+  public ISimilarityConfig getSimilarityConfig()
+  {
+    return this;
+  }
+
+  @Override
+  public IGraphConfig getGraphConfig()
+  {
+    return this;
+  }
+
+  @Override
   public String getEdgeSimilarityName()
   {
     String rankValueName = getProperty(PROPERTY_NAME_EDGE_SIMILARITY, null);
@@ -217,6 +250,7 @@ public class RecommenderPropertiesHandle implements IPropertiesHandle
       return PROPERTY_EDGE_SIMILARITY_IDENTIFIER; //Default value
   }
 
+  @Override
   public boolean getRecalculateSimilarity()
   {
     String rankValueName = getProperty(PROPERTY_NAME_RECALCULATE_SIMILARITY, null);
@@ -226,6 +260,7 @@ public class RecommenderPropertiesHandle implements IPropertiesHandle
       return PROPERTY_RECALCULATE_SIMILARITY; //Default value
   }
 
+  @Override
   public int getRecommenderType()
   {
     String recommenderTypeValue = getProperty(PROPERTY_NAME_RECOMMENDER_TYPE, null);
@@ -235,6 +270,7 @@ public class RecommenderPropertiesHandle implements IPropertiesHandle
       return PROPERTY_RECOMMENDER_TYPE; //Default value
   }
 
+  @Override
   public int getMaxFeatures()
   {
     String maxFeatureValue = getProperty(PROPERTY_NAME_MAXFEATURES, null);
@@ -244,6 +280,7 @@ public class RecommenderPropertiesHandle implements IPropertiesHandle
       return PROPERTY_MAXFEATURES; //Default value
   }
 
+  @Override
   public double getFeatureInitValue()
   {
     String featureInitValue = getProperty(PROPERTY_NAME_FEATURE_INIT_VALUE, null);
@@ -253,6 +290,7 @@ public class RecommenderPropertiesHandle implements IPropertiesHandle
       return PROPERTY_FEATURE_INIT_VALUE; //Default value
   }
 
+  @Override
   public double getMaxPreferenceValue()
   {
     String maxPreferenceValue = getProperty(PROPERTY_NAME_MAX_PREFERENCE_VALUE, null);
@@ -262,6 +300,7 @@ public class RecommenderPropertiesHandle implements IPropertiesHandle
       return PROPERTY_MAX_PREFERENCE_VALUE; //Default value
   }
 
+  @Override
   public double getMinPreferenceValue()
   {
     String minPreferenceValue = getProperty(PROPERTY_NAME_MIN_PREFERENCE_VALUE, null);

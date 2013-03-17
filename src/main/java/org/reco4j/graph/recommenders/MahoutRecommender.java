@@ -30,29 +30,33 @@ import org.apache.mahout.cf.taste.impl.similarity.LogLikelihoodSimilarity;
 import org.apache.mahout.cf.taste.recommender.RecommendedItem;
 import org.apache.mahout.cf.taste.recommender.Recommender;
 import org.apache.mahout.cf.taste.similarity.ItemSimilarity;
-import org.reco4j.graph.IEdgeType;
 import org.reco4j.graph.IGraph;
 import org.reco4j.graph.INode;
 import org.reco4j.graph.Rating;
 import org.reco4j.graph.mahout.Reco4jMahoutDataModel;
-import org.reco4j.util.RecommenderPropertiesHandle;
 
 /**
- * 
+ *
  * @author Alessandro Negro <alessandro.negro at reco4j.org>
  */
-public class MahoutRecommender extends BasicRecommender
+public class MahoutRecommender
+  extends BasicRecommender<IMahoutRecommenderConfig>
 {
   private Recommender mahoutRecommender;
+
+  public MahoutRecommender(IMahoutRecommenderConfig config)
+  {
+    super(config);
+  }
 
   @Override
   public void buildRecommender(IGraph learningDataSet)
   {
-    Reco4jMahoutDataModel datamodel = new Reco4jMahoutDataModel(learningDataSet);
+    Reco4jMahoutDataModel datamodel = new Reco4jMahoutDataModel(learningDataSet, getConfig());
     //usare classforname per caricare dinamicamente le classi del recommender dopo e delle similitudini
     ItemSimilarity similarity = new LogLikelihoodSimilarity(datamodel);
     Optimizer optimizer = new NonNegativeQuadraticOptimizer();
-    mahoutRecommender = new KnnItemBasedRecommender(datamodel, similarity, optimizer, RecommenderPropertiesHandle.getInstance().getKValue());
+    mahoutRecommender = new KnnItemBasedRecommender(datamodel, similarity, optimizer, getConfig().getKValue());
   }
 
   @Override
@@ -77,14 +81,14 @@ public class MahoutRecommender extends BasicRecommender
   public List<Rating> recommend(INode node)
   {
     List<Rating> result = new ArrayList<Rating>();
-    String identifier = node.getProperty(RecommenderPropertiesHandle.getInstance().getUserIdentifierName());
+    String identifier = node.getProperty(getConfig().getUserIdentifierName());
     try
     {
       List<RecommendedItem> recommendation = mahoutRecommender.recommend(Long.parseLong(identifier), 10);
       for (RecommendedItem reco : recommendation)
       {
         INode item = learningDataSet.getItemNodeById(reco.getItemID());
-        double value = (double)reco.getValue();
+        double value = (double) reco.getValue();
         result.add(new Rating(item, value));
       }
     }
@@ -97,11 +101,11 @@ public class MahoutRecommender extends BasicRecommender
 
   @Override
   public double estimateRating(INode user, INode source)
-  { 
+  {
     try
     {
       float estimatePreference = mahoutRecommender.estimatePreference(user.getId(), source.getId());
-      return (double)estimatePreference;
+      return (double) estimatePreference;
     }
     catch (TasteException ex)
     {
@@ -109,5 +113,4 @@ public class MahoutRecommender extends BasicRecommender
       return -1;
     }
   }
-  
 }

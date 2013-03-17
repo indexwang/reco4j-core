@@ -20,7 +20,6 @@ package org.reco4j.graph;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 import org.apache.mahout.cf.taste.impl.common.FastIDSet;
 
@@ -32,7 +31,7 @@ import org.apache.mahout.cf.taste.impl.common.FastIDSet;
  */
 public interface IGraph
 {
-  public void setProperties(Properties properties);
+//  public void setProperties(Properties properties);
   
   public INode addNode(Map<String, String> properties);
   public void setNodeProperty(INode node, String propertyName, String value);

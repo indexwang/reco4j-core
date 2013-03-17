@@ -18,25 +18,20 @@
  */
 package org.reco4j.graph;
 
-import org.reco4j.util.RecommenderPropertiesHandle;
-
 /**
  *
  ** @author Alessandro Negro <alessandro.negro at reco4j.org>
  */
-public class EdgeTypeSimilarity implements IEdgeType
+public class EdgeTypeSimilarity extends BasicEdgeType implements IEdgeType
 {
+  public EdgeTypeSimilarity(IGraphConfig config)
+  {
+    setEdgeName(config.getEdgeRankName());
+  }
 
   @Override
   public int getType()
   {
     return IEdgeType.EDGE_TYPE_SIMILARITY;
   }
-
-  @Override
-  public String getEdgeName()
-  {
-    return RecommenderPropertiesHandle.getInstance().getEdgeSimilarityName();
-  }
-  
 }

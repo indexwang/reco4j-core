@@ -55,8 +55,7 @@ public class RecommenderEngine
   public static IRecommender createRecommender(Properties properties)
   {
     RecommenderPropertiesHandle.getInstance().setProperties(properties);
-    int recommenderType = RecommenderPropertiesHandle.getInstance().getRecommenderType();
-    IRecommender recommender = RecommendersFactory.getRecommender(recommenderType);
+    IRecommender recommender = RecommendersFactory.getRecommender(RecommenderPropertiesHandle.getInstance());
     return recommender;
   }
 }

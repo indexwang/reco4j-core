@@ -18,25 +18,20 @@
  */
 package org.reco4j.graph;
 
-import org.reco4j.util.RecommenderPropertiesHandle;
-
 /**
  *
  ** @author Alessandro Negro <alessandro.negro at reco4j.org>
  */
-public class EdgeTypeEstimatedRating implements IEdgeType
+public class EdgeTypeEstimatedRating extends BasicEdgeType implements IEdgeType
 {
+  public EdgeTypeEstimatedRating(IGraphConfig config)
+  {
+    setEdgeName(config.getEdgeRankName());
+  }
 
   @Override
   public int getType()
   {
     return IEdgeType.EDGE_TYPE_ESTIMATED_RATING;
   }
-
-  @Override
-  public String getEdgeName()
-  {
-    return RecommenderPropertiesHandle.getInstance().getEdgeEstimatedRatingName();
-  }
-  
 }

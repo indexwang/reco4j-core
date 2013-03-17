@@ -30,7 +30,7 @@ import org.apache.mahout.cf.taste.impl.model.GenericUserPreferenceArray;
 import org.apache.mahout.cf.taste.model.DataModel;
 import org.apache.mahout.cf.taste.model.PreferenceArray;
 import org.reco4j.graph.*;
-import org.reco4j.util.RecommenderPropertiesHandle;
+import org.reco4j.graph.recommenders.IMahoutRecommenderConfig;
 
 /**
  * Follow:
@@ -40,18 +40,19 @@ import org.reco4j.util.RecommenderPropertiesHandle;
  */
 public class Reco4jMahoutDataModel implements DataModel
 {
-
   private IGraph learningDataset;
+  private IMahoutRecommenderConfig config;
   private LongPrimitiveIterator userIds;
   private int userCount = -1;
   private LongPrimitiveIterator itemIds;
   private int itemCount = -1;
   IEdgeType edgeType;
 
-  public Reco4jMahoutDataModel(IGraph learningDataset)
+  public Reco4jMahoutDataModel(IGraph learningDataset, IMahoutRecommenderConfig config)
   {
     this.learningDataset = learningDataset;
-    edgeType = EdgeTypeFactory.getEdgeType(IEdgeType.EDGE_TYPE_RANK);
+    this.config = config;
+    edgeType = EdgeTypeFactory.getEdgeType(IEdgeType.EDGE_TYPE_RANK, config.getGraphConfig());
   }
 
   @Override
@@ -59,9 +60,9 @@ public class Reco4jMahoutDataModel implements DataModel
   {
     if (userIds != null)
       return userIds;
-    String userType = RecommenderPropertiesHandle.getInstance().getUserType();
+    String userType = config.getUserType();
     userIds = learningDataset.getNodesIdByType(userType).iterator();
-    //userIds = getNodesByType(userType, RecommenderPropertiesHandle.getInstance().getUserIdentifierName());
+    //userIds = getNodesByType(userType, config.getUserIdentifierName());
     return userIds;
   }
 
@@ -70,9 +71,9 @@ public class Reco4jMahoutDataModel implements DataModel
   {
     if (itemIds != null)
       return itemIds;
-    String itemType = RecommenderPropertiesHandle.getInstance().getItemType();
+    String itemType = config.getItemType();
     itemIds = learningDataset.getNodesIdByType(itemType).iterator();
-    //itemIds = getNodesByType(itemType, RecommenderPropertiesHandle.getInstance().getItemIdentifierName());
+    //itemIds = getNodesByType(itemType, config.getItemIdentifierName());
     return itemIds;
   }
 
@@ -80,7 +81,7 @@ public class Reco4jMahoutDataModel implements DataModel
   public PreferenceArray getPreferencesFromUser(long userID) throws TasteException
   {
     final INode user = learningDataset.getNodeById(userID);
-    ArrayList<Rating> ratingList = user.getRatingsFromUser();
+    ArrayList<Rating> ratingList = user.getRatingsFromUser(config.getGraphConfig());
     return new GenericUserPreferenceArray(ratingList);
   }
 
@@ -96,7 +97,7 @@ public class Reco4jMahoutDataModel implements DataModel
       public void call(IEdge rate)
       {
         INode item = rate.getDestination();
-        String idStr = item.getProperty(RecommenderPropertiesHandle.getInstance().getItemIdentifierName());
+        String idStr = item.getProperty(config.getItemIdentifierName());
         result.add(Long.parseLong(idStr));
       }
     });
@@ -107,7 +108,7 @@ public class Reco4jMahoutDataModel implements DataModel
   public PreferenceArray getPreferencesForItem(long itemID) throws TasteException
   {
     final INode user = learningDataset.getNodeById(itemID);
-    ArrayList<Rating> ratingList = user.getRatingsForItem();
+    ArrayList<Rating> ratingList = user.getRatingsForItem(config.getGraphConfig());
     return new GenericItemPreferenceArray(ratingList);
   }
 
@@ -119,7 +120,7 @@ public class Reco4jMahoutDataModel implements DataModel
     if (user ==null || item == null)
       return null;
     IEdge edge = user.getEdge(item, edgeType);
-    String property = edge.getProperty(RecommenderPropertiesHandle.getInstance().getEdgeRankValueName());
+    String property = edge.getProperty(config.getEdgeRankValueName());
     return Float.parseFloat(property);
   }
 
@@ -133,7 +134,7 @@ public class Reco4jMahoutDataModel implements DataModel
   public int getNumItems() throws TasteException
   {
     if (itemCount < 0)
-      itemCount = learningDataset.getNodesNumberByType(RecommenderPropertiesHandle.getInstance().getItemType());
+      itemCount = learningDataset.getNodesNumberByType(config.getItemType());
     return itemCount;
   }
 
@@ -141,7 +142,7 @@ public class Reco4jMahoutDataModel implements DataModel
   public int getNumUsers() throws TasteException
   {
     if (userCount < 0)
-      userCount = learningDataset.getNodesNumberByType(RecommenderPropertiesHandle.getInstance().getUserType());
+      userCount = learningDataset.getNodesNumberByType(config.getUserType());
     return userCount;
   }
 
@@ -187,13 +188,13 @@ public class Reco4jMahoutDataModel implements DataModel
   @Override
   public float getMaxPreference()
   {
-    return (float)RecommenderPropertiesHandle.getInstance().getMaxPreferenceValue();
+    return (float)config.getMaxPreferenceValue();
   }
 
   @Override
   public float getMinPreference()
   {
-    return (float)RecommenderPropertiesHandle.getInstance().getMinPreferenceValue();
+    return (float)config.getMinPreferenceValue();
   }
 
   @Override

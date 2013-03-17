@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import org.reco4j.graph.*;
-import org.reco4j.util.RecommenderPropertiesHandle;
 import org.reco4j.util.TimeReportUtility;
 import org.reco4j.util.Utility;
 
@@ -31,7 +30,8 @@ import org.reco4j.util.Utility;
  *
  ** @author Alessandro Negro <alessandro.negro at reco4j.org>
  */
-public class MFRecommender extends BasicRecommender
+public class MFRecommender
+  extends BasicRecommender<IMFRecommenderConfig>
 {
   private static final int MIN_EPOCHS = 120; //120           // Minimum number of epochs per feature
   private static final int MAX_EPOCHS = 200;           // Max epochs per feature
@@ -45,6 +45,11 @@ public class MFRecommender extends BasicRecommender
   private List<IEdge> ratingList;
   private int maxFeatures;
   private int ratingCount;
+
+  public MFRecommender(IMFRecommenderConfig config)
+  {
+    super(config);
+  }
 
   @Override
   public void buildRecommender(IGraph learningDataSet)
@@ -71,12 +76,12 @@ public class MFRecommender extends BasicRecommender
   {
     ArrayList<Rating> recommendations = new ArrayList<Rating>();
 
-    for (INode item : learningDataSet.getNodesByType(RecommenderPropertiesHandle.getInstance().getItemType()))
+    for (INode item : learningDataSet.getNodesByType(getConfig().getItemType()))
     {
       if (item.isConnected(user, edgeType))
         continue;
       double estimatedRating = estimateRating(user, item);
-      Utility.orderedInsert(recommendations, estimatedRating, item, RecommenderPropertiesHandle.getInstance().getRecoNumber());
+      Utility.orderedInsert(recommendations, estimatedRating, item, getConfig().getRecoNumber());
     }
     return recommendations;
   }
@@ -88,7 +93,7 @@ public class MFRecommender extends BasicRecommender
     for (int f = 0; f < maxFeatures; f++)
     {
       sum += itemFeatures.get(f).get(item.getId())
-        * userFeatures.get(f).get(user.getId());
+             * userFeatures.get(f).get(user.getId());
       if (sum > 5)
         sum = 5.0;
       if (sum < 1)
@@ -102,15 +107,15 @@ public class MFRecommender extends BasicRecommender
     itemFeatures = new ConcurrentHashMap<Integer, ConcurrentHashMap<Long, Double>>();
     userFeatures = new ConcurrentHashMap<Integer, ConcurrentHashMap<Long, Double>>();
     itemList = learningDataSet.getNodesMapByType(
-      RecommenderPropertiesHandle.getInstance().getItemType());
+      getConfig().getItemType());
     userList = learningDataSet.getNodesMapByType(
-      RecommenderPropertiesHandle.getInstance().getUserType());
-    ratingList = learningDataSet.getEdgesByType(EdgeTypeFactory.getEdgeType(IEdgeType.EDGE_TYPE_RANK));
+      getConfig().getUserType());
+    ratingList = learningDataSet.getEdgesByType(EdgeTypeFactory.getEdgeType(IEdgeType.EDGE_TYPE_RANK, getConfig().getGraphConfig()));
     ratingCount = ratingList.size();
 
-    maxFeatures = RecommenderPropertiesHandle.getInstance().getMaxFeatures();
-    double featureInitValue = RecommenderPropertiesHandle.getInstance().getFeatureInitValue();
-    
+    maxFeatures = getConfig().getMaxFeatures();
+    double featureInitValue = getConfig().getFeatureInitValue();
+
     for (int i = 0; i < maxFeatures; i++)
     {
       ConcurrentHashMap<Long, Double> qi = new ConcurrentHashMap<Long, Double>();
@@ -154,7 +159,7 @@ public class MFRecommender extends BasicRecommender
   {
     for (IEdge rating : ratingList)
     {
-      double realValue = Double.parseDouble(rating.getProperty(RecommenderPropertiesHandle.getInstance().getEdgeRankValueName()));
+      double realValue = Double.parseDouble(rating.getProperty(getConfig().getEdgeRankValueName()));
 
       ExtendedEdgeInfos exEdgeInfos = new ExtendedEdgeInfos();
       rating.setExtendedInfos(exEdgeInfos);
@@ -208,9 +213,9 @@ public class MFRecommender extends BasicRecommender
 
           // Predict rating and calc error
           double p = predictRating(item, user, f, rating, true);
-          double ratingValue = Double.parseDouble(rating.getProperty(RecommenderPropertiesHandle.getInstance().getEdgeRankValueName()));
+          double ratingValue = Double.parseDouble(rating.getProperty(getConfig().getEdgeRankValueName()));
 
-          
+
           double err;
           err = ratingValue - p;
           sq += err * err;
@@ -219,22 +224,22 @@ public class MFRecommender extends BasicRecommender
           // Cache off old feature values
           double mf = itemFeature.get(item.getId()).doubleValue();
           double cf = userFeature.get(user.getId()).doubleValue();
-          
-          
-          
+
+
+
           double newCf = cf + (LRATE * (err * mf - K * cf)); //0.001 * ((0.099) - 0.0015))
           userFeature.put(user.getId(), newCf);
           double newMf = mf + (LRATE * (err * cf - K * mf));
           itemFeature.put(item.getId(), newMf);
         }
-        rmse = Math.sqrt(sq/(double)ratingList.size());
+        rmse = Math.sqrt(sq / (double) ratingList.size());
       }
       //System.out.println("RMSE: " + rmse);
       for (IEdge rating : ratingList)
         ((ExtendedEdgeInfos) rating.getExtendedInfos()).setCache(predictRating(rating.getDestination(), rating.getSource(), f, rating, false));
     }
   }
-  
+
   private void calcFeaturesByUser()
   {
     int cnt = 0;
@@ -244,7 +249,7 @@ public class MFRecommender extends BasicRecommender
     System.out.println("maxFeatures: " + maxFeatures);
     for (INode user : userList.values())
     {
-      System.out.println("User: " + user.getProperty(RecommenderPropertiesHandle.getInstance().getUserIdentifierName()));
+      System.out.println("User: " + user.getProperty(getConfig().getUserIdentifierName()));
       for (int f = 0; f < maxFeatures; f++)
       {
         System.out.println("Calculating feature: " + f + " start: " + new Timestamp(System.currentTimeMillis()));
@@ -262,11 +267,11 @@ public class MFRecommender extends BasicRecommender
             INode item = rating.getDestination();
             if (rating.getSource().getId() != user.getId())
               continue;
-            
-            
+
+
             // Predict rating and calc error
             double p = predictRating(item, user, f, rating, true);
-            double ratingValue = Double.parseDouble(rating.getProperty(RecommenderPropertiesHandle.getInstance().getEdgeRankValueName()));
+            double ratingValue = Double.parseDouble(rating.getProperty(getConfig().getEdgeRankValueName()));
 
 
             double err;
@@ -298,10 +303,10 @@ public class MFRecommender extends BasicRecommender
   {
     double sum = ((ExtendedEdgeInfos) rating.getExtendedInfos()).getCache() > 0.0 ? ((ExtendedEdgeInfos) rating.getExtendedInfos()).getCache() : 1;
     sum = sum + (itemFeatures.get(f).get(movie.getId())
-       * (userFeatures.get(f).get(user.getId())));
+                 * (userFeatures.get(f).get(user.getId())));
     if (sum > 5)
       sum = 5;
-    if (sum < 1 )
+    if (sum < 1)
       sum = 1.0;
     return sum;
   }

@@ -18,6 +18,8 @@
  */
 package org.reco4j.graph.recommenders;
 
+import org.reco4j.util.IRecommenderConfig;
+
 /**
  *
  ** @author Alessandro Negro <alessandro.negro at reco4j.org>
@@ -29,20 +31,22 @@ public class RecommendersFactory
   public final static int RECOMMENDER_TYPE_FASTCOLLABORATIVE = 3;
   public final static int RECOMMENDER_TYPE_MAHOUT = 4;
   
-  public static IRecommender getRecommender(int recommenderType)
+  public static IRecommender getRecommender(IRecommenderConfig config)
   {
+    int recommenderType = config.getRecommenderType();
+  
     switch (recommenderType)
     {
       case RECOMMENDER_TYPE_COLLABORATIVE:
-        return new CollaborativeFilteringRecommender();
+        return new CollaborativeFilteringRecommender((ICollaborativeFilteringRecommenderConfig) config);
       case RECOMMENDER_TYPE_FASTCOLLABORATIVE:
-        return new FastCollaborativeFilteringRecommender();
+        return new FastCollaborativeFilteringRecommender((ICollaborativeFilteringRecommenderConfig) config);
       case RECOMMENDER_TYPE_MATRIXFACTORIZATION:
-        return new MFRecommender();      
+        return new MFRecommender((IMFRecommenderConfig) config);      
       case RECOMMENDER_TYPE_MAHOUT:
-        return new MahoutRecommender();      
+        return new MahoutRecommender((IMahoutRecommenderConfig) config);      
       default:
-        throw new UnsupportedOperationException("Unsupported recommender type: " + recommenderType);
+        throw new RuntimeException("Bad recommender type: " + recommenderType);
       //Aggiungere meccanismo di loading mediante ServiceLoader
     }    
   }

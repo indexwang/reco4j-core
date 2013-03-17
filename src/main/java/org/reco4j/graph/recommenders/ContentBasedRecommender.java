@@ -19,10 +19,10 @@
 package org.reco4j.graph.recommenders;
 
 import java.util.List;
-import org.reco4j.graph.IEdgeType;
 import org.reco4j.graph.IGraph;
 import org.reco4j.graph.INode;
 import org.reco4j.graph.Rating;
+import org.reco4j.util.IRecommenderConfig;
 
 /**
  *
@@ -30,6 +30,10 @@ import org.reco4j.graph.Rating;
  */
 public class ContentBasedRecommender extends BasicRecommender
 {
+  public ContentBasedRecommender(IRecommenderConfig config)
+  {
+    super(config);
+  }
 
   @Override
   public void buildRecommender(IGraph learningDataSet)

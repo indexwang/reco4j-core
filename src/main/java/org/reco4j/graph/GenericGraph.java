@@ -32,11 +32,11 @@ import org.apache.mahout.cf.taste.impl.common.FastIDSet;
 public class GenericGraph implements IGraph
 {
 
-  @Override
-  public void setProperties(Properties properties)
-  {
-    throw new UnsupportedOperationException("Not supported yet.");
-  }
+//  @Override
+//  public void setProperties(Properties properties)
+//  {
+//    throw new UnsupportedOperationException("Not supported yet.");
+//  }
 
   @Override
   public List<INode> getNodesByInEdge(IEdgeType edgesType)
