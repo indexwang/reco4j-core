@@ -59,8 +59,8 @@ public class MFRecommender
     timeReport.start();
     init();
     calcMetrics();
-    //calcFeatures();
-    calcFeaturesByUser();
+    calcFeatures();
+    //calcFeaturesByUser();
     timeReport.stop();
     timeReport.printStatistics();
   }

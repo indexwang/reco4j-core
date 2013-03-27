@@ -82,15 +82,15 @@ public class CollaborativeFilteringRecommender
   }
 
   @Override
-  public List<Rating> recommend(INode user)
+  public List<Rating> recommend(INode userNode)
   {
     ArrayList<Rating> recommendations = new ArrayList<Rating>();
 
     for (INode item : learningDataSet.getNodesByType(getConfig().getItemType()))
     {
-      if (item.isConnected(user, edgeType))
+      if (item.isConnected(userNode, edgeType))
         continue;
-      double estimatedRating = estimateRating(user, item);
+      double estimatedRating = estimateRating(userNode, item);
       Utility.orderedInsert(recommendations, estimatedRating, item, getConfig().getRecoNumber());
     }
     return recommendations;

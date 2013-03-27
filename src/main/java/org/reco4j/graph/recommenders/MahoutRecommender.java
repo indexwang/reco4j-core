@@ -78,10 +78,10 @@ public class MahoutRecommender
   }
 
   @Override
-  public List<Rating> recommend(INode node)
+  public List<Rating> recommend(INode userNode)
   {
     List<Rating> result = new ArrayList<Rating>();
-    String identifier = node.getProperty(getConfig().getUserIdentifierName());
+    String identifier = userNode.getProperty(getConfig().getUserIdentifierName());
     try
     {
       List<RecommendedItem> recommendation = mahoutRecommender.recommend(Long.parseLong(identifier), 10);

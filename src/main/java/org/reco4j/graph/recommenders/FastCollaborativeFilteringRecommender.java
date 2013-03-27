@@ -69,7 +69,7 @@ public class FastCollaborativeFilteringRecommender extends CollaborativeFilterin
   }
 
   @Override
-  public List<Rating> recommend(final INode user)
+  public List<Rating> recommend(final INode userNode)
   {
     final ArrayList<Rating> recommendations = new ArrayList<Rating>();
     learningDataSet.getNodesByType(getConfig().getItemType(),
@@ -78,9 +78,9 @@ public class FastCollaborativeFilteringRecommender extends CollaborativeFilterin
       @Override
       public void call(INode item)
       {
-        if (item.isConnected(user, edgeType))
+        if (item.isConnected(userNode, edgeType))
           return;
-        double estimatedRating = estimateRating(user, item);
+        double estimatedRating = estimateRating(userNode, item);
         Utility.orderedInsert(recommendations, estimatedRating, item);
       }
     });

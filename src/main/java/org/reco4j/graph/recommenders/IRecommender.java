@@ -92,7 +92,7 @@ public interface IRecommender<TConfig extends IRecommenderConfig>
    * Pensare anche ad un lazy recommender che dato il nodo di cui deve calcolare
    * le raccomandazioni calcola il tutto considerando quel sottoalbero
    */
-  public List<Rating> recommend(INode node);
+  public List<Rating> recommend(INode userNode);
 
   public double estimateRating(INode user, INode source);
 }
