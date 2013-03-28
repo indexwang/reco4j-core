@@ -34,13 +34,13 @@ public abstract class BasicRecommender<TConfig extends IRecommenderConfig>
   implements IRecommender<TConfig>
 {
   protected IGraph learningDataSet;
-  protected IEdgeType edgeType;
+  protected IEdgeType rankEdgeType;
   private TConfig config;
 
   public BasicRecommender(TConfig config)
   {
     this.config = config;
-    edgeType = EdgeTypeFactory.getEdgeType(IEdgeType.EDGE_TYPE_RANK, config.getGraphConfig());
+    rankEdgeType = EdgeTypeFactory.getEdgeType(IEdgeType.EDGE_TYPE_RANK, config.getGraphConfig());
   }
 
   public IGraph getLearningDataSet()

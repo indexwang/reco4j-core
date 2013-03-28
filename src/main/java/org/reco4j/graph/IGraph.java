@@ -31,8 +31,6 @@ import org.apache.mahout.cf.taste.impl.common.FastIDSet;
  */
 public interface IGraph
 {
-//  public void setProperties(Properties properties);
-  
   public INode addNode(Map<String, String> properties);
   public void setNodeProperty(INode node, String propertyName, String value);
   

@@ -78,7 +78,7 @@ public class FastCollaborativeFilteringRecommender extends CollaborativeFilterin
       @Override
       public void call(INode item)
       {
-        if (item.isConnected(userNode, edgeType))
+        if (item.isConnected(userNode, rankEdgeType))
           return;
         double estimatedRating = estimateRating(userNode, item);
         Utility.orderedInsert(recommendations, estimatedRating, item);
@@ -100,7 +100,7 @@ public class FastCollaborativeFilteringRecommender extends CollaborativeFilterin
       //Inserire il multithread
       timeReport.start();
       FastByIDMap<Rating> knnRow = getKnnRow(id);
-      foundNearestNeighbour(id, edgeType, knnRow);
+      foundNearestNeighbour(id, rankEdgeType, knnRow);
       //printKnnRow(id);
       timeReport.stop();
     }
@@ -233,7 +233,7 @@ public class FastCollaborativeFilteringRecommender extends CollaborativeFilterin
     if (newEdge.getProperty(getConfig().getEdgeRankValueName()) == null)
       return;
     INode dest = newEdge.getDestination();
-    dest.iterateOnCommonNodes(edgeType, new IGraphCallable<INode>()
+    dest.iterateOnCommonNodes(rankEdgeType, new IGraphCallable<INode>()
     {
       @Override
       public void call(INode item)
@@ -242,7 +242,7 @@ public class FastCollaborativeFilteringRecommender extends CollaborativeFilterin
         if (itemId == null)
           throw new RuntimeException("Items don't have the 'id' property!");
         FastByIDMap<Rating> knnRow = getKnnRow(Long.parseLong(itemId));
-        foundNearestNeighbour(item.getId(), edgeType, knnRow, true);
+        foundNearestNeighbour(item.getId(), rankEdgeType, knnRow, true);
       }
     });
   }

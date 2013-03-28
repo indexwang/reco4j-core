@@ -78,7 +78,7 @@ public class MFRecommender
 
     for (INode item : learningDataSet.getNodesByType(getConfig().getItemType()))
     {
-      if (item.isConnected(user, edgeType))
+      if (item.isConnected(user, rankEdgeType))
         continue;
       double estimatedRating = estimateRating(user, item);
       Utility.orderedInsert(recommendations, estimatedRating, item, getConfig().getRecoNumber());
