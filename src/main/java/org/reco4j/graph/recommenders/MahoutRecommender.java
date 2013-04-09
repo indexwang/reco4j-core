@@ -66,12 +66,6 @@ public class MahoutRecommender
   }
 
   @Override
-  public void storeRecommender()
-  {
-    throw new UnsupportedOperationException("Not supported yet.");
-  }
-
-  @Override
   public void loadRecommender(IGraph learningDataSet)
   {
     //Do nothing

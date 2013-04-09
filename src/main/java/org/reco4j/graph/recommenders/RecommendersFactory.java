@@ -42,7 +42,7 @@ public class RecommendersFactory
       case RECOMMENDER_TYPE_FASTCOLLABORATIVE:
         return new FastCollaborativeFilteringRecommender((ICollaborativeFilteringRecommenderConfig) config);
       case RECOMMENDER_TYPE_MATRIXFACTORIZATION:
-        return new MFRecommender((IMFRecommenderConfig) config);      
+        return new MFRecommender2((IMFRecommenderConfig) config);      
       case RECOMMENDER_TYPE_MAHOUT:
         return new MahoutRecommender((IMahoutRecommenderConfig) config);      
       default:

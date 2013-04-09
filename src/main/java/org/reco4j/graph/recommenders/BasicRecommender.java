@@ -54,12 +54,6 @@ public abstract class BasicRecommender<TConfig extends IRecommenderConfig>
   }
 
   @Override
-  public void storeRecommender()
-  {
-    throw new UnsupportedOperationException("Not supported yet.");
-  }
-
-  @Override
   public void loadRecommender(IGraph learningDataSet)
   {
     //do nothing

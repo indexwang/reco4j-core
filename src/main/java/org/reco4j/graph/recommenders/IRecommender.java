@@ -74,12 +74,6 @@ public interface IRecommender<TConfig extends IRecommenderConfig>
   public void updateRecommender(IEdge newEdge);
 
   /**
-   * This method store recommender info in a persistent storage (db). The way in
-   * which the recommender is stored depends on the type of recommender.
-   */
-  public void storeRecommender();
-
-  /**
    * This method load the recommender info from the database
    *
    * @param learningDataSet: the IGraph that contains the data that have to be
