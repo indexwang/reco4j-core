@@ -4,6 +4,8 @@
  */
 package org.reco4j.graph.recommenders;
 
+import org.reco4j.graph.INode;
+
 /**
  *
  * @author giuri
@@ -19,8 +21,11 @@ public class MFPredictor1
   }
 
   @Override
-  public double predictRating(Long userId, Long itemId)
+  public double predictRating(INode user, INode item)
   {
+    Long userId = user.getId();
+    Long itemId = item.getId();
+    
     double sum = 1;
     for (int f = 0; f < model.getFeaturesCount(); f++)
     {

@@ -47,7 +47,7 @@ public class UserItemDataset
   {
     for (IEdge rating : getRatingList())
     {
-      double realValue = Double.parseDouble(rating.getProperty(edgeRankValueName));
+      double realValue = getRating(rating);
 
       INode item = getItemList().get(rating.getDestination().getId());
       ((NodeRatingStatistics) item.getExtendedInfos()).addRating(realValue);
@@ -84,5 +84,11 @@ public class UserItemDataset
   public List<IEdge> getRatingList()
   {
     return ratingList;
+  }
+
+  public double getRating(IEdge rating) throws NumberFormatException
+  {
+    double realValue = Double.parseDouble(rating.getProperty(edgeRankValueName));
+    return realValue;
   }
 }

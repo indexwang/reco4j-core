@@ -56,15 +56,6 @@ public interface IRecommender<TConfig extends IRecommenderConfig>
   public void buildRecommender(IGraph learningDataSet);
 
   /**
-   * This method, starting from a learning dataset, update the recommender. It
-   * consider the old recommender and update only the data that changed
-   *
-   * @param learningDataSet: the IGraph that contains the data that have to be
-   * used for instruct the recommender
-   */
-  public void updateRecommender(IGraph learningDataSet);
-
-  /**
    * This method, starting from a newEdge, update the recommender. It consider
    * the old recommender and update only the data that changed according to to
    * concept of commonode

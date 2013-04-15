@@ -43,6 +43,7 @@ public class MahoutRecommender
   extends BasicRecommender<IMahoutRecommenderConfig>
 {
   private Recommender mahoutRecommender;
+  private IGraph learningDataSet;
 
   public MahoutRecommender(IMahoutRecommenderConfig config)
   {
@@ -52,17 +53,13 @@ public class MahoutRecommender
   @Override
   public void buildRecommender(IGraph learningDataSet)
   {
+    this.learningDataSet = learningDataSet;
+    
     Reco4jMahoutDataModel datamodel = new Reco4jMahoutDataModel(learningDataSet, getConfig());
     //usare classforname per caricare dinamicamente le classi del recommender dopo e delle similitudini
     ItemSimilarity similarity = new LogLikelihoodSimilarity(datamodel);
     Optimizer optimizer = new NonNegativeQuadraticOptimizer();
     mahoutRecommender = new KnnItemBasedRecommender(datamodel, similarity, optimizer, getConfig().getKValue());
-  }
-
-  @Override
-  public void updateRecommender(IGraph learningDataSet)
-  {
-    //Do nothing
   }
 
   @Override

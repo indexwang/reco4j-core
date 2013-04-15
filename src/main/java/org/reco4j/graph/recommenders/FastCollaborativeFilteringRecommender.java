@@ -61,14 +61,6 @@ public class FastCollaborativeFilteringRecommender extends CollaborativeFilterin
   }
 
   @Override
-  public void updateRecommender(IGraph learningDataSet)
-  {
-    //Questo metodo insieme a quello di store consentono di storicizzare e quindi aggiornare 
-    //il motore delle raccomandazioni
-    throw new UnsupportedOperationException("Not supported yet.");
-  }
-
-  @Override
   public List<Rating> recommend(final INode userNode)
   {
     final ArrayList<Rating> recommendations = new ArrayList<Rating>();

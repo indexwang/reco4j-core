@@ -33,7 +33,6 @@ import org.reco4j.util.IRecommenderConfig;
 public abstract class BasicRecommender<TConfig extends IRecommenderConfig>
   implements IRecommender<TConfig>
 {
-  protected IGraph learningDataSet;
   protected IEdgeType rankEdgeType;
   private TConfig config;
 
@@ -41,16 +40,6 @@ public abstract class BasicRecommender<TConfig extends IRecommenderConfig>
   {
     this.config = config;
     rankEdgeType = EdgeTypeFactory.getEdgeType(IEdgeType.EDGE_TYPE_RANK, config.getGraphConfig());
-  }
-
-  public IGraph getLearningDataSet()
-  {
-    return learningDataSet;
-  }
-
-  public void setLearningDataSet(IGraph learningDataSet)
-  {
-    this.learningDataSet = learningDataSet;
   }
 
   @Override

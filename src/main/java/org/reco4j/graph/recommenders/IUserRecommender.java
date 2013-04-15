@@ -4,14 +4,16 @@
  */
 package org.reco4j.graph.recommenders;
 
+import java.util.List;
 import org.reco4j.graph.INode;
+import org.reco4j.graph.Rating;
 
 /**
  *
  * @author giuri
  */
-public interface IPredictor
+public interface IUserRecommender
 {
 
-  double predictRating(INode user, INode item);
+  public List<Rating> userRecommend(INode userNode);
 }

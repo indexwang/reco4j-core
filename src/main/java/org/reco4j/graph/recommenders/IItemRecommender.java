@@ -4,14 +4,11 @@
  */
 package org.reco4j.graph.recommenders;
 
-import org.reco4j.graph.INode;
-
 /**
  *
  * @author giuri
  */
-public interface IPredictor
+public interface IItemRecommender
 {
-
-  double predictRating(INode user, INode item);
+  
 }

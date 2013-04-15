@@ -42,12 +42,12 @@ public class CollaborativeFilteringRecommender
   extends BasicRecommender<ICollaborativeFilteringRecommenderConfig>
 {
   private static final Logger logger = Logger.getLogger(CollaborativeFilteringRecommender.class.getName());
+  protected IGraph learningDataSet;
   private HashMap<String, HashMap<String, Rating>> knn;
   protected ISimilarity similarityFunction;
 
   //protected ArrayList<IEdgeType> edges;
   //
-  
   public CollaborativeFilteringRecommender(ICollaborativeFilteringRecommenderConfig config)
   {
     super(config);
@@ -73,17 +73,16 @@ public class CollaborativeFilteringRecommender
     printKNN(knn);
   }
 
-  @Override
-  public void updateRecommender(IGraph learningDataSet)
+  protected void setLearningDataSet(IGraph learningDataSet)
   {
-    //Questo metodo insieme a quello di store consentono di storicizzare e quindi aggiornare 
-    //il motore delle raccomandazioni
-    throw new UnsupportedOperationException("Not supported yet.");
+    this.learningDataSet = learningDataSet;
   }
-
+  
   @Override
   public List<Rating> recommend(INode userNode)
   {
+    final int recoNumber = getConfig().getRecoNumber();
+
     ArrayList<Rating> recommendations = new ArrayList<Rating>();
 
     for (INode item : learningDataSet.getNodesByType(getConfig().getItemType()))
@@ -91,7 +90,7 @@ public class CollaborativeFilteringRecommender
       if (item.isConnected(userNode, rankEdgeType))
         continue;
       double estimatedRating = estimateRating(userNode, item);
-      Utility.orderedInsert(recommendations, estimatedRating, item, getConfig().getRecoNumber());
+      Utility.orderedInsert(recommendations, estimatedRating, item, recoNumber);
     }
     return recommendations;
   }
@@ -251,7 +250,7 @@ public class CollaborativeFilteringRecommender
     }
   }
 
-  protected double calculateEstimatedRating(INode item, INode user, IEdgeType rankType, String propertyName) throws RuntimeException
+  protected double calculateEstimatedRating(INode item, INode user, IEdgeType rankType, String edgeRankValueName) throws RuntimeException
   {
 
     double estimatedRating = 0.0;
@@ -269,7 +268,7 @@ public class CollaborativeFilteringRecommender
       IEdge edge = user.getEdge(rate.getItem(), rankType);
       if (edge == null)
         continue;
-      double uRate = getUserRate(edge, propertyName, rankType);
+      double uRate = getUserRate(edge, edgeRankValueName, rankType);
       double similarityBetweenItem = rate.getRate();
       weightedRatingSum += uRate * similarityBetweenItem;
       similaritySum += similarityBetweenItem;
