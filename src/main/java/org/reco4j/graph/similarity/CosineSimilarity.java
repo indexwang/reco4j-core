@@ -22,7 +22,6 @@ import java.util.HashMap;
 import java.util.List;
 import org.reco4j.graph.IEdge;
 import org.reco4j.graph.IEdgeType;
-import org.reco4j.graph.IGraph;
 import org.reco4j.graph.INode;
 
 /**
@@ -38,7 +37,7 @@ public class CosineSimilarity
   }
 
   @Override
-  public double getSimilarity(INode x, INode y, IEdgeType edgeType, IGraph dataSet)
+  public double getSimilarity(INode x, INode y, IEdgeType edgeType)
   {
     HashMap<String, INode> totalUserMap = new HashMap<String, INode>();
     HashMap<String, INode> totalXUserMap = new HashMap<String, INode>();

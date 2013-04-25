@@ -21,7 +21,6 @@ package org.reco4j.graph.similarity;
 import java.util.List;
 import org.reco4j.graph.IEdge;
 import org.reco4j.graph.IEdgeType;
-import org.reco4j.graph.IGraph;
 import org.reco4j.graph.INode;
 
 /**
@@ -37,7 +36,7 @@ public class EuclideanSimilarityNormalized
   }
 
   @Override
-  public double getSimilarity(INode x, INode y, IEdgeType edgeType, IGraph dataSet)
+  public double getSimilarity(INode x, INode y, IEdgeType edgeType)
   {
     int commonItems = 0;
     double sim = 0.0;

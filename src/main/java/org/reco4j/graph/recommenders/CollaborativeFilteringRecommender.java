@@ -166,12 +166,12 @@ public class CollaborativeFilteringRecommender
       }
     }
 
-    double similarityValue = similarityFunction.getSimilarity(item, otherItem, rankEdgeType, learningDataSet);
+    double similarityValue = similarityFunction.getSimilarity(item, otherItem, rankEdgeType);
     //Introdurre una coda di valori da inserire per toglierla dal processo di calcolo
     if (!getConfig().getRecalculateSimilarity())
     {
       if (alreadyCalulatedEdge != null)
-        learningDataSet.setEdgeProperty(alreadyCalulatedEdge, similarityFunction.getClass().getName(), Double.toString(similarityValue));
+        alreadyCalulatedEdge.setProperty(similarityFunction.getClass().getName(), Double.toString(similarityValue));
       else
         learningDataSet.addEdge(item, otherItem, similarityEdgeType, similarityFunction.getClass().getName(), Double.toString(similarityValue));
     }

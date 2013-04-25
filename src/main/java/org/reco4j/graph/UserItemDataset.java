@@ -14,23 +14,33 @@ import java.util.concurrent.ConcurrentHashMap;
 public class UserItemDataset
 {
 
+  private IGraph graph;
+  private String itemType;
+  private String userType;
+  //
+  private IEdgeType ratingEdgeType;
+  private String ratingValueEdgePropertyName;
+  //
   private ConcurrentHashMap<Long, INode> itemList;
   private ConcurrentHashMap<Long, INode> userList;
   private List<IEdge> ratingList;
   //
-  private String edgeRankValueName;
 
-  public void init(IGraph graph, String itemType, String userType, IEdgeType edgeType, String edgeRankValueName)
+  public void init(IGraph graph, String itemType, String userType, IEdgeType ratingEdgeType, String ratingValueEdgePropertyName)
   {
-    userList = graph.getNodesMapByType(userType);
-    itemList = graph.getNodesMapByType(itemType);
-    ratingList = graph.getEdgesByType(edgeType);
-    this.edgeRankValueName = edgeRankValueName;
-
-    initNodeListRatingStatistics(userList);
-    initNodeListRatingStatistics(itemList);
+    this.graph = graph;
+    this.itemType = itemType;
+    this.userType = userType;
+    this.ratingEdgeType = ratingEdgeType;
+    this.ratingValueEdgePropertyName = ratingValueEdgePropertyName;
   }
 
+  private void initRatingStatistics()
+  {
+    initNodeListRatingStatistics(getUserList());
+    initNodeListRatingStatistics(getItemList());
+  }
+  
   private static void initNodeListRatingStatistics(final ConcurrentHashMap<Long, INode> nodeList)
   {
     for (INode node : nodeList.values())
@@ -45,6 +55,8 @@ public class UserItemDataset
 
   public void setNodeRatingStatistics()
   {
+    initRatingStatistics();
+    
     for (IEdge rating : getRatingList())
     {
       double realValue = getRating(rating);
@@ -67,6 +79,9 @@ public class UserItemDataset
    */
   public ConcurrentHashMap<Long, INode> getItemList()
   {
+    if (itemList == null)
+      itemList = graph.getNodesMapByType(itemType);
+      
     return itemList;
   }
 
@@ -75,6 +90,9 @@ public class UserItemDataset
    */
   public ConcurrentHashMap<Long, INode> getUserList()
   {
+    if (userList == null)
+      userList = graph.getNodesMapByType(userType);
+    
     return userList;
   }
 
@@ -83,12 +101,23 @@ public class UserItemDataset
    */
   public List<IEdge> getRatingList()
   {
+    if (ratingList == null)
+      ratingList = graph.getEdgesByType(ratingEdgeType);
+    
     return ratingList;
+  }
+
+  public IEdge getRatingEdge(INode user, INode item)
+  {
+    return user.getEdge(item, ratingEdgeType);
   }
 
   public double getRating(IEdge rating) throws NumberFormatException
   {
-    double realValue = Double.parseDouble(rating.getProperty(edgeRankValueName));
+    final String propertyValue = rating.getProperty(ratingValueEdgePropertyName);
+    if (propertyValue == null)
+      throw new RuntimeException("Properties : " + ratingValueEdgePropertyName + " not found on edge of id: " + rating.getId());
+    double realValue = Double.parseDouble(propertyValue);
     return realValue;
   }
 }

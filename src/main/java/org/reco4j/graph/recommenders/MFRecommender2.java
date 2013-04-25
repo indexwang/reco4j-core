@@ -31,6 +31,7 @@ public class MFRecommender2
   private UserItemDataset userItemDataset;
   private MFModel model;
   private IUserRecommender recommender;
+  private MFPredictor1 predictor;
 
   public MFRecommender2(IMFRecommenderConfig config)
   {
@@ -51,38 +52,32 @@ public class MFRecommender2
   public List<Rating> recommend(INode user)
   {
     return getRecommender().userRecommend(user);
-//    
-//    final int recoNumber = getConfig().getRecoNumber();
-//
-//    ArrayList<Rating> recommendations = new ArrayList<Rating>();
-//
-//    for (INode item : userItemDataset.getItemList().values()) // learningDataSet.getNodesByType(getConfig().getItemType()))
-//    {
-//      if (item.isConnected(user, rankEdgeType))
-//        continue;
-//      double estimatedRating = getPredictor().predictRating(user.getId(), item.getId());
-//      Utility.orderedInsert(recommendations, estimatedRating, item, recoNumber);
-//    }
-//    return recommendations;
   }
 
   @Override
   public double estimateRating(INode user, INode item)
   {
-    return 0; // getPredictor().predictRating(user.getId(), item.getId());
+    return getPredictor().predictRating(user, item);
   }
-//
-//  private void calcMetrics()
-//  {
-//    userItemDataset.setNodeRatingStatistics();
-//  }
 
   private IUserRecommender getRecommender()
   {
     if (recommender == null)
-      recommender = new ItemFullScanUserRecommender(getConfig().getRecoNumber(), new MFPredictor1(model), rankEdgeType, userItemDataset.getItemList().values());
+      recommender = new ItemFullScanUserRecommender(getConfig().getRecoNumber(), getPredictor(), rankEdgeType, userItemDataset.getItemList().values());
     
     return recommender;
   }
 
+  private IPredictor getPredictor()
+  {
+    if (predictor == null)
+    {
+      if (model == null)
+        throw new IllegalStateException("Cannot build predictor: model == null");
+      
+      predictor = new MFPredictor1(model);
+    }
+
+    return predictor;
+  }
 }

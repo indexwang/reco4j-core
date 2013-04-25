@@ -38,7 +38,7 @@ public class RecommendersFactory
     switch (recommenderType)
     {
       case RECOMMENDER_TYPE_COLLABORATIVE:
-        return new CollaborativeFilteringRecommender((ICollaborativeFilteringRecommenderConfig) config);
+        return new KNNRecommender((ICollaborativeFilteringRecommenderConfig) config);
       case RECOMMENDER_TYPE_FASTCOLLABORATIVE:
         return new FastCollaborativeFilteringRecommender((ICollaborativeFilteringRecommenderConfig) config);
       case RECOMMENDER_TYPE_MATRIXFACTORIZATION:

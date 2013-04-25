@@ -19,7 +19,6 @@
 package org.reco4j.graph.similarity;
 
 import org.reco4j.graph.IEdgeType;
-import org.reco4j.graph.IGraph;
 import org.reco4j.graph.INode;
 
 /**
@@ -28,5 +27,5 @@ import org.reco4j.graph.INode;
  */
 public interface ISimilarity
 {
-  public double getSimilarity(INode x, INode y, IEdgeType edgeType, IGraph dataset);
+  public double getSimilarity(INode x, INode y, IEdgeType edgeType);
 }

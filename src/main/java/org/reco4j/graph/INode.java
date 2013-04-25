@@ -41,6 +41,11 @@ public interface INode
   public List<IEdge> getInEdge(IEdgeType edgeType);
   public FastIDSet getInEdgeIds(IEdgeType edgeType);
   public List<IEdge> getOutEdge(IEdgeType edgeType);
+  public void addOutEdge(IEdgeType edgeType, INode destination);
+  public void addInEdge(IEdgeType edgeType, INode source);
+  public void addOutEdgeWithProperty(IEdgeType edgeType, INode destination, String propertyName, Object value);
+  public void addInEdgeWithProperty(IEdgeType edgeType, INode source, String propertyName, Object value);
+  //
   public void iterateOnEdge(IEdgeType edgeType, IGraphCallable<IEdge> callback);
   public HashMap<String, INode> getCommonNodes(IEdgeType edgeType, String identifier);
   public FastIDSet getCommonNodeIds(IEdgeType edgeType);
