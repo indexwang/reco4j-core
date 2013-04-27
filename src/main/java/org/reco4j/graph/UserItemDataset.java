@@ -15,16 +15,17 @@ import org.apache.mahout.cf.taste.impl.common.FastIDSet;
 public class UserItemDataset
 {
 
-  private IGraph graph;
-  private String itemType;
-  private String userType;
+  protected IGraph graph;
+  protected String itemType;
+  protected String userType;
   //
-  private IEdgeType ratingEdgeType;
-  private String ratingValueEdgePropertyName;
+  protected IEdgeType ratingEdgeType;
+  protected String ratingValueEdgePropertyName;
   //
-  private ConcurrentHashMap<Long, INode> itemList;
-  private ConcurrentHashMap<Long, INode> userList;
-  private List<IEdge> ratingList;
+  protected ConcurrentHashMap<Long, INode> itemList;
+  protected ConcurrentHashMap<Long, INode> userList;
+  protected FastIDSet itemIdList;
+  protected List<IEdge> ratingList;
   //
 
   public void init(IGraph graph, String itemType, String userType, IEdgeType ratingEdgeType, String ratingValueEdgePropertyName)
@@ -124,11 +125,19 @@ public class UserItemDataset
 
   public FastIDSet getItemIdList()
   {
-    return graph.getNodesIdByType(itemType);
+    if (itemIdList == null)
+      itemIdList = graph.getNodesIdByType(itemType);
+    
+    return itemIdList;
   }
 
   public INode getItemNodeById(long itemId)
   {
     return graph.getItemNodeById(itemId);
+  }
+
+  public FastIDSet getCommonNodeIds(INode item)
+  {
+    return item.getCommonNodeIds(ratingEdgeType);
   }
 }

@@ -76,7 +76,7 @@ public class KNNFastModelBuilder
   private void findNearestNeighbour(long itemId, final IEdgeType edgeType, final FastByIDMap<Rating> knnRow, final boolean rewrite)
   {
     final INode item = userItemDataset.getItemNodeById(itemId);
-    FastIDSet nodes = item.getCommonNodeIds(edgeType);
+    FastIDSet nodes = userItemDataset.getCommonNodeIds(item);
     logger.log(Level.INFO, "foundNearestNeighbour: {0}, CommonNodes Size: " + nodes.size(), item.getProperty(itemIdentifierNodePropertyName));
     for (long otherItemId : nodes)
     {
