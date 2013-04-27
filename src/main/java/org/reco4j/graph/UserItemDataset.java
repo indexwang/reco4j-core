@@ -6,6 +6,7 @@ package org.reco4j.graph;
 
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
+import org.apache.mahout.cf.taste.impl.common.FastIDSet;
 
 /**
  *
@@ -119,5 +120,15 @@ public class UserItemDataset
       throw new RuntimeException("Properties : " + ratingValueEdgePropertyName + " not found on edge of id: " + rating.getId());
     double realValue = Double.parseDouble(propertyValue);
     return realValue;
+  }
+
+  public FastIDSet getItemIdList()
+  {
+    return graph.getNodesIdByType(itemType);
+  }
+
+  public INode getItemNodeById(long itemId)
+  {
+    return graph.getItemNodeById(itemId);
   }
 }

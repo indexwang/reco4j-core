@@ -27,54 +27,42 @@ import org.reco4j.graph.IGraph;
 import org.reco4j.graph.INode;
 import org.reco4j.graph.Rating;
 import org.reco4j.graph.UserItemDataset;
-import org.reco4j.graph.similarity.ISimilarity;
-import org.reco4j.graph.similarity.SimilarityFactory;
 import org.reco4j.util.TimeReportUtility;
 
 /**
  *
  ** @author Alessandro Negro <alessandro.negro at reco4j.org>
  */
-public class KNNRecommender
-        extends BasicRecommender<ICollaborativeFilteringRecommenderConfig>
+public class KNNFastRecommender
+        extends KNNRecommender
 {
-
-  private static final Logger logger = Logger.getLogger(KNNRecommender.class.getName());
-  protected ISimilarity similarityFunction;
-  protected UserItemDataset userItemDataset;
-  private KNNModel model;
-  protected IUserRecommender recommender;
-  private KNNPredictor1 predictor;
-
-  //protected ArrayList<IEdgeType> edges;
-  //
-  public KNNRecommender(ICollaborativeFilteringRecommenderConfig config)
+  protected KNNFastModel model;
+  private KNNFastPredictor predictor;
+  private static final Logger logger = Logger.getLogger(KNNFastRecommender.class.getName());
+  
+  public KNNFastRecommender(ICollaborativeFilteringRecommenderConfig config)
   {
     super(config);
-    similarityFunction = SimilarityFactory.getSimilarityClass(getConfig().getSimilarityConfig());
   }
 
   @Override
   public void buildRecommender(IGraph learningDataSet)
   {
-    TimeReportUtility timeReport = new TimeReportUtility("buildRecommender");
-    timeReport.start();
     userItemDataset = new UserItemDataset();
     userItemDataset.init(learningDataSet, getConfig().getItemType(), getConfig().getUserType(), EdgeTypeFactory.getEdgeType(IEdgeType.EDGE_TYPE_RANK, getConfig().getGraphConfig()), getConfig().getEdgeRankValueName());
-
-    KNNModelBuilder knnModelBuilder = new KNNModelBuilder(userItemDataset, getConfig().getItemIdentifierName(), rankEdgeType, similarityFunction, EdgeTypeFactory.getEdgeType(IEdgeType.EDGE_TYPE_SIMILARITY, getConfig().getGraphConfig()), getConfig().getRecalculateSimilarity());
+    buildRecommender(learningDataSet, userItemDataset);
+  }
+  
+  public void buildRecommender(IGraph learningDataSet, UserItemDataset userItemDataset)
+  {
+    this.userItemDataset = userItemDataset;
+    KNNFastModelBuilder knnModelBuilder = new KNNFastModelBuilder(userItemDataset, getConfig().getItemIdentifierName(), rankEdgeType, similarityFunction, EdgeTypeFactory.getEdgeType(IEdgeType.EDGE_TYPE_SIMILARITY, getConfig().getGraphConfig()), getConfig().getRecalculateSimilarity());
+    TimeReportUtility timeReport = new TimeReportUtility("buildRecommender");
+    timeReport.start();
     model = knnModelBuilder.build();
-
     timeReport.stop();
   }
 
-  @Override
-  public void loadRecommender(IGraph modelGraph)
-  {
-    KNNModelLoader knnModelLoader = new KNNModelLoader(modelGraph, getConfig().getItemIdentifierName(), similarityFunction, EdgeTypeFactory.getEdgeType(IEdgeType.EDGE_TYPE_SIMILARITY, getConfig().getGraphConfig()));
-    model = knnModelLoader.build();
-    model.logKNN();
-  }
 
   @Override
   public List<Rating> recommend(INode user)
@@ -92,19 +80,6 @@ public class KNNRecommender
   public void updateRecommender(IEdge newEdge)
   {
     throw new UnsupportedOperationException();
-    // TODO
-//    if (newEdge.getProperty(getConfig().getEdgeRankValueName()) == null)
-//      return;
-//    INode dest = newEdge.getDestination();
-//    HashMap<String, INode> commonNodes = dest.getCommonNodes(rankEdgeType, getConfig().getItemIdentifierName());
-//    for (INode item : commonNodes.values())
-//    {
-//      String itemId = item.getProperty(getConfig().getItemIdentifierName());
-//      if (itemId == null)
-//        throw new RuntimeException("Items don't have the 'id' property!");
-//      HashMap<String, Rating> knnRow = getKnnRow(itemId);
-//      findNearestNeighbour(item, rankEdgeType, knnRow, true);
-//    }
   }
 
   private IUserRecommender getRecommender()
@@ -122,7 +97,7 @@ public class KNNRecommender
       if (userItemDataset == null || model == null)
         throw new IllegalStateException("Cannot build predictor: userItemDataset == null || model == null");
       
-      predictor = new KNNPredictor1(userItemDataset, model, getConfig().getItemIdentifierName());
+      predictor = new KNNFastPredictor(userItemDataset, model);
     }
 
     return predictor;
