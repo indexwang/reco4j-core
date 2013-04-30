@@ -21,8 +21,6 @@ public interface IFilter
   public ConcurrentHashMap<Long, INode> getItemNodesMap();
   public ConcurrentHashMap<Long, INode> getUserNodesMap();
   public List<IEdge> getRatingList();
-
   public FastIDSet getCommonNodeIds(INode item);
-
   public FastIDSet getItemNodesId();
 }
