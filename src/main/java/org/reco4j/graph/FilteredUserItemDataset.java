@@ -4,6 +4,7 @@
  */
 package org.reco4j.graph;
 
+import org.reco4j.graph.filter.IFilter;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import org.apache.mahout.cf.taste.impl.common.FastIDSet;
@@ -14,6 +15,18 @@ import org.apache.mahout.cf.taste.impl.common.FastIDSet;
  */
 public class FilteredUserItemDataset extends UserItemDataset
 {
+  private IFilter filter;
+  
+  public void init(IGraph graph, String itemType, String userType, IEdgeType ratingEdgeType, String ratingValueEdgePropertyName, IFilter filter)
+  {
+    this.graph = graph;
+    this.itemType = itemType;
+    this.userType = userType;
+    this.ratingEdgeType = ratingEdgeType;
+    this.ratingValueEdgePropertyName = ratingValueEdgePropertyName;
+    this.filter = filter;
+    filter.setGraph(graph);
+  }
   /**
    * @return the itemList
    */
@@ -21,7 +34,7 @@ public class FilteredUserItemDataset extends UserItemDataset
   public ConcurrentHashMap<Long, INode> getItemList()
   {
     if (itemList == null)
-      itemList = graph.getNodesMapByType(itemType);
+      itemList = filter.getItemNodesMap();
       
     return itemList;
   }
@@ -33,7 +46,7 @@ public class FilteredUserItemDataset extends UserItemDataset
   public ConcurrentHashMap<Long, INode> getUserList()
   {
     if (userList == null)
-      userList = graph.getNodesMapByType(userType);
+      userList = filter.getUserNodesMap();
     
     return userList;
   }
@@ -45,42 +58,26 @@ public class FilteredUserItemDataset extends UserItemDataset
   public List<IEdge> getRatingList()
   {
     if (ratingList == null)
-      ratingList = graph.getEdgesByType(ratingEdgeType);
+      ratingList = filter.getRatingList();
     
     return ratingList;
   }
 
-  @Override
-  public IEdge getRatingEdge(INode user, INode item)
-  {
-    return user.getEdge(item, ratingEdgeType);
-  }
-
-  @Override
-  public double getRating(IEdge rating) throws NumberFormatException
-  {
-    final String propertyValue = rating.getProperty(ratingValueEdgePropertyName);
-    if (propertyValue == null)
-      throw new RuntimeException("Properties : " + ratingValueEdgePropertyName + " not found on edge of id: " + rating.getId());
-    double realValue = Double.parseDouble(propertyValue);
-    return realValue;
-  }
-
-  @Override
-  public FastIDSet getItemIdList()
-  {
-    return graph.getNodesIdByType(itemType);
-  }
-
-  @Override
-  public INode getItemNodeById(long itemId)
-  {
-    return graph.getItemNodeById(itemId);
-  }
 
   @Override
   public FastIDSet getCommonNodeIds(INode item)
   {
-    return item.getCommonNodeIds(ratingEdgeType);
+    return filter.getCommonNodeIds(item);
   }
+  
+  
+  @Override
+  public FastIDSet getItemIdList()
+  {
+    if (itemIdList == null)
+      itemIdList = filter.getItemNodesId();
+    
+    return itemIdList;
+  }
+
 }
