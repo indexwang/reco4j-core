@@ -40,7 +40,7 @@ public class RecommendersFactory
       case RECOMMENDER_TYPE_COLLABORATIVE:
         return new KNNRecommender((ICollaborativeFilteringRecommenderConfig) config);
       case RECOMMENDER_TYPE_FASTCOLLABORATIVE:
-        return new FastCollaborativeFilteringRecommender((ICollaborativeFilteringRecommenderConfig) config);
+        return new KNNFastRecommender((ICollaborativeFilteringRecommenderConfig) config);
       case RECOMMENDER_TYPE_MATRIXFACTORIZATION:
         return new MFRecommender2((IMFRecommenderConfig) config);      
       case RECOMMENDER_TYPE_MAHOUT:

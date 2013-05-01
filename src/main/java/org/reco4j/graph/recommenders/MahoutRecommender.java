@@ -33,6 +33,7 @@ import org.apache.mahout.cf.taste.similarity.ItemSimilarity;
 import org.reco4j.graph.IGraph;
 import org.reco4j.graph.INode;
 import org.reco4j.graph.Rating;
+import org.reco4j.graph.UserItemDataset;
 import org.reco4j.graph.mahout.Reco4jMahoutDataModel;
 
 /**
@@ -103,5 +104,11 @@ public class MahoutRecommender
       Logger.getLogger(MahoutRecommender.class.getName()).log(Level.SEVERE, "Error while estimating rating", ex);
       return -1;
     }
+  }
+
+  @Override
+  public void buildRecommender(IGraph learningDataSet, UserItemDataset dataset)
+  {
+    throw new UnsupportedOperationException("Not supported yet.");
   }
 }

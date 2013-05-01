@@ -80,4 +80,10 @@ public class MFRecommender2
 
     return predictor;
   }
+
+  @Override
+  public void buildRecommender(IGraph learningDataSet, UserItemDataset dataset)
+  {
+    throw new UnsupportedOperationException("Not supported yet.");
+  }
 }

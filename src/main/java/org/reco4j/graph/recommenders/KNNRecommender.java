@@ -127,4 +127,10 @@ public class KNNRecommender
 
     return predictor;
   }
+
+  @Override
+  public void buildRecommender(IGraph learningDataSet, UserItemDataset dataset)
+  {
+    throw new UnsupportedOperationException("Not supported yet.");
+  }
 }

@@ -29,6 +29,7 @@ import org.reco4j.graph.IEdgeType;
 import org.reco4j.graph.IGraph;
 import org.reco4j.graph.INode;
 import org.reco4j.graph.Rating;
+import org.reco4j.graph.UserItemDataset;
 import org.reco4j.graph.similarity.ISimilarity;
 import org.reco4j.graph.similarity.SimilarityFactory;
 import org.reco4j.util.TimeReportUtility;
@@ -318,5 +319,11 @@ public class CollaborativeFilteringRecommender
       });
     }
 
+  }
+
+  @Override
+  public void buildRecommender(IGraph learningDataSet, UserItemDataset dataset)
+  {
+    throw new UnsupportedOperationException("Not supported yet.");
   }
 }

@@ -4,10 +4,11 @@
  */
 package org.reco4j.graph;
 
-import org.reco4j.graph.filter.IFilter;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import org.apache.mahout.cf.taste.impl.common.FastIDSet;
+import org.reco4j.graph.filter.IFilter;
+import org.reco4j.graph.recommenders.ICollaborativeFilteringRecommenderConfig;
 
 /**
  *
@@ -17,13 +18,14 @@ public class FilteredUserItemDataset extends UserItemDataset
 {
   private IFilter filter;
   
+  public void init(IGraph graph, ICollaborativeFilteringRecommenderConfig config, IFilter filter)
+  {
+    init(graph, config.getItemType(), config.getUserType(), EdgeTypeFactory.getEdgeType(IEdgeType.EDGE_TYPE_RANK, config.getGraphConfig()), config.getEdgeRankValueName(), filter);
+  }
+  
   public void init(IGraph graph, String itemType, String userType, IEdgeType ratingEdgeType, String ratingValueEdgePropertyName, IFilter filter)
   {
-    this.graph = graph;
-    this.itemType = itemType;
-    this.userType = userType;
-    this.ratingEdgeType = ratingEdgeType;
-    this.ratingValueEdgePropertyName = ratingValueEdgePropertyName;
+    super.init(graph, itemType, userType, ratingEdgeType, ratingValueEdgePropertyName);
     this.filter = filter;
     filter.setGraph(graph);
   }

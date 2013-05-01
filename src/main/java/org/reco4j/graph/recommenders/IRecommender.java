@@ -23,6 +23,7 @@ import org.reco4j.graph.IEdge;
 import org.reco4j.graph.IGraph;
 import org.reco4j.graph.INode;
 import org.reco4j.graph.Rating;
+import org.reco4j.graph.UserItemDataset;
 import org.reco4j.util.IRecommenderConfig;
 
 /**
@@ -54,6 +55,8 @@ public interface IRecommender<TConfig extends IRecommenderConfig>
    * used for instruct the recommender
    */
   public void buildRecommender(IGraph learningDataSet);
+  
+  public void buildRecommender(IGraph learningDataSet, UserItemDataset dataset);
 
   /**
    * This method, starting from a newEdge, update the recommender. It consider
