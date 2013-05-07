@@ -13,9 +13,18 @@ import org.reco4j.graph.Rating;
  *
  * @author giuri
  */
-public class KNNModel
+public class KNNModel extends ModelBase
 {
 
+  public static final String KNN_DEFAULT_MODEL_NAME = "knn_default";
+
+  public KNNModel()
+  {
+    name = KNN_DEFAULT_MODEL_NAME;
+  }
+  
+  
+    
   private static final Logger logger = Logger.getLogger(KNNModel.class.getName());
   //
   private HashMap<String, HashMap<String, Rating>> knn = new HashMap<String, HashMap<String, Rating>>();

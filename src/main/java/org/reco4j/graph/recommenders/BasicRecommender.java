@@ -35,7 +35,13 @@ public abstract class BasicRecommender<TConfig extends IRecommenderConfig>
 {
   protected IEdgeType rankEdgeType;
   private TConfig config;
-
+  protected String modelName;
+  
+  public void setModelName(String modelName)
+  {
+    this.modelName = modelName;
+  }
+    
   public BasicRecommender(TConfig config)
   {
     this.config = config;

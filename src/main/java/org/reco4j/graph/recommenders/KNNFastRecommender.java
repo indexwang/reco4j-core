@@ -48,19 +48,23 @@ public class KNNFastRecommender
   @Override
   public void buildRecommender(IGraph learningDataSet)
   {
-    userItemDataset = new UserItemDataset();
-    userItemDataset.init(learningDataSet, getConfig().getItemType(), getConfig().getUserType(), EdgeTypeFactory.getEdgeType(IEdgeType.EDGE_TYPE_RANK, getConfig().getGraphConfig()), getConfig().getEdgeRankValueName());
-    buildRecommender(learningDataSet, userItemDataset);
+    UserItemDataset userItemDS = new UserItemDataset();
+    userItemDS.init(learningDataSet, getConfig().getItemType(), getConfig().getUserType(), EdgeTypeFactory.getEdgeType(IEdgeType.EDGE_TYPE_RANK, getConfig().getGraphConfig()), getConfig().getEdgeRankValueName());
+    buildRecommender(learningDataSet, userItemDS);
   }
   
+  @Override
   public void buildRecommender(IGraph learningDataSet, UserItemDataset userItemDataset)
   {
     this.userItemDataset = userItemDataset;
     KNNFastModelBuilder knnModelBuilder = new KNNFastModelBuilder(userItemDataset, getConfig().getItemIdentifierName(), rankEdgeType, similarityFunction, EdgeTypeFactory.getEdgeType(IEdgeType.EDGE_TYPE_SIMILARITY, getConfig().getGraphConfig()), getConfig().getRecalculateSimilarity());
+    if (modelName != null && !modelName.isEmpty())
+      knnModelBuilder.setModelName(modelName);   
     TimeReportUtility timeReport = new TimeReportUtility("buildRecommender");
     timeReport.start();
     model = knnModelBuilder.build();
     timeReport.stop();
+    timeReport.printStatistics();
   }
 
 
@@ -85,7 +89,7 @@ public class KNNFastRecommender
   private IUserRecommender getRecommender()
   {
     if (recommender == null)
-      recommender = new ItemFullScanUserRecommender(getConfig().getRecoNumber(), getPredictor(), rankEdgeType, userItemDataset.getItemList().values());
+      recommender = new ItemFullScanUserRecommender(getConfig().getRecoNumber(), getPredictor(), rankEdgeType, userItemDataset.getItemListForRecommendation().values());
 
     return recommender;
   }
@@ -101,5 +105,12 @@ public class KNNFastRecommender
     }
 
     return predictor;
+  }
+  @Override
+  public void loadRecommender(IGraph modelGraph)
+  {
+//    KNNModelLoader knnModelLoader = new KNNModelLoader(modelGraph, getConfig().getItemIdentifierName(), EdgeTypeFactory.getEdgeType(IEdgeType.EDGE_TYPE_SIMILARITY, getConfig().getGraphConfig()), modelName);
+//    model = knnModelLoader.build();
+//    model.logKNN();
   }
 }

@@ -45,6 +45,7 @@ public class KNNRecommender
   private KNNModel model;
   protected IUserRecommender recommender;
   private KNNPredictor1 predictor;
+  
 
   //protected ArrayList<IEdgeType> edges;
   //
@@ -53,7 +54,7 @@ public class KNNRecommender
     super(config);
     similarityFunction = SimilarityFactory.getSimilarityClass(getConfig().getSimilarityConfig());
   }
-
+  
   @Override
   public void buildRecommender(IGraph learningDataSet)
   {
@@ -63,6 +64,8 @@ public class KNNRecommender
     userItemDataset.init(learningDataSet, getConfig().getItemType(), getConfig().getUserType(), EdgeTypeFactory.getEdgeType(IEdgeType.EDGE_TYPE_RANK, getConfig().getGraphConfig()), getConfig().getEdgeRankValueName());
 
     KNNModelBuilder knnModelBuilder = new KNNModelBuilder(userItemDataset, getConfig().getItemIdentifierName(), rankEdgeType, similarityFunction, EdgeTypeFactory.getEdgeType(IEdgeType.EDGE_TYPE_SIMILARITY, getConfig().getGraphConfig()), getConfig().getRecalculateSimilarity());
+    if (modelName != null && !modelName.isEmpty())
+      knnModelBuilder.setModelName(modelName);    
     model = knnModelBuilder.build();
 
     timeReport.stop();
@@ -71,7 +74,7 @@ public class KNNRecommender
   @Override
   public void loadRecommender(IGraph modelGraph)
   {
-    KNNModelLoader knnModelLoader = new KNNModelLoader(modelGraph, getConfig().getItemIdentifierName(), similarityFunction, EdgeTypeFactory.getEdgeType(IEdgeType.EDGE_TYPE_SIMILARITY, getConfig().getGraphConfig()));
+    KNNModelLoader knnModelLoader = new KNNModelLoader(modelGraph, getConfig().getItemIdentifierName(), EdgeTypeFactory.getEdgeType(IEdgeType.EDGE_TYPE_SIMILARITY, getConfig().getGraphConfig()), modelName);
     model = knnModelLoader.build();
     model.logKNN();
   }
@@ -110,7 +113,7 @@ public class KNNRecommender
   private IUserRecommender getRecommender()
   {
     if (recommender == null)
-      recommender = new ItemFullScanUserRecommender(getConfig().getRecoNumber(), getPredictor(), rankEdgeType, userItemDataset.getItemList().values());
+      recommender = new ItemFullScanUserRecommender(getConfig().getRecoNumber(), getPredictor(), rankEdgeType, userItemDataset.getItemListForRecommendation().values());
 
     return recommender;
   }

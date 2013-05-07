@@ -97,6 +97,25 @@ public class UserItemDataset
     
     return userList;
   }
+  
+  public ConcurrentHashMap<Long, INode> getItemListForRecommendation()
+  {
+    if (itemList == null)
+      itemList = graph.getNodesMapByType(itemType);
+      
+    return itemList;
+  }
+
+  /**
+   * @return the userList
+   */
+  public ConcurrentHashMap<Long, INode> getUserListForRecommendation()
+  {
+    if (userList == null)
+      userList = graph.getNodesMapByType(userType);
+    
+    return userList;
+  }
 
   /**
    * @return the ratingList

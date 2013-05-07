@@ -7,7 +7,8 @@ package org.reco4j.graph;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import org.apache.mahout.cf.taste.impl.common.FastIDSet;
-import org.reco4j.graph.filter.IFilter;
+import org.reco4j.graph.filter.IPostFilter;
+import org.reco4j.graph.filter.IPreFilter;
 import org.reco4j.graph.recommenders.ICollaborativeFilteringRecommenderConfig;
 
 /**
@@ -16,17 +17,24 @@ import org.reco4j.graph.recommenders.ICollaborativeFilteringRecommenderConfig;
  */
 public class FilteredUserItemDataset extends UserItemDataset
 {
-  private IFilter filter;
+  private IPreFilter preFilter;
+  private IPostFilter postFilter;
   
-  public void init(IGraph graph, ICollaborativeFilteringRecommenderConfig config, IFilter filter)
+  public void init(IGraph graph, ICollaborativeFilteringRecommenderConfig config, IPreFilter filter)
   {
-    init(graph, config.getItemType(), config.getUserType(), EdgeTypeFactory.getEdgeType(IEdgeType.EDGE_TYPE_RANK, config.getGraphConfig()), config.getEdgeRankValueName(), filter);
+    init(graph, config.getItemType(), config.getUserType(), EdgeTypeFactory.getEdgeType(IEdgeType.EDGE_TYPE_RANK, config.getGraphConfig()), config.getEdgeRankValueName(), filter, null);
   }
   
-  public void init(IGraph graph, String itemType, String userType, IEdgeType ratingEdgeType, String ratingValueEdgePropertyName, IFilter filter)
+  public void init(IGraph graph, ICollaborativeFilteringRecommenderConfig config, IPreFilter filter, IPostFilter postFilter)
+  {
+    init(graph, config.getItemType(), config.getUserType(), EdgeTypeFactory.getEdgeType(IEdgeType.EDGE_TYPE_RANK, config.getGraphConfig()), config.getEdgeRankValueName(), filter, postFilter);
+  }
+  
+  public void init(IGraph graph, String itemType, String userType, IEdgeType ratingEdgeType, String ratingValueEdgePropertyName, IPreFilter filter, IPostFilter postFilter)
   {
     super.init(graph, itemType, userType, ratingEdgeType, ratingValueEdgePropertyName);
-    this.filter = filter;
+    this.preFilter = filter;
+    this.postFilter = postFilter;
     filter.setGraph(graph);
   }
   /**
@@ -36,7 +44,7 @@ public class FilteredUserItemDataset extends UserItemDataset
   public ConcurrentHashMap<Long, INode> getItemList()
   {
     if (itemList == null)
-      itemList = filter.getItemNodesMap();
+      itemList = preFilter.getItemNodesMap();
       
     return itemList;
   }
@@ -48,7 +56,7 @@ public class FilteredUserItemDataset extends UserItemDataset
   public ConcurrentHashMap<Long, INode> getUserList()
   {
     if (userList == null)
-      userList = filter.getUserNodesMap();
+      userList = preFilter.getUserNodesMap();
     
     return userList;
   }
@@ -60,7 +68,7 @@ public class FilteredUserItemDataset extends UserItemDataset
   public List<IEdge> getRatingList()
   {
     if (ratingList == null)
-      ratingList = filter.getRatingList();
+      ratingList = preFilter.getRatingList();
     
     return ratingList;
   }
@@ -69,7 +77,7 @@ public class FilteredUserItemDataset extends UserItemDataset
   @Override
   public FastIDSet getCommonNodeIds(INode item)
   {
-    return filter.getCommonNodeIds(item);
+    return preFilter.getCommonNodeIds(item);
   }
   
   
@@ -77,9 +85,22 @@ public class FilteredUserItemDataset extends UserItemDataset
   public FastIDSet getItemIdList()
   {
     if (itemIdList == null)
-      itemIdList = filter.getItemNodesId();
+      itemIdList = preFilter.getItemNodesId();
     
     return itemIdList;
+  }
+  
+  @Override
+  public ConcurrentHashMap<Long, INode> getItemListForRecommendation()
+  {
+    if (itemList == null)
+    {
+      if (postFilter != null)
+        itemList = postFilter.getItemNodesMap();
+      else
+        itemList = preFilter.getItemNodesMap();
+    } 
+    return itemList;
   }
 
 }

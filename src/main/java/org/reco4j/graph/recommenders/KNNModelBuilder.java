@@ -44,6 +44,11 @@ public class KNNModelBuilder
     this.similarityEdgeType = similarityEdgeType;
     this.recalculateSimilarity = recalculateSimilarity;
   }
+
+  public void setModelName(String modelName)
+  {
+    this.model.setName(modelName);
+  }  
   
   @Override
   public KNNModel build()
@@ -116,7 +121,7 @@ public class KNNModelBuilder
     {
       alreadyCalulatedEdge = item.getEdge(otherItem, similarityEdgeType);
       if (alreadyCalulatedEdge != null
-          && alreadyCalulatedEdge.getPermissiveProperty(similarityFunction.getClass().getName()) != null)
+          && alreadyCalulatedEdge.getPermissiveProperty(model.getName()) != null)
       {
         double value = Double.parseDouble(alreadyCalulatedEdge.getProperty(similarityFunction.getClass().getName()));
         return value;
@@ -128,9 +133,9 @@ public class KNNModelBuilder
     if (!recalculateSimilarity)
     {
       if (alreadyCalulatedEdge != null)
-        alreadyCalulatedEdge.setProperty(similarityFunction.getClass().getName(), Double.toString(similarityValue));
+        alreadyCalulatedEdge.setProperty(model.getName(), Double.toString(similarityValue));
       else
-        item.addOutEdgeWithProperty(similarityEdgeType, otherItem, similarityFunction.getClass().getName(), Double.toString(similarityValue));
+        item.addOutEdgeWithProperty(similarityEdgeType, otherItem, model.getName(), Double.toString(similarityValue));
     }
     return similarityValue;
   }

@@ -13,13 +13,18 @@ import org.reco4j.graph.Rating;
  *
  * @author giuri
  */
-public class KNNFastModel
+public class KNNFastModel extends ModelBase
 {
 
   private static final Logger logger = Logger.getLogger(KNNFastModel.class.getName());
   //
   private FastByIDMap<FastByIDMap<Rating>> knn = new FastByIDMap<FastByIDMap<Rating>>();
   //
+
+  public KNNFastModel()
+  {
+    this.name = KNNModel.KNN_DEFAULT_MODEL_NAME;
+  }  
 
   public boolean containsItem(Long id)
   {

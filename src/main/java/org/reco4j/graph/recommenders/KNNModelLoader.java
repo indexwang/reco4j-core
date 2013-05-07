@@ -22,16 +22,16 @@ public class KNNModelLoader
   private IGraph modelGraph;
   //
   private String itemIdentifierNodePropertyName;
-  private ISimilarity similarityFunction;
+  private String modelName;
   private IEdgeType similarityEdgeType;
   //
   private KNNModel model = new KNNModel();
 
-  public KNNModelLoader(IGraph modelGraph, String itemIdentifierNodePropertyName, ISimilarity similarityFunction, IEdgeType similarityEdgeType)
+  public KNNModelLoader(IGraph modelGraph, String itemIdentifierNodePropertyName, IEdgeType similarityEdgeType, String modelName)
   {
     this.modelGraph = modelGraph;
     this.itemIdentifierNodePropertyName = itemIdentifierNodePropertyName;
-    this.similarityFunction = similarityFunction;
+    this.modelName = modelName;
     this.similarityEdgeType = similarityEdgeType;
   }
   
@@ -51,7 +51,7 @@ public class KNNModelLoader
       String destinationItemId = alreadyCalulatedEdge.getDestination().getProperty(itemIdentifierNodePropertyName);
       HashMap<String, Rating> recommendationsSource = model.getKnnRow(sourceItemId);
       HashMap<String, Rating> recommendationsDestination = model.getKnnRow(destinationItemId);
-      String similarityValueStr = alreadyCalulatedEdge.getPermissiveProperty(similarityFunction.getClass().getName());
+      String similarityValueStr = alreadyCalulatedEdge.getPermissiveProperty(modelName);
       if (similarityValueStr == null)
         continue;
       double similarityValue = Double.parseDouble(similarityValueStr);

@@ -20,6 +20,7 @@ package org.reco4j.graph.recommenders;
 
 import java.util.List;
 import org.reco4j.graph.*;
+import org.reco4j.util.TimeReportUtility;
 
 /**
  *
@@ -41,11 +42,21 @@ public class MFRecommender2
   @Override
   public void buildRecommender(IGraph learningDataSet)
   {
-    userItemDataset = new UserItemDataset();
-    userItemDataset.init(learningDataSet, getConfig().getItemType(), getConfig().getUserType(), EdgeTypeFactory.getEdgeType(IEdgeType.EDGE_TYPE_RANK, getConfig().getGraphConfig()), getConfig().getEdgeRankValueName());
-
+    UserItemDataset userItemDS = new UserItemDataset();
+    userItemDS.init(learningDataSet, getConfig().getItemType(), getConfig().getUserType(), EdgeTypeFactory.getEdgeType(IEdgeType.EDGE_TYPE_RANK, getConfig().getGraphConfig()), getConfig().getEdgeRankValueName());
+    buildRecommender(learningDataSet, userItemDS);
+  }
+  
+  @Override
+  public void buildRecommender(IGraph learningDataSet, UserItemDataset dataset)
+  {
+    userItemDataset = dataset;
+    TimeReportUtility timeReport = new TimeReportUtility("buildRecommender");
+    timeReport.start();
     MFModelBuilder builder = new MFModelBuilder(userItemDataset, getConfig().getMaxFeatures(), getConfig().getFeatureInitValue());
     model = builder.build();
+    timeReport.stop();
+    timeReport.printStatistics();
   }
 
   @Override
@@ -63,7 +74,7 @@ public class MFRecommender2
   private IUserRecommender getRecommender()
   {
     if (recommender == null)
-      recommender = new ItemFullScanUserRecommender(getConfig().getRecoNumber(), getPredictor(), rankEdgeType, userItemDataset.getItemList().values());
+      recommender = new ItemFullScanUserRecommender(getConfig().getRecoNumber(), getPredictor(), rankEdgeType, userItemDataset.getItemListForRecommendation().values());
     
     return recommender;
   }
@@ -81,9 +92,5 @@ public class MFRecommender2
     return predictor;
   }
 
-  @Override
-  public void buildRecommender(IGraph learningDataSet, UserItemDataset dataset)
-  {
-    throw new UnsupportedOperationException("Not supported yet.");
-  }
+
 }

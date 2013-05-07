@@ -23,7 +23,7 @@ import org.reco4j.util.TimeReportUtility;
  * @author giuri
  */
 public class KNNFastModelBuilder
-  implements IModelBuilder<KNNFastModel>
+  implements IModelBuilder<KNNFastModel> 
 {
   private static final Logger logger = Logger.getLogger(KNNFastModelBuilder.class.getName());
   //
@@ -46,10 +46,15 @@ public class KNNFastModelBuilder
     this.similarityEdgeType = similarityEdgeType;
     this.recalculateSimilarity = recalculateSimilarity;
   }
+  public void setModelName(String name)
+  {
+    this.model.setName(name);
+  }
   
   @Override
   public KNNFastModel build()
   {
+    System.out.println("Model name: " + model.getName());
     createKNN(userItemDataset.getItemIdList());
     return this.model;
   }
@@ -107,9 +112,9 @@ public class KNNFastModelBuilder
     {
       alreadyCalulatedEdge = item.getEdge(otherItem, similarityEdgeType);
       if (alreadyCalulatedEdge != null
-          && alreadyCalulatedEdge.getPermissiveProperty(similarityFunction.getClass().getName()) != null)
+          && alreadyCalulatedEdge.getPermissiveProperty(model.getName()) != null)
       {
-        double value = Double.parseDouble(alreadyCalulatedEdge.getProperty(similarityFunction.getClass().getName()));
+        double value = Double.parseDouble(alreadyCalulatedEdge.getProperty(model.getName()));
         return value;
       }
     }
@@ -119,9 +124,9 @@ public class KNNFastModelBuilder
     if (!recalculateSimilarity)
     {
       if (alreadyCalulatedEdge != null)
-        alreadyCalulatedEdge.setProperty(similarityFunction.getClass().getName(), Double.toString(similarityValue));
+        alreadyCalulatedEdge.setProperty(model.getName(), Double.toString(similarityValue));
       else
-        item.addOutEdgeWithProperty(similarityEdgeType, otherItem, similarityFunction.getClass().getName(), Double.toString(similarityValue));
+        item.addOutEdgeWithProperty(similarityEdgeType, otherItem, model.getName(), Double.toString(similarityValue));
     }
     return similarityValue;
   }

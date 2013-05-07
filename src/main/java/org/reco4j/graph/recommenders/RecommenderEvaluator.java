@@ -18,6 +18,7 @@
  */
 package org.reco4j.graph.recommenders;
 
+import java.util.Collection;
 import java.util.List;
 import org.reco4j.graph.EdgeTypeFactory;
 import org.reco4j.graph.IEdge;
@@ -25,6 +26,7 @@ import org.reco4j.graph.IEdgeType;
 import org.reco4j.graph.IGraph;
 import org.reco4j.graph.INode;
 import org.reco4j.graph.Rating;
+import org.reco4j.graph.UserItemDataset;
 import org.reco4j.util.IRecommenderConfig;
 
 /**
@@ -36,12 +38,22 @@ public class RecommenderEvaluator
   public static void evaluateRecommender(IGraph testDataSet, IRecommender recommender)
   {
     IRecommenderConfig config = recommender.getConfig();
+    List<INode> users = testDataSet.getNodesByType(config.getUserType());
+    evaluateRecommender(users, recommender);
+  }
+  public static void evaluateRecommender(UserItemDataset userItemDataset, IRecommender recommender)
+  {
+    evaluateRecommender(userItemDataset.getUserList().values(), recommender);
+  }
+  
+  public static void evaluateRecommender(Collection<INode> users, IRecommender recommender)
+  {
+    IRecommenderConfig config = recommender.getConfig();
     int n = 0;
     double numerator = 0.0;
-    List<INode> users = testDataSet.getNodesByType(config.getUserType());
     for (INode user : users)
     {
-      System.out.println("User: " + user.getProperty(config.getUserIdentifierName()));
+      //System.out.println("User: " + user.getProperty(config.getUserIdentifierName()));
       List<IEdge> ranks = user.getOutEdge(EdgeTypeFactory.getEdgeType(IEdgeType.EDGE_TYPE_TEST_RANK, config.getGraphConfig()));
       if (ranks.isEmpty())
         continue;

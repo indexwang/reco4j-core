@@ -15,7 +15,7 @@ import org.reco4j.graph.INode;
  *
  * @author ale
  */
-public interface IFilter
+public interface IPreFilter
 {
   public void setGraph(IGraph graph);
   public ConcurrentHashMap<Long, INode> getItemNodesMap();

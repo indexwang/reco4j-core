@@ -83,4 +83,6 @@ public interface IRecommender<TConfig extends IRecommenderConfig>
   public List<Rating> recommend(INode userNode);
 
   public double estimateRating(INode user, INode source);
+  
+  public void setModelName(String modelName);
 }

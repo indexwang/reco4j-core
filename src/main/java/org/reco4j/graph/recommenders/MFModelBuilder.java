@@ -41,15 +41,10 @@ public class MFModelBuilder
   @Override
   public MFModel build()
   {
-    TimeReportUtility timeReport = new TimeReportUtility("buildRecommender");
-    timeReport.start();
     init();
     calcMetrics();
     calcFeatures();
     //calcFeaturesByUser();
-    timeReport.stop();
-    timeReport.printStatistics();
-
     return this.model;
   }
 
