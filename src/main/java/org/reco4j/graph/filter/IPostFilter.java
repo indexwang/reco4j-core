@@ -5,6 +5,7 @@
 package org.reco4j.graph.filter;
 
 import java.util.concurrent.ConcurrentHashMap;
+import org.reco4j.graph.IGraph;
 import org.reco4j.graph.INode;
 
 /**
@@ -13,5 +14,6 @@ import org.reco4j.graph.INode;
  */
 public interface IPostFilter
 {
+  public void setGraph(IGraph graph);
   public ConcurrentHashMap<Long, INode> getItemNodesMap();  
 }

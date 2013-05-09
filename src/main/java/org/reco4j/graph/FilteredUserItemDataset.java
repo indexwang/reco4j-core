@@ -36,6 +36,8 @@ public class FilteredUserItemDataset extends UserItemDataset
     this.preFilter = filter;
     this.postFilter = postFilter;
     filter.setGraph(graph);
+    if (postFilter != null)
+      this.postFilter.setGraph(graph);
   }
   /**
    * @return the itemList
