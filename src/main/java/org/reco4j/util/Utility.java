@@ -21,7 +21,7 @@ package org.reco4j.util;
 import java.util.ArrayList;
 import java.util.Iterator;
 import org.reco4j.graph.INode;
-import org.reco4j.graph.Rating;
+import org.reco4j.model.Rating;
 
 /**
  *

@@ -20,12 +20,12 @@ package org.reco4j.util;
 
 import java.util.Properties;
 import org.reco4j.graph.IGraphConfig;
-import org.reco4j.graph.recommenders.ICollaborativeFilteringRecommenderConfig;
-import org.reco4j.graph.recommenders.IMFRecommenderConfig;
-import org.reco4j.graph.recommenders.IMahoutRecommenderConfig;
-import org.reco4j.graph.similarity.ICosineSimilarityConfig;
-import org.reco4j.graph.similarity.IEuclideanSimilarityConfig;
-import org.reco4j.graph.similarity.ISimilarityConfig;
+import org.reco4j.recommender.knn.ICollaborativeFilteringRecommenderConfig;
+import org.reco4j.recommender.svd.IMFRecommenderConfig;
+import org.reco4j.recommender.mahout.IMahoutRecommenderConfig;
+import org.reco4j.similarity.ICosineSimilarityConfig;
+import org.reco4j.similarity.IEuclideanSimilarityConfig;
+import org.reco4j.similarity.ISimilarityConfig;
 
 /**
  *

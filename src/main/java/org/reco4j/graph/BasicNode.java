@@ -18,6 +18,7 @@
  */
 package org.reco4j.graph;
 
+import org.reco4j.model.Rating;
 import java.util.ArrayList;
 
 /**
