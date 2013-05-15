@@ -1,7 +1,7 @@
 /*
  * EdgeTypeFactory.java
  * 
- * Copyright (C) 2012 Alessandro Negro <alessandro.negro at reco4j.org>
+ * Copyright (C) 2013 Alessandro Negro <alessandro.negro at reco4j.org>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,22 +20,22 @@ package org.reco4j.graph;
 
 /**
  *
- ** @author Alessandro Negro <alessandro.negro at reco4j.org>
+ * @author Alessandro Negro <alessandro.negro at reco4j.org>
  */
 public class EdgeTypeFactory
 {
-  public static IEdgeType getEdgeType(int edgeType)
+  public static IEdgeType getEdgeType(int edgeType, IGraphConfig graphConfig)
   {
     switch (edgeType)
     {
       case IEdgeType.EDGE_TYPE_RANK:
-        return new EdgeTypeRank();
+        return new EdgeTypeRank(graphConfig);
       case IEdgeType.EDGE_TYPE_TEST_RANK:
-        return new EdgeTypeTestRank();
+        return new EdgeTypeTestRank(graphConfig);
       case IEdgeType.EDGE_TYPE_SIMILARITY:
-        return new EdgeTypeSimilarity();
+        return new EdgeTypeSimilarity(graphConfig);
       case IEdgeType.EDGE_TYPE_ESTIMATED_RATING:
-        return new EdgeTypeEstimatedRating();
+        return new EdgeTypeEstimatedRating(graphConfig);
       default:
         throw new RuntimeException("Edge Type Not supported yet!");
     }

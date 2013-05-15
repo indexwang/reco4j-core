@@ -1,7 +1,7 @@
 /*
  * IEdge.java
  * 
- * Copyright (C) 2012 Alessandro Negro <alessandro.negro at reco4j.org>
+ * Copyright (C) 2013 Alessandro Negro <alessandro.negro at reco4j.org>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,13 +20,13 @@ package org.reco4j.graph;
 
 /**
  *
- ** @author Alessandro Negro <alessandro.negro at reco4j.org>
+ * @author Alessandro Negro <alessandro.negro at reco4j.org>
  */
 public interface IEdge
 {
   public long getId();
   public void setId(long id);
-  public void setProperty(String name, String value);
+  public void setProperty(String name, Object value);
   public String getProperty(String name);
   public String getPermissiveProperty(String name);
   public INode getSource();

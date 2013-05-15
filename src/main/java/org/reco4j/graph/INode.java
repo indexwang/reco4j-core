@@ -1,7 +1,7 @@
 /*
  * INode.java
  * 
- * Copyright (C) 2012 Alessandro Negro <alessandro.negro at reco4j.org>
+ * Copyright (C) 2013 Alessandro Negro <alessandro.negro at reco4j.org>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,9 +18,11 @@
  */
 package org.reco4j.graph;
 
+import org.reco4j.model.Rating;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 import org.apache.mahout.cf.taste.impl.common.FastIDSet;
 
 /**
@@ -41,13 +43,18 @@ public interface INode
   public List<IEdge> getInEdge(IEdgeType edgeType);
   public FastIDSet getInEdgeIds(IEdgeType edgeType);
   public List<IEdge> getOutEdge(IEdgeType edgeType);
+  public void addOutEdge(IEdgeType edgeType, INode destination);
+  public void addInEdge(IEdgeType edgeType, INode source);
+  public void addOutEdgeWithProperty(IEdgeType edgeType, INode destination, String propertyName, Object value);
+  public void addInEdgeWithProperty(IEdgeType edgeType, INode source, String propertyName, Object value);
+  //
   public void iterateOnEdge(IEdgeType edgeType, IGraphCallable<IEdge> callback);
-  public HashMap<String, INode> getCommonNodes(IEdgeType edgeType, String identifier);
+  public ConcurrentHashMap<Long, INode> getCommonNodes(IEdgeType edgeType, String identifier);
   public FastIDSet getCommonNodeIds(IEdgeType edgeType);
   public void iterateOnCommonNodes(IEdgeType edgeType, IGraphCallable<INode> callback);
   public int getInEdgeNumber(IEdgeType edgeType);
   public Object getExtendedInfos();
   public void setExtendedInfos(Object infos);
-  public ArrayList<Rating> getRatingsFromUser();
-  public ArrayList<Rating> getRatingsForItem();
+  public ArrayList<Rating> getRatingsFromUser(IGraphConfig config);
+  public ArrayList<Rating> getRatingsForItem(IGraphConfig config);
 }

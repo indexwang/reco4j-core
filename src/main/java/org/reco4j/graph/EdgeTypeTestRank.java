@@ -1,7 +1,7 @@
 /*
  * EdgeTypeTestRank.java
  * 
- * Copyright (C) 2012 Alessandro Negro <alessandro.negro at reco4j.org>
+ * Copyright (C) 2013 Alessandro Negro <alessandro.negro at reco4j.org>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,25 +18,20 @@
  */
 package org.reco4j.graph;
 
-import org.reco4j.util.RecommenderPropertiesHandle;
-
 /**
  *
- ** @author Alessandro Negro <alessandro.negro at reco4j.org>
+ * @author Alessandro Negro <alessandro.negro at reco4j.org>
  */
-public class EdgeTypeTestRank implements IEdgeType
+public class EdgeTypeTestRank extends BasicEdgeType implements IEdgeType
 {
-
+  public EdgeTypeTestRank(IGraphConfig config)
+  {
+    setEdgeName(config.getEdgeTestRankName());
+  }
+  
   @Override
   public int getType()
   {
     return IEdgeType.EDGE_TYPE_TEST_RANK;
   }
-
-  @Override
-  public String getEdgeName()
-  {
-    return RecommenderPropertiesHandle.getInstance().getEdgeTestRankName();
-  }
-  
 }

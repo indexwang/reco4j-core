@@ -1,7 +1,7 @@
 /*
  * BasicNode.java
  * 
- * Copyright (C) 2012 Alessandro Negro <alessandro.negro at reco4j.org>
+ * Copyright (C) 2013 Alessandro Negro <alessandro.negro at reco4j.org>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,12 +18,12 @@
  */
 package org.reco4j.graph;
 
+import org.reco4j.model.Rating;
 import java.util.ArrayList;
-import org.reco4j.util.RecommenderPropertiesHandle;
 
 /**
  *
- ** @author Alessandro Negro <alessandro.negro at reco4j.org>
+ * @author Alessandro Negro <alessandro.negro at reco4j.org>
  */
 public abstract class BasicNode implements INode
 {
@@ -41,17 +41,18 @@ public abstract class BasicNode implements INode
   }
   
   @Override
-  public ArrayList<Rating> getRatingsFromUser()
+  public ArrayList<Rating> getRatingsFromUser(IGraphConfig config)
   {
     final ArrayList<Rating> ratingList = new ArrayList<Rating>();
+    final String edgeRankValueName = config.getEdgeRankValueName();
     final INode thisNode = this;
-    this.iterateOnEdge(EdgeTypeFactory.getEdgeType(IEdgeType.EDGE_TYPE_RANK), new IGraphCallable<IEdge>()
+    this.iterateOnEdge(EdgeTypeFactory.getEdgeType(IEdgeType.EDGE_TYPE_RANK, config), new IGraphCallable<IEdge>()
     {
       @Override
       public void call(IEdge rating)
       {
         INode item = rating.getDestination();
-        String value = rating.getProperty(RecommenderPropertiesHandle.getInstance().getEdgeRankValueName());
+        String value = rating.getProperty(edgeRankValueName);
         double rate = Double.parseDouble(value);
         Rating pref = new Rating(thisNode, item, rate, null);
         ratingList.add(pref);
@@ -61,17 +62,18 @@ public abstract class BasicNode implements INode
   }
   
   @Override
-  public ArrayList<Rating> getRatingsForItem()
+  public ArrayList<Rating> getRatingsForItem(IGraphConfig config)
   {
     final ArrayList<Rating> ratingList = new ArrayList<Rating>();
+    final String edgeRankValueName = config.getEdgeRankValueName();
     final INode thisNode = this;
-    this.iterateOnEdge(EdgeTypeFactory.getEdgeType(IEdgeType.EDGE_TYPE_RANK), new IGraphCallable<IEdge>()
+    this.iterateOnEdge(EdgeTypeFactory.getEdgeType(IEdgeType.EDGE_TYPE_RANK, config), new IGraphCallable<IEdge>()
     {
       @Override
       public void call(IEdge rating)
       {
         INode node = rating.getSource();
-        String value = rating.getProperty(RecommenderPropertiesHandle.getInstance().getEdgeRankValueName());
+        String value = rating.getProperty(edgeRankValueName);
         double rate = Double.parseDouble(value);
         Rating pref = new Rating(node, thisNode, rate, null);
         ratingList.add(pref);

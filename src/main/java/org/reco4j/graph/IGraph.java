@@ -1,7 +1,7 @@
 /*
  * IGraph.java
  * 
- * Copyright (C) 2012 Alessandro Negro <alessandro.negro at reco4j.org>
+ * Copyright (C) 2013 Alessandro Negro <alessandro.negro at reco4j.org>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,7 +20,6 @@ package org.reco4j.graph;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 import org.apache.mahout.cf.taste.impl.common.FastIDSet;
 
@@ -32,8 +31,6 @@ import org.apache.mahout.cf.taste.impl.common.FastIDSet;
  */
 public interface IGraph
 {
-  public void setProperties(Properties properties);
-  
   public INode addNode(Map<String, String> properties);
   public void setNodeProperty(INode node, String propertyName, String value);
   

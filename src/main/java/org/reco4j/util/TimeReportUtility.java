@@ -1,7 +1,7 @@
 /*
  * TimeReportUtility.java
  * 
- * Copyright (C) 2012 Alessandro Negro <alessandro.negro at reco4j.org>
+ * Copyright (C) 2013 Alessandro Negro <alessandro.negro at reco4j.org>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,7 +20,7 @@ package org.reco4j.util;
 
 /**
  *
- ** @author Alessandro Negro <alessandro.negro at reco4j.org>ssandro Negro <alessandro.negro at reco4j.org>
+ * @author Alessandro Negro <alessandro.negro at reco4j.org>
  */
 public class TimeReportUtility
 {
