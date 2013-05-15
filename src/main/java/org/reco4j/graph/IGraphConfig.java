@@ -6,7 +6,7 @@ package org.reco4j.graph;
 
 /**
  *
- * @author giuri
+ *** @author Luigi Giuri < luigi.giuri at reco4j.org >
  */
 public interface IGraphConfig
 {

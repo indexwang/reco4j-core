@@ -1,7 +1,7 @@
 /*
  * RecommendersFactory.java
  * 
- * Copyright (C) 2012 Alessandro Negro <alessandro.negro at reco4j.org>
+ * Copyright (C) 2013 Alessandro Negro <alessandro.negro at reco4j.org>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,14 +22,14 @@ import org.reco4j.recommender.mahout.IMahoutRecommenderConfig;
 import org.reco4j.recommender.svd.IMFRecommenderConfig;
 import org.reco4j.recommender.knn.ICollaborativeFilteringRecommenderConfig;
 import org.reco4j.recommender.mahout.MahoutRecommender;
-import org.reco4j.recommender.svd.MFRecommender2;
+import org.reco4j.recommender.svd.MFRecommender;
 import org.reco4j.recommender.knn.KNNRecommender;
 import org.reco4j.recommender.knn.KNNFastRecommender;
 import org.reco4j.util.IRecommenderConfig;
 
 /**
  *
- ** @author Alessandro Negro <alessandro.negro at reco4j.org>
+ * @author Alessandro Negro <alessandro.negro at reco4j.org>
  */
 public class RecommendersFactory
 {
@@ -49,7 +49,7 @@ public class RecommendersFactory
       case RECOMMENDER_TYPE_FASTCOLLABORATIVE:
         return new KNNFastRecommender((ICollaborativeFilteringRecommenderConfig) config);
       case RECOMMENDER_TYPE_MATRIXFACTORIZATION:
-        return new MFRecommender2((IMFRecommenderConfig) config);      
+        return new MFRecommender((IMFRecommenderConfig) config);      
       case RECOMMENDER_TYPE_MAHOUT:
         return new MahoutRecommender((IMahoutRecommenderConfig) config);      
       default:

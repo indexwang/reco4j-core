@@ -1,7 +1,7 @@
 /*
  * JaccardSimilarity.java
  * 
- * Copyright (C) 2012 Alessandro Negro <alessandro.negro at reco4j.org>
+ * Copyright (C) 2013 Alessandro Negro <alessandro.negro at reco4j.org>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,7 +26,7 @@ import org.reco4j.graph.INode;
 
 /**
  *
- ** @author Alessandro Negro <alessandro.negro at reco4j.org>
+ * @author Alessandro Negro <alessandro.negro at reco4j.org>
  */
 public class JaccardSimilarity 
   extends BasicSimilarity<ISimilarityConfig>

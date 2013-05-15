@@ -1,5 +1,5 @@
 /*
- * MFFeatureMatrix.java
+ * MFPredictor.java
  * 
  * Copyright (C) 2013 Alessandro Negro <alessandro.negro at reco4j.org>
  *
@@ -18,38 +18,39 @@
  */
 package org.reco4j.recommender.svd;
 
-import java.util.concurrent.ConcurrentHashMap;
+import org.reco4j.graph.INode;
+import org.reco4j.recommender.IPredictor;
 
 /**
  *
  * @author Luigi Giuri < luigi.giuri at reco4j.org >
  */
-public class MFFeatureMatrix implements IFeatureMatrix
+public class MFPredictor
+  implements IPredictor
 {
-  private ConcurrentHashMap<Integer, ConcurrentHashMap<Long, Double>> features = new ConcurrentHashMap<Integer, ConcurrentHashMap<Long, Double>>();
-  
-  public ConcurrentHashMap<Long, Double> getFeatureItemMap(Integer feature)
+  private IFeatureMatrixModel<? extends IFeatureMatrix> model;
+
+  public MFPredictor(IFeatureMatrixModel<? extends IFeatureMatrix> model)
   {
-    ConcurrentHashMap<Long, Double> result = features.get(feature);
-    
-    if (result == null)
-    {
-      // TODO synchronize if needed
-      result = new ConcurrentHashMap<Long, Double>();
-      features.put(feature, result);
-    }
-    
-    return result;
+    this.model = model;
   }
-  
-  public void setFeature(Integer feature, Long item, Double value)
-  {
-    getFeatureItemMap(feature).put(item, value);
-  }
-  
+
   @Override
-  public Double getFeature(Integer feature, Long item)
+  public double predictRating(INode user, INode item)
   {
-    return getFeatureItemMap(feature).get(item);
+    Long userId = user.getId();
+    Long itemId = item.getId();
+    
+    double sum = 1;
+    for (int f = 0; f < model.getFeaturesCount(); f++)
+    {
+      sum += model.getItemFeatures().getFeature(f, itemId)
+             * model.getUserFeatures().getFeature(f, userId);
+      if (sum > 5)
+        sum = 5.0;
+      if (sum < 1)
+        sum = 1.0;
+    }
+    return sum;
   }
 }

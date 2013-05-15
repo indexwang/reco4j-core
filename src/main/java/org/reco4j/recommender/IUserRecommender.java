@@ -10,7 +10,7 @@ import org.reco4j.model.Rating;
 
 /**
  *
- * @author giuri
+ * @author Luigi Giuri < luigi.giuri at reco4j.org >
  */
 public interface IUserRecommender
 {

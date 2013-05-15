@@ -8,7 +8,7 @@ package org.reco4j.similarity;
  * This interface is valid for both EuclideanSimilarity and
  * EuclideanNormalizedSimilarity.
  *
- * @author giuri
+ * @author Luigi Giuri < luigi.giuri at reco4j.org >
  */
 public interface IEuclideanSimilarityConfig
   extends ISimilarityConfig

@@ -1,7 +1,7 @@
 /*
  * IRecommender.java
  * 
- * Copyright (C) 2012 Alessandro Negro <alessandro.negro at reco4j.org>
+ * Copyright (C) 2013 Alessandro Negro <alessandro.negro at reco4j.org>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,7 +32,7 @@ import org.reco4j.util.IRecommenderConfig;
  * This interface is the interface for any recommender type. Any recommender
  * MUST subclass this instance and implements it method to be used. *
  *
- ** @author Alessandro Negro <alessandro.negro at reco4j.org>
+ * @author Alessandro Negro <alessandro.negro at reco4j.org>
  */
 public interface IRecommender<TConfig extends IRecommenderConfig>
 {
